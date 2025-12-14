@@ -2,11 +2,64 @@
     padding: var(--spacing-xl) var(--spacing-lg) 0 var(--content-padding-left);
 }
 
+.forum-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.btn-create {
+    background: var(--color-gold-primary);
+    color: #000;
+    padding: 8px 16px;
+    border-radius: var(--border-radius-md);
+    font-weight: 700;
+    transition: transform var(--transition-fast);
+}
+
+.btn-create:hover {
+    transform: translateY(-2px);
+}
+
+.forum-filters {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    overflow-x: auto;
+    padding-bottom: 8px;
+    /* Scroll space */
+}
+
+.filter-pill {
+    white-space: nowrap;
+    padding: 6px 12px;
+    background: var(--color-black-surface);
+    color: var(--color-text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+}
+
+.filter-pill:hover,
+.filter-pill.active {
+    background: var(--color-gold-primary);
+    color: #000;
+    border-color: var(--color-gold-primary);
+    font-weight: 600;
+}
+
+.loading-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-secondary);
+}
+
 .forum-layout {
     display: flex;
     gap: var(--spacing-lg);
     flex-direction: column;
-    /* Mobile first stack */
 }
 
 @media (min-width: 900px) {
@@ -22,6 +75,12 @@
     gap: var(--spacing-md);
 }
 
+.thread-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
 .thread-card {
     display: flex;
     background: var(--color-black-surface);
@@ -31,17 +90,14 @@
     transition: all var(--transition-fast);
 }
 
-.thread-card:hover {
-    border-color: var(--color-text-secondary);
-}
-
-.thread-card.highlight {
+.thread-card.live-thread {
     border: 1px solid var(--color-gold-muted);
-    background: rgba(255, 215, 0, 0.02);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.05);
+    background: linear-gradient(to right, rgba(255, 215, 0, 0.02), var(--color-black-surface));
 }
 
 .vote-column {
-    width: 40px;
+    width: 50px;
     background: rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
@@ -50,20 +106,13 @@
     gap: 4px;
 }
 
-@media (min-width: 768px) {
-    .vote-column {
-        width: 50px;
-    }
-}
-
 .btn-vote {
     color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
 }
 
 .btn-vote:hover {
     color: var(--color-gold-primary);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
 }
 
 .vote-count {
@@ -78,31 +127,90 @@
 
 .thread-meta {
     display: flex;
-    gap: var(--spacing-md);
+    gap: 8px;
     font-size: 0.75rem;
     color: var(--color-text-secondary);
     margin-bottom: 8px;
-    flex-wrap: wrap;
+    align-items: center;
 }
 
-.thread-tag {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2px 8px;
-    border-radius: 10px;
-    color: var(--color-text-primary);
+.thread-category {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.dot {
+    font-size: 0.6rem;
 }
 
 .thread-title {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: var(--spacing-md);
-    color: #fff;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-@media (min-width: 768px) {
-    .thread-title {
-        font-size: 1.1rem;
-    }
+.badge-live {
+    font-size: 0.7rem;
+    background: #ff0000;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    animation: pulse 2s infinite;
+}
+
+.thread-snippet {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.ai-summary-box {
+    background: rgba(255, 215, 0, 0.05);
+    border-left: 3px solid var(--color-gold-primary);
+    padding: 8px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.ai-icon {
+    color: var(--color-gold-primary);
+    margin-top: 2px;
+    min-width: 12px;
+}
+
+.ai-label {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--color-gold-text);
+    white-space: nowrap;
+}
+
+.ai-text {
+    font-size: 0.85rem;
+    color: #ddd;
+    line-height: 1.4;
+}
+
+.thread-tags {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.ai-tag {
+    font-size: 0.75rem;
+    color: var(--color-gold-muted);
 }
 
 .thread-actions {
@@ -116,12 +224,11 @@
     gap: 6px;
     font-size: 0.8rem;
     color: var(--color-text-secondary);
-    padding: 4px 8px;
-    border-radius: 4px;
+    cursor: pointer;
 }
 
 .action-pill:hover {
-    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-gold-primary);
 }
 
 /* Sidebar */
@@ -132,7 +239,9 @@
 
 @media (min-width: 900px) {
     .forum-sidebar {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
     }
 }
 
@@ -143,24 +252,43 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.live-now {
+    border-color: var(--color-gold-muted);
+}
+
 .sidebar-card h3 {
     font-size: 1rem;
     margin-bottom: var(--spacing-md);
     color: var(--color-gold-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.sidebar-card ul {
-    list-style: none;
-}
-
-.sidebar-card li {
+.live-list li {
+    display: flex;
+    justify-content: space-between;
     padding: 8px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: var(--color-text-secondary);
     font-size: 0.9rem;
-    cursor: pointer;
 }
 
-.sidebar-card li:hover {
-    color: var(--color-gold-primary);
+.live-tag {
+    color: #ff0000;
+    font-weight: 700;
+    font-size: 0.7rem;
+}
+
+.btn-join-live {
+    width: 100%;
+    margin-top: var(--spacing-md);
+    padding: 8px;
+    background: #ff0000;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 4px;
+}
+
+.icon-pulse {
+    animation: pulse 1.5s infinite;
 }
