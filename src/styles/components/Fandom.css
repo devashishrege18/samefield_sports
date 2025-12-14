@@ -2,163 +2,264 @@
     padding: var(--spacing-xl) var(--spacing-lg) 0 var(--content-padding-left);
 }
 
-.fandom-header {
+.fandom-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stats-card {
+    background: var(--color-black-surface);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+}
+
+/* User Profile Card */
+.user-profile-card {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), var(--color-black-surface));
+    border-color: var(--color-gold-muted);
+}
+
+.profile-header {
     display: flex;
-    justify-content: space-between;
+    gap: var(--spacing-md);
     align-items: center;
     margin-bottom: var(--spacing-lg);
 }
 
-.artist-avatars {
+.avatar__large {
+    width: 60px;
+    height: 60px;
+    background: var(--color-gold-primary);
+    color: #000;
+    font-size: 2rem;
+    font-weight: 800;
     display: flex;
-    gap: var(--spacing-sm);
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
-.artist-circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid var(--color-gold-primary);
+.badge-level {
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--color-gold-text);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--spacing-lg);
+    background: rgba(0, 0, 0, 0.2);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat .label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+}
+
+.stat .value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.level-progress {
+    margin-top: var(--spacing-md);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar .fill {
+    height: 100%;
+    background: var(--color-gold-primary);
+    transition: width 1s ease-out;
+}
+
+/* Prediction Widget */
+.prediction-widget h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-gold-text);
+    margin-bottom: var(--spacing-md);
+}
+
+.pred-limit {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+}
+
+.pred-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.btn-pred {
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--border-radius-md);
+    font-weight: 800;
     cursor: pointer;
     transition: transform var(--transition-fast);
 }
 
-.artist-circle:hover {
-    transform: scale(1.1);
+.btn-pred.yes {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
 }
 
-.fandom-feed {
+.btn-pred.no {
+    background: #F44336;
+    color: #fff;
+    border: none;
+}
+
+.btn-pred:hover {
+    transform: scale(1.05);
+}
+
+.pred-result {
+    padding: 15px;
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.pred-result.WIN {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+.pred-result.LOSS {
+    background: rgba(244, 67, 54, 0.2);
+    color: #F44336;
+    border: 1px solid #F44336;
+}
+
+.pred-stats {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Circles Grid */
+.circles-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--spacing-lg);
 }
 
-.fandom-card {
+.circle-card {
     background: var(--color-black-surface);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-md);
     border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: var(--spacing-md);
-}
-
-.user-info {
-    display: flex;
-    gap: var(--spacing-sm);
-    align-items: center;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    background: var(--color-black-elevated);
-    border-radius: 50%;
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--color-gold-text);
-    font-weight: 700;
+    gap: var(--spacing-md);
+    transition: transform var(--transition-fast);
 }
 
-.user-name {
-    font-weight: 600;
-    color: var(--color-text-primary);
+.circle-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-gold-muted);
 }
 
-.post-time {
-    font-size: 0.8rem;
-    color: var(--color-text-secondary);
+.circle-card.member {
+    border-color: var(--color-gold-primary);
+    background: linear-gradient(to right, rgba(255, 215, 0, 0.05), var(--color-black-surface));
 }
 
-.btn-more {
-    color: var(--color-text-secondary);
+.circle-icon {
+    font-size: 2.5rem;
 }
 
-.card-content {
-    margin-bottom: var(--spacing-md);
-    color: #ddd;
-}
-
-.card-image-placeholder {
-    width: 100%;
-    height: 200px;
-    background: linear-gradient(to bottom right, #222, #333);
-    border-radius: var(--border-radius-md);
-    margin-bottom: var(--spacing-md);
-}
-
-.card-actions {
-    display: flex;
-    gap: var(--spacing-lg);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: var(--spacing-md);
-}
-
-.action-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--color-text-secondary);
-    transition: color var(--transition-fast);
-}
-
-.action-btn:hover {
-    color: var(--color-gold-primary);
-}
-
-/* Prediction Card Styles */
-.prediction-card {
-    border: 1px solid var(--color-gold-muted);
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(0, 0, 0, 0.8));
-}
-
-.pred-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: var(--spacing-md);
-    font-size: 0.8rem;
-}
-
-.live-badge {
-    background: #ff0000;
+.circle-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
     color: #fff;
+}
+
+.circle-info p {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+}
+
+.req-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--color-gold-muted);
+    background: rgba(255, 255, 255, 0.05);
     padding: 2px 6px;
     border-radius: 4px;
-    font-weight: 800;
-    animation: pulse 2s infinite;
+    width: fit-content;
 }
 
-.pred-votes {
-    color: var(--color-text-secondary);
-}
-
-.pred-question {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: var(--spacing-lg);
-}
-
-.pred-options {
-    display: flex;
-    gap: var(--spacing-md);
-}
-
-.btn-pred {
-    flex: 1;
-    padding: 10px;
+.btn-join {
+    margin-left: auto;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
     border: 1px solid var(--color-gold-muted);
     color: var(--color-gold-text);
-    border-radius: var(--border-radius-md);
-    font-weight: 700;
+    background: transparent;
+    cursor: pointer;
     transition: all var(--transition-fast);
 }
 
-.btn-pred:hover {
+.btn-join:hover:not(:disabled) {
     background: var(--color-gold-primary);
     color: #000;
+}
+
+.btn-join:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #555;
+    color: #555;
+}
+
+.btn-join.joined {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: #4CAF50;
+    color: #4CAF50;
 }

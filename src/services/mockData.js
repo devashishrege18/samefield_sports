@@ -22,3 +22,25 @@ export const threadTemplates = [
     { title: "Tactical Analysis: Key moments from {match}", category: "Tactical Analysis", type: "match" },
     { title: "Post-Match Review: {team1} vs {team2}", category: "Post-Match Review", type: "match" }
 ];
+
+export const circles = [
+    { id: 'c1', name: 'Viratians', type: 'Player', refId: 'p1', members: 15400, reqReputation: 50, icon: '👑' },
+    { id: 'c2', name: 'Yellow Army', type: 'Team', refId: 't2', members: 42000, reqReputation: 100, icon: '🦁' },
+    { id: 'c3', name: 'Mumbai Paltan', type: 'Team', refId: 't1', members: 38000, reqReputation: 10, icon: '💙' },
+    { id: 'c4', name: 'Smriti Mandhana FC', type: 'Player', refId: 'p2', members: 12000, reqReputation: 200, icon: '🏏' }
+];
+
+export const levels = [
+    { name: 'New Fan', minPoints: 0, perks: ['Join Circles'] },
+    { name: 'Core Fan', minPoints: 500, perks: ['Post Polls', 'Badge'] },
+    { name: 'Super Fan', minPoints: 1500, perks: ['Early Access', 'Meet Priority'] },
+    { name: 'Captain', minPoints: 5000, perks: ['Moderator Status', 'Direct AMA'] }
+];
+
+export const userStats = {
+    points: 350,
+    level: 'New Fan',
+    reputation: 85,
+    joinedCircles: ['c1'],
+    predictions: { total: 10, correct: 6 }
+};

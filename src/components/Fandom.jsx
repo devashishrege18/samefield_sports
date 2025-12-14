@@ -1,102 +1,131 @@
-import React from 'react';
-import { Heart, MessageCircle, Share2, MoreHorizontal } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Award, Star, Users, CheckCircle, TrendingUp, Lock } from 'lucide-react';
+import { fandomService } from '../services/FandomService';
 import '../styles/components/Fandom.css';
 
 const Fandom = () => {
-    const posts = [
-        {
-            id: 1,
-            user: 'Sarah_Fan123',
-            avatar: 'S',
-            time: '2m ago',
-            content: 'Just met the captain! She is so inspiring! 💛🖤 #SameField #Victory',
-            likes: 120,
-            comments: 45,
-            image: true
-        },
-        {
-            id: 2,
-            user: 'Coach_Mike',
-            avatar: 'C',
-            time: '1h ago',
-            content: 'Great training session today. The team is ready for the finals.',
-            likes: 850,
-            comments: 120,
-            image: false
-        },
-        {
-            id: 3,
-            user: 'GoldenGirl',
-            avatar: 'G',
-            time: '3h ago',
-            content: 'Who else is coming to the stadium tomorrow? Let\'s paint it GOLD!',
-            likes: 420,
-            comments: 89,
-            image: false
-        },
-        {
-            id: 4,
-            type: 'prediction',
-            time: 'LIVE NOW',
-            question: 'Will Sarah score a boundary in the next over?',
-            options: ['Yes', 'No'],
-            votes: 1542
+    const [stats, setStats] = useState(fandomService.getUserStats());
+    const [circles, setCircles] = useState(fandomService.getCircles());
+    const [activeTab, setActiveTab] = useState('circles'); // circles | predictions
+    const [predResult, setPredResult] = useState(null);
+
+    useEffect(() => {
+        // Refresh stats periodically
+        const interval = setInterval(() => {
+            setStats({ ...fandomService.getUserStats() });
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleJoin = (id) => {
+        const res = fandomService.joinCircle(id);
+        if (res.success) {
+            setStats({ ...fandomService.getUserStats() });
+            alert(res.msg); // Simple feedback for now
+        } else {
+            alert(res.msg);
         }
-    ];
+    };
+
+    const handlePredict = (isHeads) => {
+        const res = fandomService.makePrediction(Math.random() > 0.3); // 70% chance win for demo
+        setPredResult(res);
+        setStats({ ...fandomService.getUserStats() });
+        setTimeout(() => setPredResult(null), 3000);
+    };
+
+    const nextLevel = fandomService.getNextLevel();
+    const progressPercent = Math.min(100, (stats.points / nextLevel.minPoints) * 100);
 
     return (
         <div className="fandom-container">
-            <div className="fandom-header">
-                <h2 className="section-title">Fan Zone</h2>
-                <div className="artist-avatars">
-                    {/* Mock artist circles like Weverse */}
-                    {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="artist-circle" style={{ backgroundImage: `linear-gradient(45deg, #333, #111)` }}></div>
-                    ))}
+            <div className="fandom-dashboard">
+                {/* User Stats Card */}
+                <div className="stats-card user-profile-card">
+                    <div className="profile-header">
+                        <div className="avatar__large">
+                            {stats.level.charAt(0)}
+                        </div>
+                        <div>
+                            <h3>Devashish</h3>
+                            <span className="badge-level">{stats.level}</span>
+                        </div>
+                    </div>
+                    <div className="stats-row">
+                        <div className="stat">
+                            <span className="label">Reputation</span>
+                            <span className="value">{stats.reputation}</span>
+                        </div>
+                        <div className="stat">
+                            <span className="label">Points</span>
+                            <span className="value">{stats.points}</span>
+                        </div>
+                    </div>
+
+                    <div className="level-progress">
+                        <div className="progress-info">
+                            <span>Next: {nextLevel.name}</span>
+                            <span>{stats.points} / {nextLevel.minPoints}</span>
+                        </div>
+                        <div className="progress-bar">
+                            <div className="fill" style={{ width: `${progressPercent}%` }}></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Prediction Widget (Interactivity Fix) */}
+                <div className="stats-card prediction-widget">
+                    <h3><TrendingUp size={16} /> Quick Prediction</h3>
+                    <p className="pred-limit">Will Kohli score 50+ today?</p>
+
+                    {predResult ? (
+                        <div className={`pred-result ${predResult.result}`}>
+                            {predResult.msg}
+                        </div>
+                    ) : (
+                        <div className="pred-actions">
+                            <button className="btn-pred yes" onClick={() => handlePredict(true)}>Yes (x2)</button>
+                            <button className="btn-pred no" onClick={() => handlePredict(false)}>No (x1.5)</button>
+                        </div>
+                    )}
+                    <div className="pred-stats">
+                        <span>Won: {stats.predictions.correct}</span>
+                        <span>Total: {stats.predictions.total}</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="fandom-feed">
-                {posts.map(post => (
-                    post.type === 'prediction' ? (
-                        <div key={post.id} className="fandom-card prediction-card">
-                            <div className="pred-header">
-                                <span className="live-badge">LIVE PREDICTION</span>
-                                <span className="pred-votes">{post.votes} voted</span>
-                            </div>
-                            <h3 className="pred-question">{post.question}</h3>
-                            <div className="pred-options">
-                                {post.options.map(opt => (
-                                    <button key={opt} className="btn-pred">{opt}</button>
-                                ))}
-                            </div>
-                        </div>
-                    ) : (
-                        <div key={post.id} className="fandom-card">
-                            <div className="card-header">
-                                <div className="user-info">
-                                    <div className="user-avatar">{post.avatar}</div>
-                                    <div>
-                                        <div className="user-name">{post.user}</div>
-                                        <div className="post-time">{post.time}</div>
+            {/* Main Content Areas */}
+            <h2 className="section-title">Fandom Circles</h2>
+            <div className="circles-grid">
+                {circles.map(circle => {
+                    const isMember = stats.joinedCircles.includes(circle.id);
+                    const canJoin = stats.reputation >= circle.reqReputation;
+
+                    return (
+                        <div key={circle.id} className={`circle-card ${isMember ? 'member' : ''}`}>
+                            <div className="circle-icon">{circle.icon}</div>
+                            <div className="circle-info">
+                                <h3>{circle.name}</h3>
+                                <p>{circle.type} Circle • {circle.members.toLocaleString()} Fans</p>
+
+                                {!isMember && (
+                                    <div className="req-badge">
+                                        {canJoin ? <CheckCircle size={12} /> : <Lock size={12} />}
+                                        Req Rep: {circle.reqReputation}
                                     </div>
-                                </div>
-                                <button className="btn-more"><MoreHorizontal size={20} /></button>
+                                )}
                             </div>
-
-                            <div className="card-content">
-                                {post.content}
-                            </div>
-                            {post.image && <div className="card-image-placeholder"></div>}
-
-                            <div className="card-actions">
-                                <button className="action-btn"><Heart size={18} /> {post.likes}</button>
-                                <button className="action-btn"><MessageCircle size={18} /> {post.comments}</button>
-                                <button className="action-btn"><Share2 size={18} /></button>
-                            </div>
+                            <button
+                                className={`btn-join ${isMember ? 'joined' : ''}`}
+                                onClick={() => handleJoin(circle.id)}
+                                disabled={isMember || !canJoin}
+                            >
+                                {isMember ? 'Joined' : canJoin ? 'Join Circle' : 'Locked'}
+                            </button>
                         </div>
-                    )
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
