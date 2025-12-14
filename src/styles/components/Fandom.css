@@ -2,11 +2,54 @@
     padding: var(--spacing-xl) var(--spacing-lg) 0 var(--content-padding-left);
 }
 
+.fandom-tabs {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: none;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.tab-btn:hover {
+    color: #fff;
+}
+
+.tab-btn.active {
+    color: var(--color-gold-primary);
+    border-bottom-color: var(--color-gold-primary);
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dashboard Styles (Reused) */
 .fandom-dashboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
 }
 
 .stats-card {
@@ -20,6 +63,7 @@
 .user-profile-card {
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), var(--color-black-surface));
     border-color: var(--color-gold-muted);
+    margin-bottom: var(--spacing-lg);
 }
 
 .profile-header {
@@ -105,6 +149,10 @@
 }
 
 /* Prediction Widget */
+.prediction-widget {
+    margin-bottom: var(--spacing-xl);
+}
+
 .prediction-widget h3 {
     display: flex;
     align-items: center;
@@ -178,6 +226,10 @@
 }
 
 /* Circles Grid */
+.circles-section {
+    width: 100%;
+}
+
 .circles-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -262,4 +314,176 @@
     background: rgba(76, 175, 80, 0.2);
     border-color: #4CAF50;
     color: #4CAF50;
+}
+
+
+/* FEED STYLES (Restored) */
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.btn-create-post {
+    background: var(--color-gold-primary);
+    color: #000;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.posts-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.featured-fan-card {
+    background: linear-gradient(45deg, #111, #222);
+    border: 1px solid var(--color-gold-muted);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.fan-badge {
+    color: var(--color-gold-text);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: var(--spacing-md);
+}
+
+.fan-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.fan-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--color-gold-primary);
+}
+
+.fan-details h4 {
+    margin: 0;
+    color: #fff;
+}
+
+.fan-details p {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.btn-follow {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+}
+
+.feed-post {
+    background: var(--color-black-surface);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.post-header {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.post-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.post-user {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.post-time {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.post-content {
+    color: #ddd;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+}
+
+.post-poll {
+    background: rgba(255, 255, 255, 0.02);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.poll-option {
+    margin-bottom: 8px;
+}
+
+.poll-option span {
+    font-size: 0.9rem;
+    color: #ccc;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.poll-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.poll-bar {
+    height: 6px;
+    background: var(--color-gold-primary);
+    border-radius: 3px;
+}
+
+.poll-percent {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    width: 30px;
+}
+
+.post-actions {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: var(--spacing-md);
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: color var(--transition-fast);
+}
+
+.action-btn:hover {
+    color: var(--color-gold-primary);
 }
