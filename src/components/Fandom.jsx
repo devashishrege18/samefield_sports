@@ -18,37 +18,55 @@ const Fandom = () => {
     const [localPosts, setLocalPosts] = useState([
         {
             id: 1,
-            user: "ViratFan_18",
-            avatar: "https://ui-avatars.com/api/?name=Virat+Fan&background=FFD700&color=000",
-            content: "Can we talk about that cover drive? Absolute cinema! 🏏 #KingKohli #INDvAUS",
+            user: "SmritiFan_18",
+            avatar: "https://ui-avatars.com/api/?name=Smriti+Fan&background=FFD700&color=000",
+            content: "Queen of Cover Drives! Smriti Mandhana is looking in ominous touch today. Who else thinks a century is loading? 🏏🔥 #WPL2025 #RCB",
             image: null,
-            likes: 1240,
-            comments: 45,
-            timestamp: "2 mins ago"
+            likes: 2400,
+            comments: 156,
+            timestamp: "10 mins ago"
         },
         {
             id: 2,
-            user: "MumbaiIndians_Official",
-            avatar: "https://ui-avatars.com/api/?name=MI&background=004BA0&color=FFF",
-            content: "Paltan! Who should be our impact player tonight? Vote now in the poll below! 👇",
-            isPoll: true,
-            pollOptions: [
-                { label: "Dewald Brevis", votes: "45%" },
-                { label: "Tim David", votes: "35%" },
-                { label: "Nehal Wadhera", votes: "20%" }
-            ],
-            likes: 5600,
-            comments: 890,
-            timestamp: "1 hour ago"
+            user: "WomenInSport",
+            avatar: "https://ui-avatars.com/api/?name=WS&background=E91E63&color=FFF",
+            content: "The growth of Women's Cricket in India is unreal. Sold out stadium for a Tuesday night game! 🙌 #Cricket",
+            likes: 4500,
+            comments: 340,
+            timestamp: "45 mins ago"
         },
         {
             id: 3,
+            user: "MumbaiIndians_W",
+            avatar: "https://ui-avatars.com/api/?name=MI&background=004BA0&color=FFF",
+            content: "Paltan! Who is your Player of the Match? Vote now! 👇",
+            isPoll: true,
+            pollOptions: [
+                { label: "Harmanpreet Kaur", votes: "55%" },
+                { label: "Nat Sciver-Brunt", votes: "30%" },
+                { label: "Yastika Bhatia", votes: "15%" }
+            ],
+            likes: 6700,
+            comments: 920,
+            timestamp: "1 hour ago"
+        },
+        {
+            id: 4,
+            user: "HoopsQueen",
+            avatar: "https://ui-avatars.com/api/?name=HQ&background=FF9800&color=FFF",
+            content: "Caitlin Clark just broke another record! deep 3s all day. The WNBA is on fire right now. 🏀🔥 #WNBA",
+            likes: 3200,
+            comments: 210,
+            timestamp: "2 hours ago"
+        },
+        {
+            id: 5,
             user: "GlobalFootball",
             avatar: "https://ui-avatars.com/api/?name=GF&background=28a745&color=FFF",
-            content: "BREAKING: Transfer rumors heating up for Mbappe! Real Madrid or stay at PSG? ⚽ #TransferNews",
-            likes: 8900,
-            comments: 1200,
-            timestamp: "3 hours ago"
+            content: "Alexia Putellas is magic. That assist was world class. Barcelona Femeni looking unstoppable. ⚽",
+            likes: 1500,
+            comments: 89,
+            timestamp: "4 hours ago"
         }
     ]);
 
