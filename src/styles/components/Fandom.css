@@ -1,3 +1,87 @@
+/* Post Creation Styles */
+.create-post-box {
+    background: var(--color-black-surface);
+    border: 1px solid var(--border-color-dim);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    width: 100%;
+    margin-bottom: var(--spacing-lg);
+}
+
+.create-post-box textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    resize: none;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    height: 60px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.create-post-box textarea:focus {
+    outline: none;
+}
+
+.create-post-actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: var(--spacing-sm);
+}
+
+.btn-post {
+    background: var(--color-gold-primary);
+    color: #000;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
+}
+
+/* Prediction Header */
+.pred-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.btn-shuffle {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-secondary);
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-shuffle:hover {
+    color: #fff;
+    border-color: #fff;
+}
+
+.pred-sport-tag {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--color-gold-muted);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Previous Styles Inherited/Preserved */
 .fandom-container {
     padding: var(--spacing-xl) var(--spacing-lg) 0 var(--content-padding-left);
 }
@@ -57,13 +141,13 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
 }
 
 /* User Profile Card */
 .user-profile-card {
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), var(--color-black-surface));
     border-color: var(--color-gold-muted);
-    margin-bottom: var(--spacing-lg);
 }
 
 .profile-header {
@@ -149,16 +233,12 @@
 }
 
 /* Prediction Widget */
-.prediction-widget {
-    margin-bottom: var(--spacing-xl);
-}
 
 .prediction-widget h3 {
     display: flex;
     align-items: center;
     gap: 8px;
     color: var(--color-gold-text);
-    margin-bottom: var(--spacing-md);
 }
 
 .pred-limit {
@@ -320,17 +400,8 @@
 /* FEED STYLES (Restored) */
 .feed-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
     margin-bottom: var(--spacing-lg);
-}
-
-.btn-create-post {
-    background: var(--color-gold-primary);
-    color: #000;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: 600;
 }
 
 .posts-container {
@@ -397,6 +468,7 @@
     border-radius: var(--border-radius-md);
     margin-bottom: var(--spacing-lg);
     border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeIn 0.5s ease-in;
 }
 
 .post-header {
