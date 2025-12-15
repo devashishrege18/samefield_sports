@@ -171,6 +171,9 @@ class VoiceService {
         // Stop Mic
         this.stopLocalStream();
 
+        // REMOVE LOCAL USER FROM STATIC ROOM STATE
+        this.currentRoom.users = this.currentRoom.users.filter(u => u.id !== this.localUser.id);
+
         this.currentRoom = null;
         this.participants = [];
         this.notify();
