@@ -13,16 +13,21 @@ class VoiceService {
             isSpeaking: false
         };
 
-        // Static Room List
+        // Static Room List (Removed Gaming Lounge)
         this.rooms = [
             { id: 'samefield_v1', name: 'General Chat', type: 'voice', users: [] },
-            { id: 'samefield_v2', name: 'Match Watch Party', type: 'voice', users: [] },
-            { id: 'samefield_v3', name: 'Gamers Lounge', type: 'voice', users: [] }
+            { id: 'samefield_v2', name: 'Match Watch Party', type: 'voice', users: [] }
         ];
 
         this.simulationInterval = null;
         this.localStream = null;
         this.audioElements = {}; // Map peerId -> Audio Element
+
+        // Data Channels
+        this.speakAction = null;
+
+        // Cleanup on close
+        window.addEventListener('beforeunload', () => this.leaveRoom());
     }
 
     subscribe(callback) {
@@ -36,7 +41,7 @@ class VoiceService {
                 cb({
                     currentRoom: this.currentRoom,
                     participants: [...this.participants],
-                    rooms: this.rooms, // Static list for now
+                    rooms: this.rooms,
                     localUser: { ...this.localUser }
                 });
             } catch (e) {
@@ -46,6 +51,20 @@ class VoiceService {
     }
 
     getRooms() { return this.rooms; }
+
+    createRoom(name) {
+        // Create a custom room object
+        const newRoom = {
+            id: 'custom_' + Date.now(),
+            name: name,
+            type: 'voice',
+            users: []
+        };
+        this.rooms.push(newRoom);
+        this.notify();
+        // Converting to async flow internally to join immediately
+        this.joinRoom(newRoom.id);
+    }
 
     async joinRoom(roomId) {
         if (this.currentRoom?.id === roomId) return;
@@ -63,27 +82,43 @@ class VoiceService {
             const config = { appId: 'samefield_sports_demo_v1' };
             this.roomInstance = joinRoom(config, roomId);
 
+            // --- Data Channels ---
+            // Create action for broadcasting speaking status
+            const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speakingStatus');
+            this.speakAction = sendSpeaking;
+
+            // Handle Incoming Speaking Status
+            getSpeaking((data, peerId) => {
+                this.participants = this.participants.map(p =>
+                    p.id === peerId ? { ...p, isSpeaking: data.isSpeaking } : p
+                );
+                this.notify();
+            });
+
             // Handle Peer Join
             this.roomInstance.onPeerJoin(peerId => {
                 console.log(`[Voice] Peer Joined: ${peerId}`);
-                this.participants.push({ id: peerId, name: `User ${peerId.slice(0, 4)}`, isMuted: false, isSpeaking: false });
-                this.notify();
+                // Check if already in list to avoid dupes
+                if (!this.participants.find(p => p.id === peerId)) {
+                    this.participants.push({ id: peerId, name: `User ${peerId.slice(0, 4)}`, isMuted: false, isSpeaking: false });
+                    this.notify();
+                }
 
                 // If we have a local stream, send it to the new peer
                 if (this.localStream && !this.localUser.isMuted) {
                     this.roomInstance.addStream(this.localStream, peerId);
+                }
+
+                // Send our current speaking status to new peer
+                if (this.speakAction) {
+                    this.speakAction({ isSpeaking: this.localUser.isSpeaking });
                 }
             });
 
             // Handle Peer Leave
             this.roomInstance.onPeerLeave(peerId => {
                 console.log(`[Voice] Peer Left: ${peerId}`);
-                this.participants = this.participants.filter(p => p.id !== peerId);
-                if (this.audioElements[peerId]) {
-                    this.audioElements[peerId].srcObject = null;
-                    delete this.audioElements[peerId];
-                }
-                this.notify();
+                this.removePeer(peerId);
             });
 
             // Handle Incoming Stream
@@ -94,21 +129,24 @@ class VoiceService {
                 if (!this.audioElements[peerId]) {
                     const audio = new Audio();
                     audio.autoplay = true;
-                    // audio.controls = true; // Debug
                     this.audioElements[peerId] = audio;
                 }
                 this.audioElements[peerId].srcObject = stream;
-
-                // Update speaking state visual (basic)
-                this.participants = this.participants.map(p =>
-                    p.id === peerId ? { ...p, isSpeaking: true } : p
-                );
-                this.notify();
             });
-
-            // Auto-init mic if not muted (or ask permission)
-            // But usually we start muted.
         }
+    }
+
+    removePeer(peerId) {
+        this.participants = this.participants.filter(p => p.id !== peerId);
+        if (this.currentRoom) {
+            this.currentRoom.users = this.participants;
+        }
+
+        if (this.audioElements[peerId]) {
+            this.audioElements[peerId].srcObject = null;
+            delete this.audioElements[peerId];
+        }
+        this.notify();
     }
 
     async leaveRoom() {
@@ -127,6 +165,7 @@ class VoiceService {
             audio.srcObject = null;
         });
         this.audioElements = {};
+        this.speakAction = null;
 
         // Stop Mic
         this.stopLocalStream();
@@ -138,6 +177,7 @@ class VoiceService {
 
     async toggleMute() {
         this.localUser.isMuted = !this.localUser.isMuted;
+        this.notify(); // Update UI immediately
 
         if (!this.localUser.isMuted) {
             // Unmuting -> Start Mic
@@ -145,24 +185,23 @@ class VoiceService {
         } else {
             // Muting -> Stop Mic
             this.stopLocalStream();
-        }
 
-        this.notify();
+            // Explicitly broadcast "Not Speaking" when muting
+            if (this.speakAction) this.speakAction({ isSpeaking: false });
+        }
     }
 
     async startLocalStream() {
         try {
-            if (this.localStream) return; // Already active
+            if (this.localStream) return;
 
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             this.localStream = stream;
 
-            // Send stream to all peers
             if (this.roomInstance) {
                 this.roomInstance.addStream(this.localStream);
             }
 
-            // Visualizer support (Optional, stripped for simplicity or re-add if needed)
             this.startMicMonitoring(stream);
 
         } catch (err) {
@@ -177,25 +216,17 @@ class VoiceService {
             this.localStream.getTracks().forEach(track => track.stop());
             this.localStream = null;
         }
-        if (this.roomInstance) {
-            // Trystero removeStream keys off the stream ID usually, but simpler to just strictly control adding.
-            // Removing streams in WebRTC is tricky, often easier to just stop tracks.
-            // But we need to ensure peers stop hearing us. 
-            // Trystero handles track ending automatically? Usually.
-            // We can also re-join or use removeStream if exposed.
-            // For this demo, stopping tracks works.
-            if (this.roomInstance.removeStream) {
-                // Try removing if API supports it, safely
-                // this.roomInstance.removeStream(this.localStream); 
-            }
+        if (this.roomInstance && this.roomInstance.removeStream) {
+            // this.roomInstance.removeStream(this.localStream); 
         }
         this.stopMicMonitoring();
     }
 
-    // --- Visualizer Logic (Reused) ---
+    // --- Visualizer & State Broadcast ---
     startMicMonitoring(stream) {
         if (!stream) return;
 
+        if (this.audioContext) this.audioContext.close();
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.analyser = this.audioContext.createAnalyser();
         const source = this.audioContext.createMediaStreamSource(stream);
@@ -205,14 +236,20 @@ class VoiceService {
 
         this.simulationInterval = setInterval(() => {
             if (!this.currentRoom || this.localUser.isMuted) return;
+
             this.analyser.getByteFrequencyData(dataArray);
             const sum = dataArray.reduce((a, b) => a + b, 0);
             const avg = sum / dataArray.length;
-            const isSpeaking = avg > 10;
+            const isSpeakingNow = avg > 15; // Slightly higher threshold to avoid noise
 
-            if (this.localUser.isSpeaking !== isSpeaking) {
-                this.localUser.isSpeaking = isSpeaking;
+            if (this.localUser.isSpeaking !== isSpeakingNow) {
+                this.localUser.isSpeaking = isSpeakingNow;
                 this.notify();
+
+                // BROADCAST STATUS TO PEERS
+                if (this.speakAction) {
+                    this.speakAction({ isSpeaking: isSpeakingNow });
+                }
             }
         }, 100);
     }
@@ -220,8 +257,14 @@ class VoiceService {
     stopMicMonitoring() {
         if (this.simulationInterval) clearInterval(this.simulationInterval);
         this.localUser.isSpeaking = false;
-        if (this.audioContext) this.audioContext.close();
-        this.audioContext = null;
+        if (this.audioContext) {
+            this.audioContext.close();
+            this.audioContext = null;
+        }
+        // Broadcast "Silence" to be safe
+        if (this.speakAction) {
+            this.speakAction({ isSpeaking: false });
+        }
     }
 }
 
