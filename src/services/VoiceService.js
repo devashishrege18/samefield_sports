@@ -38,10 +38,11 @@ class VoiceService {
 
         this.participants = []; // Active Voice Participants
         this.listeners = [];
+        this.isTransiting = false; // Mutex for join/leave
 
         const savedName = localStorage.getItem('samefield_username');
         this.localUser = {
-            id: 'local_user', // Will be replaced by Trystero peerId for global sync
+            id: 'local_user',
             name: savedName || 'You',
             isMuted: true,
             isSpeaking: false,
@@ -57,11 +58,12 @@ class VoiceService {
 
         // Global User Map (PeerID -> UserData)
         this.onlineUsers = {};
+        this.lastHeartbeat = {}; // Map of timestamps for peer expiry
 
         this.simulationInterval = null;
+        this.heartbeatInterval = null;
         this.audioElements = {};
         this.speakAction = null;
-        this.metaAction = null;
         this.presenceAction = null;
 
         // Auto-Start Global Presence
@@ -82,6 +84,9 @@ class VoiceService {
             this.leaveRoom();
             if (this.presenceInstance) this.presenceInstance.leave();
         });
+
+        // Cleanup stale users every 10s
+        setInterval(() => this.cleanupStaleUsers(), 10000);
     }
 
     // --- Core API ---
@@ -93,7 +98,8 @@ class VoiceService {
 
             // Append Local User if in this room (to ensure I see myself)
             if (this.currentRoom && this.currentRoom.id === room.id) {
-                if (!usersInRoom.find(u => u.id === this.localUser.id)) {
+                // Ensure I'm not added twice if my heartbeat looped back
+                if (!usersInRoom.find(u => u.name === this.localUser.name)) {
                     usersInRoom.push(this.localUser);
                 }
             }
@@ -123,36 +129,50 @@ class VoiceService {
     // --- Global Presence (The "Lobby") ---
 
     initGlobalPresence() {
-        const config = { appId: 'samefield_sports_presence_v1' };
+        const config = { appId: 'samefield_sports_presence_v2_robust' }; // Bumped version
         this.presenceInstance = joinRoom(config, 'global_lobby');
 
         const [sendPresence, getPresence] = this.presenceInstance.makeAction('status');
         this.presenceAction = sendPresence;
 
-        // Handle incoming presence updates
+        // Handle incoming presence updates (HEARTBEAT)
         getPresence((data, peerId) => {
             this.onlineUsers[peerId] = {
                 id: peerId,
                 name: data.name,
                 currentRoomId: data.currentRoomId,
-                isSpeaking: false, // Default
+                isSpeaking: false,
                 avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`
             };
+            this.lastHeartbeat[peerId] = Date.now();
             this.notify();
         });
 
         this.presenceInstance.onPeerJoin(peerId => {
-            // New peer joined lobby -> Send them my status
+            // New peer joined -> Send them my status immediately
             this.broadcastPresence();
         });
 
         this.presenceInstance.onPeerLeave(peerId => {
             delete this.onlineUsers[peerId];
+            delete this.lastHeartbeat[peerId];
             this.notify();
         });
 
-        // Initial Broadcast
+        // Start Heartbeat Loop (every 3s)
+        this.heartbeatInterval = setInterval(() => this.broadcastPresence(), 3000);
         this.broadcastPresence();
+    }
+
+    cleanupStaleUsers() {
+        const now = Date.now();
+        Object.keys(this.lastHeartbeat).forEach(peerId => {
+            if (now - this.lastHeartbeat[peerId] > 15000) { // 15s timeout
+                delete this.onlineUsers[peerId];
+                delete this.lastHeartbeat[peerId];
+            }
+        });
+        this.notify();
     }
 
     broadcastPresence() {
@@ -179,11 +199,18 @@ class VoiceService {
     }
 
     async joinRoom(roomId) {
+        if (this.isTransiting) return; // Prevent spam
         if (this.currentRoom?.id === roomId) return;
+
+        this.isTransiting = true;
+
         if (this.currentRoom) await this.leaveRoom();
 
         const room = this.rooms.find(r => r.id === roomId);
-        if (!room) return;
+        if (!room) {
+            this.isTransiting = false;
+            return;
+        }
 
         console.log(`[Voice] Joining Room: ${roomId}`);
         this.currentRoom = room;
@@ -201,11 +228,7 @@ class VoiceService {
         const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speak');
         this.speakAction = sendSpeaking;
 
-        // Note: We don't need 'meta' channel anymore as 'presence' handles names globally, 
-        // BUT we keep 'speak' for fast audio stats.
-
         getSpeaking((data, peerId) => {
-            // Update speaking status in onlineUsers map
             if (this.onlineUsers[peerId]) {
                 this.onlineUsers[peerId].isSpeaking = data.isSpeaking;
                 this.notify();
@@ -235,6 +258,8 @@ class VoiceService {
             }
             this.audioElements[peerId].srcObject = stream;
         });
+
+        this.isTransiting = false;
     }
 
     async leaveRoom() {
@@ -242,7 +267,7 @@ class VoiceService {
         playSound('LEAVE');
 
         if (this.roomInstance) {
-            this.roomInstance.leave();
+            this.roomInstance.leave(); // This is silent in Trystero usually
             this.roomInstance = null;
         }
 
@@ -321,18 +346,6 @@ class VoiceService {
 
             if (this.localUser.isSpeaking !== isSpeakingNow) {
                 this.localUser.isSpeaking = isSpeakingNow;
-                // Update my own entry in onlineUsers for UI consistency
-                /* 
-                   Wait - localUser is separate from onlineUsers? 
-                   We should update onlineUsers map with My status too if I want to show up in the list logic properly?
-                   Actually getRooms() filters onlineUsers. I should add myself to onlineUsers for generic rendering logic?
-                   OR render localUser separately. 
-                   Solution: Broadcast speaking status to Voice Room peers.
-                   UI uses localUser for "Me" and room.users for "Others".
-                   BUT wait, if we use Global Presence, room.users has EVERYONE.
-                   Let's ensure I'm in my own onlineUsers list or handled by getRooms.
-                */
-                this.localUser.isSpeaking = isSpeakingNow; // Local state
                 if (this.speakAction) this.speakAction({ isSpeaking: isSpeakingNow });
                 this.notify();
             }
