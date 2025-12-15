@@ -129,7 +129,7 @@ class VoiceService {
     // --- Global Presence (The "Lobby") ---
 
     initGlobalPresence() {
-        const config = { appId: 'samefield_sports_presence_v2_robust' }; // Bumped version
+        const config = { appId: 'samefield_sports_presence_v2' }; // Simplified ID
         this.presenceInstance = joinRoom(config, 'global_lobby');
 
         const [sendPresence, getPresence] = this.presenceInstance.makeAction('status');
@@ -149,7 +149,7 @@ class VoiceService {
         });
 
         this.presenceInstance.onPeerJoin(peerId => {
-            // New peer joined -> Send them my status immediately
+            console.log(`[Presence] Peer Joined: ${peerId}`);
             this.broadcastPresence();
         });
 
@@ -159,15 +159,15 @@ class VoiceService {
             this.notify();
         });
 
-        // Start Heartbeat Loop (every 3s)
-        this.heartbeatInterval = setInterval(() => this.broadcastPresence(), 3000);
+        // Loop heartbeat every 4s
+        this.heartbeatInterval = setInterval(() => this.broadcastPresence(), 4000);
         this.broadcastPresence();
     }
 
     cleanupStaleUsers() {
         const now = Date.now();
         Object.keys(this.lastHeartbeat).forEach(peerId => {
-            if (now - this.lastHeartbeat[peerId] > 15000) { // 15s timeout
+            if (now - this.lastHeartbeat[peerId] > 15000) {
                 delete this.onlineUsers[peerId];
                 delete this.lastHeartbeat[peerId];
             }
@@ -199,67 +199,75 @@ class VoiceService {
     }
 
     async joinRoom(roomId) {
-        if (this.isTransiting) return; // Prevent spam
-        if (this.currentRoom?.id === roomId) return;
-
-        this.isTransiting = true;
-
-        if (this.currentRoom) await this.leaveRoom();
-
-        const room = this.rooms.find(r => r.id === roomId);
-        if (!room) {
-            this.isTransiting = false;
+        // Mutex Check
+        if (this.isTransiting) {
+            console.warn("[Voice] Join blocked: Transiting.");
             return;
         }
 
-        console.log(`[Voice] Joining Room: ${roomId}`);
-        this.currentRoom = room;
+        this.isTransiting = true;
 
-        // Optimistic Update
-        this.broadcastPresence();
-        this.notify();
-        playSound('JOIN');
+        try {
+            if (this.currentRoom?.id === roomId) return;
+            if (this.currentRoom) await this.leaveRoom();
 
-        // Init Voice Room Swarm
-        const config = { appId: 'samefield_sports_voice_v2' };
-        this.roomInstance = joinRoom(config, roomId);
+            const room = this.rooms.find(r => r.id === roomId);
+            if (!room) return;
 
-        // Data Channels (Voice Specific)
-        const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speak');
-        this.speakAction = sendSpeaking;
+            console.log(`[Voice] Joining Room: ${roomId}`);
+            this.currentRoom = room;
 
-        getSpeaking((data, peerId) => {
-            if (this.onlineUsers[peerId]) {
-                this.onlineUsers[peerId].isSpeaking = data.isSpeaking;
-                this.notify();
-            }
-        });
-
-        this.roomInstance.onPeerJoin(peerId => {
+            // Optimistic Update
+            this.broadcastPresence();
+            this.notify();
             playSound('JOIN');
-            if (this.localStream && !this.localUser.isMuted) {
-                this.roomInstance.addStream(this.localStream, peerId);
-            }
-        });
 
-        this.roomInstance.onPeerLeave(peerId => {
-            playSound('LEAVE');
-            if (this.audioElements[peerId]) {
-                this.audioElements[peerId].srcObject = null;
-                delete this.audioElements[peerId];
-            }
-        });
+            // Init Voice Room Swarm
+            const config = { appId: 'samefield_sports_voice_v2' };
+            this.roomInstance = joinRoom(config, roomId);
 
-        this.roomInstance.onPeerStream((stream, peerId) => {
-            if (!this.audioElements[peerId]) {
-                const audio = new Audio();
-                audio.autoplay = true;
-                this.audioElements[peerId] = audio;
-            }
-            this.audioElements[peerId].srcObject = stream;
-        });
+            // Data Channels (Voice Specific)
+            const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speak');
+            this.speakAction = sendSpeaking;
 
-        this.isTransiting = false;
+            getSpeaking((data, peerId) => {
+                if (this.onlineUsers[peerId]) {
+                    this.onlineUsers[peerId].isSpeaking = data.isSpeaking;
+                    this.notify();
+                }
+            });
+
+            this.roomInstance.onPeerJoin(peerId => {
+                playSound('JOIN');
+                if (this.localStream && !this.localUser.isMuted) {
+                    this.roomInstance.addStream(this.localStream, peerId);
+                }
+            });
+
+            this.roomInstance.onPeerLeave(peerId => {
+                playSound('LEAVE');
+                if (this.audioElements[peerId]) {
+                    this.audioElements[peerId].srcObject = null;
+                    delete this.audioElements[peerId];
+                }
+            });
+
+            this.roomInstance.onPeerStream((stream, peerId) => {
+                if (!this.audioElements[peerId]) {
+                    const audio = new Audio();
+                    audio.autoplay = true;
+                    this.audioElements[peerId] = audio;
+                }
+                this.audioElements[peerId].srcObject = stream;
+            });
+
+        } catch (error) {
+            console.error("[Voice] Join Error:", error);
+            // Fallback: forcefully leave to clear state
+            await this.leaveRoom();
+        } finally {
+            this.isTransiting = false; // RELEASE LOCK
+        }
     }
 
     async leaveRoom() {
