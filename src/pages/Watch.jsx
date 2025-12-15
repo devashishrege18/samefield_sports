@@ -18,12 +18,18 @@ const Watch = () => {
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
 
-    // Initial Load & Channel Change
-    useEffect(() => {
-        handleChannelChange(channels[0]);
-        // Cleanup on unmount
-        return () => streamChatService.leave();
-    }, []);
+    const handleNextStream = () => {
+        setIsLoading(true);
+        // Algorithm: Auto-select next based on 70/30 ratio
+        const next = liveStreamService.getWeightedStream(currentChannel.id);
+        setCurrentChannel(next);
+
+        // Re-init chat
+        streamChatService.init(next.id);
+        setMessages([]); // Clear chat for new room
+
+        setTimeout(() => setIsLoading(false), 1500);
+    };
 
     const handleChannelChange = (channel) => {
         setIsLoading(true);
@@ -31,10 +37,22 @@ const Watch = () => {
 
         // Init Chat for this specific channel
         streamChatService.init(channel.id);
-        setMessages(streamChatService.messages); // Load history/mock
+        setMessages(streamChatService.messages || []); // Load history/mock
 
         setTimeout(() => setIsLoading(false), 1500);
     };
+
+    // Initial Load & Channel Change (for cleanup)
+    useEffect(() => {
+        // Initialize chat for the initially loaded channel
+        streamChatService.init(currentChannel.id);
+        setMessages(streamChatService.messages || []);
+        setTimeout(() => setIsLoading(false), 1500);
+
+        // Cleanup on unmount
+        return () => streamChatService.leave();
+    }, [currentChannel.id]); // Re-run if initial channel changes (though it's set once)
+
 
     // Chat Subscription
     useEffect(() => {
@@ -113,6 +131,29 @@ const Watch = () => {
 
                 {/* Video Player Container */}
                 <div className="relative flex-1 bg-black group">
+                    {/* Overlay Info */}
+                    <div className="absolute top-4 left-4 z-20 pointer-events-none">
+                        <div className="flex gap-2">
+                            <span className="px-3 py-1 bg-red-600 text-white text-xs font-bold uppercase rounded flex items-center gap-2 animate-pulse shadow-lg">
+                                <span className="w-2 h-2 bg-white rounded-full" /> Live
+                            </span>
+                            <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white text-xs font-bold uppercase rounded border border-white/10 shadow-lg">
+                                {currentChannel.type}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Smart Controls: Next Stream / Auto-Fix */}
+                    <div className="absolute top-4 right-4 z-30 flex gap-2">
+                        <button
+                            onClick={handleNextStream}
+                            className="px-3 py-1.5 bg-surfaceHighlight/80 backdrop-blur-md text-white text-xs font-bold uppercase rounded border border-white/10 hover:bg-white hover:text-black transition-all flex items-center gap-2"
+                        >
+                            <span>Next Stream</span>
+                            <ArrowUpRight className="w-3 h-3" />
+                        </button>
+                    </div>
+
                     {isLoading && (
                         <div className="absolute inset-0 flex items-center justify-center z-10 bg-surface">
                             <div className="flex flex-col items-center gap-2">
@@ -170,7 +211,7 @@ const Watch = () => {
                                         {msg.user}
                                     </span>
                                     <div className={`px-3 py-1.5 rounded-lg text-xs leading-5 break-words ${msg.type === 'system' ? 'bg-yellow-500/10 text-yellow-500 text-center w-full' :
-                                            msg.isSelf ? 'bg-primary/10 text-white' : 'bg-surfaceHighlight text-gray-200'
+                                        msg.isSelf ? 'bg-primary/10 text-white' : 'bg-surfaceHighlight text-gray-200'
                                         }`}>
                                         {msg.text}
                                     </div>
