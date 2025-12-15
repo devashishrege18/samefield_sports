@@ -45,7 +45,8 @@ class VoiceService {
             name: savedName || 'You',
             isMuted: true,
             isSpeaking: false,
-            isDeafened: false
+            isDeafened: false,
+            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${savedName || 'You'}`
         };
 
         // Static Room Definitions
@@ -71,6 +72,7 @@ class VoiceService {
             const newName = localStorage.getItem('samefield_username');
             if (newName) {
                 this.localUser.name = newName;
+                this.localUser.avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${newName}`;
                 this.broadcastPresence();
                 this.notify();
             }
@@ -88,6 +90,14 @@ class VoiceService {
         // Merit: Dynamically map onlineUsers to rooms
         const roomsWithUsers = this.rooms.map(room => {
             const usersInRoom = Object.values(this.onlineUsers).filter(u => u.currentRoomId === room.id);
+
+            // Append Local User if in this room (to ensure I see myself)
+            if (this.currentRoom && this.currentRoom.id === room.id) {
+                if (!usersInRoom.find(u => u.id === this.localUser.id)) {
+                    usersInRoom.push(this.localUser);
+                }
+            }
+
             return {
                 ...room,
                 users: usersInRoom
