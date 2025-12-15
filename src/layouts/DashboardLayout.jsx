@@ -6,6 +6,7 @@ import { Bell, Search, Zap, Users } from 'lucide-react';
 import { usePoints } from '../context/PointsContext';
 
 import MobileNav from '../components/MobileNav';
+import UsernameModal from '../components/UsernameModal';
 
 const DashboardLayout = () => {
     // ... existing hook logic ... 
@@ -164,6 +165,7 @@ const DashboardLayout = () => {
                 {/* Mobile Bottom Navigation */}
                 <MobileNav />
             </div>
+            <UsernameModal />
         </div>
     );
 };
