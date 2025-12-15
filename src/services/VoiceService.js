@@ -129,7 +129,18 @@ class VoiceService {
     // --- Global Presence (The "Lobby") ---
 
     initGlobalPresence() {
-        const config = { appId: 'samefield_sports_presence_v2' }; // Simplified ID
+        // Merit: Optimized Trackers for faster discovery
+        const TRACKERS = [
+            'wss://tracker.webtorrent.io',
+            'wss://tracker.openwebtorrent.com',
+            'wss://tracker.files.fm:7073/announce',
+            'wss://tracker.btorrent.xyz'
+        ];
+
+        const config = {
+            appId: 'samefield_sports_presence_v2',
+            trackerUrls: TRACKERS
+        };
         this.presenceInstance = joinRoom(config, 'global_lobby');
 
         const [sendPresence, getPresence] = this.presenceInstance.makeAction('status');
@@ -223,7 +234,16 @@ class VoiceService {
             playSound('JOIN');
 
             // Init Voice Room Swarm
-            const config = { appId: 'samefield_sports_voice_v2' };
+            const TRACKERS = [
+                'wss://tracker.webtorrent.io',
+                'wss://tracker.openwebtorrent.com',
+                'wss://tracker.files.fm:7073/announce',
+                'wss://tracker.btorrent.xyz'
+            ];
+            const config = {
+                appId: 'samefield_sports_voice_v2',
+                trackerUrls: TRACKERS
+            };
             this.roomInstance = joinRoom(config, roomId);
 
             // Data Channels (Voice Specific)
