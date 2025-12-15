@@ -8,6 +8,36 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '0';
+        errorDiv.style.left = '0';
+        errorDiv.style.width = '100%';
+        errorDiv.style.background = '#990000';
+        errorDiv.style.color = 'white';
+        errorDiv.style.padding = '20px';
+        errorDiv.style.zIndex = '9999';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.innerText = 'CRITICAL ERROR: ' + message + '\nAt: ' + source + ':' + lineno + ':' + colno + '\n' + (error ? error.stack : '');
+        document.body.appendChild(errorDiv);
+      };
+      window.addEventListener('unhandledrejection', function(event) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '0';
+        errorDiv.style.left = '0';
+        errorDiv.style.width = '100%';
+        errorDiv.style.background = '#990000';
+        errorDiv.style.color = 'white';
+        errorDiv.style.padding = '20px';
+        errorDiv.style.zIndex = '9999';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.innerText = 'PROMISE REJECTION: ' + event.reason;
+        document.body.appendChild(errorDiv);
+      });
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -1,11 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0B0B0B;
+  --color-surface: #161616;
+  --color-surfaceHighlight: #1E1E1E;
+  --color-primary: #F5C400;
+  /* Electric Gold */
+  --color-primaryHover: #FFD54A;
+  --color-secondary: #CFA000;
+  /* Muted Gold */
+  --color-text: #FFFFFF;
+  --color-textMuted: #B0B0B0;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: dark;
+  color: var(--color-text);
+  background-color: var(--color-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,56 +30,56 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--color-background);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+  width: 100%;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Global Utility Classes for Premium UI */
+.premium-card {
+  @apply bg-surface rounded-xl border border-surfaceHighlight transition-all duration-300;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.premium-card:hover {
+  @apply border-primary/50 shadow-[0_0_15px_-5px_theme('colors.primary/0.2')];
+}
+
+.text-gold {
+  color: var(--color-primary);
+}
+
+.bg-gold {
+  background-color: var(--color-primary);
+  color: #000000;
+}
+
+.btn-primary {
+  @apply bg-primary text-black font-bold px-6 py-2 rounded-full transition-transform active:scale-95 hover:bg-primaryHover hover:shadow-[0_0_10px_theme('colors.primary/0.4')];
+}
+
+/* Premium Golden Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+  border-left: 1px solid var(--color-surfaceHighlight);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--color-secondary), var(--color-primary));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primaryHover);
 }
