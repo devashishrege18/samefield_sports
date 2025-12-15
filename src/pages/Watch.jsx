@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, MessageSquare, Share2, Heart, Send, Smile } from 'lucide-react';
+import { Play, MessageSquare, Share2, Heart, Send, Smile, ArrowUpRight } from 'lucide-react';
 import { usePoints } from '../context/PointsContext';
 import { liveStreamService } from '../services/LiveStreamService';
 import { streamChatService } from '../services/StreamChatService';
