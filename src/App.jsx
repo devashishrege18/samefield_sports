@@ -20,6 +20,7 @@ const App = () => {
               <Route index element={<Home />} />
               <Route path="watch" element={<Watch />} />
               <Route path="fandom" element={<Fandom />} />
+              <Route path="fandom/:id" element={<Fandom />} />
               <Route path="forum" element={<Forum />} />
               <Route path="discover" element={<Discover />} />
               <Route path="profile" element={<Profile />} />
