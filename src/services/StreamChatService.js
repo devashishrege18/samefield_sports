@@ -2,10 +2,7 @@ import { joinRoom } from 'trystero/torrent';
 
 const TRACKERS = [
     'wss://tracker.webtorrent.io',
-    'wss://tracker.openwebtorrent.com',
-    'wss://tracker.files.fm:7073/announce',
-    'wss://tracker.btorrent.xyz',
-    'wss://open.demo.webtorrent.io'
+    'wss://tracker.openwebtorrent.com'
 ];
 
 class StreamChatService {
