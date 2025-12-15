@@ -84,6 +84,10 @@ class VoiceService {
         return () => this.listeners = this.listeners.filter(l => l !== callback);
     }
 
+    getRooms() {
+        return this.rooms;
+    }
+
     notify() {
         this.listeners.forEach(cb => cb({
             currentRoom: this.currentRoom,
@@ -91,6 +95,12 @@ class VoiceService {
             rooms: this.rooms,
             localUser: { ...this.localUser }
         }));
+    }
+
+    toggleDeafen() {
+        this.localUser.isDeafened = !this.localUser.isDeafened;
+        this.localUser.isMuted = this.localUser.isDeafened ? true : this.localUser.isMuted; // Auto-mute if deafened
+        this.notify();
     }
 
     createRoom(name) {
