@@ -84,7 +84,8 @@ class VoiceService {
 
             // --- Data Channels ---
             // Create action for broadcasting speaking status
-            const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speakingStatus');
+            // Trystero action topics must be <= 12 chars
+            const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speak');
             this.speakAction = sendSpeaking;
 
             // Handle Incoming Speaking Status
