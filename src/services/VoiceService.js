@@ -129,246 +129,248 @@ class VoiceService {
     // --- Global Presence (The "Lobby") ---
 
     initGlobalPresence() {
-        const config = { appId: 'samefield_sports_presence_v2' }; // Simplified ID
-        this.presenceInstance = joinRoom(config, 'global_lobby');
+        if (this.presenceInstance) return; // Prevent double init
 
-        const [sendPresence, getPresence] = this.presenceInstance.makeAction('status');
-        this.presenceAction = sendPresence;
-
-        // Handle incoming presence updates (HEARTBEAT)
-        getPresence((data, peerId) => {
-            this.onlineUsers[peerId] = {
-                id: peerId,
-                name: data.name,
-                currentRoomId: data.currentRoomId,
-                isSpeaking: false,
-                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`
+        // Limit trackers to standard reliable ones to prevent connection explosion
+        const TRACKERS = [
+            'wss://tracker.webtorrent.io',
+            name: data.name,
+            currentRoomId: data.currentRoomId,
+            isSpeaking: false,
+            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`
             };
             this.lastHeartbeat[peerId] = Date.now();
-            this.notify();
+this.notify();
         });
 
-        this.presenceInstance.onPeerJoin(peerId => {
-            console.log(`[Presence] Peer Joined: ${peerId}`);
-            this.broadcastPresence();
-        });
+this.presenceInstance.onPeerJoin(peerId => {
+    console.log(`[Presence] Peer Joined: ${peerId}`);
+    this.broadcastPresence();
+});
 
-        this.presenceInstance.onPeerLeave(peerId => {
+this.presenceInstance.onPeerLeave(peerId => {
+    delete this.onlineUsers[peerId];
+    delete this.lastHeartbeat[peerId];
+    this.notify();
+});
+
+// Loop heartbeat every 4s
+this.heartbeatInterval = setInterval(() => this.broadcastPresence(), 4000);
+this.broadcastPresence();
+    }
+
+cleanupStaleUsers() {
+    const now = Date.now();
+    Object.keys(this.lastHeartbeat).forEach(peerId => {
+        if (now - this.lastHeartbeat[peerId] > 15000) {
             delete this.onlineUsers[peerId];
             delete this.lastHeartbeat[peerId];
-            this.notify();
-        });
-
-        // Loop heartbeat every 4s
-        this.heartbeatInterval = setInterval(() => this.broadcastPresence(), 4000);
-        this.broadcastPresence();
-    }
-
-    cleanupStaleUsers() {
-        const now = Date.now();
-        Object.keys(this.lastHeartbeat).forEach(peerId => {
-            if (now - this.lastHeartbeat[peerId] > 15000) {
-                delete this.onlineUsers[peerId];
-                delete this.lastHeartbeat[peerId];
-            }
-        });
-        this.notify();
-    }
-
-    broadcastPresence() {
-        if (this.presenceAction) {
-            this.presenceAction({
-                name: this.localUser.name,
-                currentRoomId: this.currentRoom ? this.currentRoom.id : null
-            });
         }
-    }
+    });
+    this.notify();
+}
 
-    // --- Voice Logic ---
-
-    createRoom(name) {
-        const newRoom = {
-            id: 'custom_' + Date.now(),
-            name: name,
-            type: 'voice',
-            users: []
-        };
-        this.rooms.push(newRoom);
-        this.notify();
-        this.joinRoom(newRoom.id);
+broadcastPresence() {
+    if (this.presenceAction) {
+        this.presenceAction({
+            name: this.localUser.name,
+            currentRoomId: this.currentRoom ? this.currentRoom.id : null
+        });
     }
+}
+
+// --- Voice Logic ---
+
+createRoom(name) {
+    const newRoom = {
+        id: 'custom_' + Date.now(),
+        name: name,
+        type: 'voice',
+        users: []
+    };
+    this.rooms.push(newRoom);
+    this.notify();
+    this.joinRoom(newRoom.id);
+}
 
     async joinRoom(roomId) {
-        // Mutex Check
-        if (this.isTransiting) {
-            console.warn("[Voice] Join blocked: Transiting.");
-            return;
-        }
-
-        this.isTransiting = true;
-
-        try {
-            if (this.currentRoom?.id === roomId) return;
-            if (this.currentRoom) await this.leaveRoom();
-
-            const room = this.rooms.find(r => r.id === roomId);
-            if (!room) return;
-
-            console.log(`[Voice] Joining Room: ${roomId}`);
-            this.currentRoom = room;
-
-            // Optimistic Update
-            this.broadcastPresence();
-            this.notify();
-            playSound('JOIN');
-
-            // Init Voice Room Swarm
-            const config = { appId: 'samefield_sports_voice_v2' };
-            this.roomInstance = joinRoom(config, roomId);
-
-            // Data Channels (Voice Specific)
-            const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speak');
-            this.speakAction = sendSpeaking;
-
-            getSpeaking((data, peerId) => {
-                if (this.onlineUsers[peerId]) {
-                    this.onlineUsers[peerId].isSpeaking = data.isSpeaking;
-                    this.notify();
-                }
-            });
-
-            this.roomInstance.onPeerJoin(peerId => {
-                playSound('JOIN');
-                if (this.localStream && !this.localUser.isMuted) {
-                    this.roomInstance.addStream(this.localStream, peerId);
-                }
-            });
-
-            this.roomInstance.onPeerLeave(peerId => {
-                playSound('LEAVE');
-                if (this.audioElements[peerId]) {
-                    this.audioElements[peerId].srcObject = null;
-                    delete this.audioElements[peerId];
-                }
-            });
-
-            this.roomInstance.onPeerStream((stream, peerId) => {
-                if (!this.audioElements[peerId]) {
-                    const audio = new Audio();
-                    audio.autoplay = true;
-                    this.audioElements[peerId] = audio;
-                }
-                this.audioElements[peerId].srcObject = stream;
-            });
-
-        } catch (error) {
-            console.error("[Voice] Join Error:", error);
-            // Fallback: forcefully leave to clear state
-            await this.leaveRoom();
-        } finally {
-            this.isTransiting = false; // RELEASE LOCK
-        }
+    // Mutex Check
+    if (this.isTransiting) {
+        console.warn("[Voice] Join blocked: Transiting.");
+        return;
     }
 
-    async leaveRoom() {
-        if (!this.currentRoom) return;
-        playSound('LEAVE');
+    this.isTransiting = true;
 
-        if (this.roomInstance) {
-            this.roomInstance.leave(); // This is silent in Trystero usually
-            this.roomInstance = null;
-        }
+    try {
+        if (this.currentRoom?.id === roomId) return;
+        if (this.currentRoom) await this.leaveRoom();
 
-        Object.values(this.audioElements).forEach(audio => {
-            audio.pause();
-            audio.srcObject = null;
-        });
-        this.audioElements = {};
-        this.speakAction = null;
+        const room = this.rooms.find(r => r.id === roomId);
+        if (!room) return;
 
-        this.stopLocalStream();
-        this.currentRoom = null;
+        console.log(`[Voice] Joining Room: ${roomId}`);
+        this.currentRoom = room;
 
-        // Broadcast new location (null)
+        // Optimistic Update
         this.broadcastPresence();
         this.notify();
+        playSound('JOIN');
+
+        // Init Voice Room Swarm
+        const TRACKERS = [
+            'wss://tracker.webtorrent.io',
+            'wss://tracker.openwebtorrent.com'
+        ];
+        const config = {
+            appId: 'samefield_sports_voice_v2',
+            trackerUrls: TRACKERS
+        };
+        this.roomInstance = joinRoom(config, roomId);
+
+        // Data Channels (Voice Specific)
+        const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speak');
+        this.speakAction = sendSpeaking;
+
+        getSpeaking((data, peerId) => {
+            if (this.onlineUsers[peerId]) {
+                this.onlineUsers[peerId].isSpeaking = data.isSpeaking;
+                this.notify();
+            }
+        });
+
+        this.roomInstance.onPeerJoin(peerId => {
+            playSound('JOIN');
+            if (this.localStream && !this.localUser.isMuted) {
+                this.roomInstance.addStream(this.localStream, peerId);
+            }
+        });
+
+        this.roomInstance.onPeerLeave(peerId => {
+            playSound('LEAVE');
+            if (this.audioElements[peerId]) {
+                this.audioElements[peerId].srcObject = null;
+                delete this.audioElements[peerId];
+            }
+        });
+
+        this.roomInstance.onPeerStream((stream, peerId) => {
+            if (!this.audioElements[peerId]) {
+                const audio = new Audio();
+                audio.autoplay = true;
+                this.audioElements[peerId] = audio;
+            }
+            this.audioElements[peerId].srcObject = stream;
+        });
+
+    } catch (error) {
+        console.error("[Voice] Join Error:", error);
+        // Fallback: forcefully leave to clear state
+        await this.leaveRoom();
+    } finally {
+        this.isTransiting = false; // RELEASE LOCK
     }
+}
+
+    async leaveRoom() {
+    if (!this.currentRoom) return;
+    playSound('LEAVE');
+
+    if (this.roomInstance) {
+        this.roomInstance.leave(); // This is silent in Trystero usually
+        this.roomInstance = null;
+    }
+
+    Object.values(this.audioElements).forEach(audio => {
+        audio.pause();
+        audio.srcObject = null;
+    });
+    this.audioElements = {};
+    this.speakAction = null;
+
+    this.stopLocalStream();
+    this.currentRoom = null;
+
+    // Broadcast new location (null)
+    this.broadcastPresence();
+    this.notify();
+}
 
     // --- Controls ---
 
     async toggleMute() {
-        this.localUser.isMuted = !this.localUser.isMuted;
-        this.notify();
-        if (!this.localUser.isMuted) await this.startLocalStream();
-        else {
-            this.stopLocalStream();
-            if (this.speakAction) this.speakAction({ isSpeaking: false });
-        }
-    }
-
-    toggleDeafen() {
-        this.localUser.isDeafened = !this.localUser.isDeafened;
-        this.localUser.isMuted = this.localUser.isDeafened ? true : this.localUser.isMuted;
-        this.notify();
-    }
-
-    async startLocalStream() {
-        try {
-            if (this.localStream) return;
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            this.localStream = stream;
-            if (this.roomInstance) this.roomInstance.addStream(this.localStream);
-            this.startMicMonitoring(stream);
-        } catch (err) {
-            console.error("Mic denied:", err);
-            this.localUser.isMuted = true;
-        }
-    }
-
-    stopLocalStream() {
-        if (this.localStream) {
-            this.localStream.getTracks().forEach(track => track.stop());
-            this.localStream = null;
-        }
-        this.stopMicMonitoring();
-    }
-
-    startMicMonitoring(stream) {
-        if (!stream) return;
-        if (this.audioContext) this.audioContext.close();
-
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.audioContext = new AudioContext();
-        this.analyser = this.audioContext.createAnalyser();
-        const source = this.audioContext.createMediaStreamSource(stream);
-        source.connect(this.analyser);
-        this.analyser.fftSize = 256;
-        const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-
-        this.simulationInterval = setInterval(() => {
-            if (!this.currentRoom || this.localUser.isMuted) return;
-            this.analyser.getByteFrequencyData(dataArray);
-            const sum = dataArray.reduce((a, b) => a + b, 0);
-            const avg = sum / dataArray.length;
-            const isSpeakingNow = avg > 15;
-
-            if (this.localUser.isSpeaking !== isSpeakingNow) {
-                this.localUser.isSpeaking = isSpeakingNow;
-                if (this.speakAction) this.speakAction({ isSpeaking: isSpeakingNow });
-                this.notify();
-            }
-        }, 100);
-    }
-
-    stopMicMonitoring() {
-        if (this.simulationInterval) clearInterval(this.simulationInterval);
-        this.localUser.isSpeaking = false;
-        if (this.audioContext) {
-            this.audioContext.close();
-            this.audioContext = null;
-        }
+    this.localUser.isMuted = !this.localUser.isMuted;
+    this.notify();
+    if (!this.localUser.isMuted) await this.startLocalStream();
+    else {
+        this.stopLocalStream();
         if (this.speakAction) this.speakAction({ isSpeaking: false });
     }
+}
+
+toggleDeafen() {
+    this.localUser.isDeafened = !this.localUser.isDeafened;
+    this.localUser.isMuted = this.localUser.isDeafened ? true : this.localUser.isMuted;
+    this.notify();
+}
+
+    async startLocalStream() {
+    try {
+        if (this.localStream) return;
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        this.localStream = stream;
+        if (this.roomInstance) this.roomInstance.addStream(this.localStream);
+        this.startMicMonitoring(stream);
+    } catch (err) {
+        console.error("Mic denied:", err);
+        this.localUser.isMuted = true;
+    }
+}
+
+stopLocalStream() {
+    if (this.localStream) {
+        this.localStream.getTracks().forEach(track => track.stop());
+        this.localStream = null;
+    }
+    this.stopMicMonitoring();
+}
+
+startMicMonitoring(stream) {
+    if (!stream) return;
+    if (this.audioContext) this.audioContext.close();
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    this.audioContext = new AudioContext();
+    this.analyser = this.audioContext.createAnalyser();
+    const source = this.audioContext.createMediaStreamSource(stream);
+    source.connect(this.analyser);
+    this.analyser.fftSize = 256;
+    const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+
+    this.simulationInterval = setInterval(() => {
+        if (!this.currentRoom || this.localUser.isMuted) return;
+        this.analyser.getByteFrequencyData(dataArray);
+        const sum = dataArray.reduce((a, b) => a + b, 0);
+        const avg = sum / dataArray.length;
+        const isSpeakingNow = avg > 15;
+
+        if (this.localUser.isSpeaking !== isSpeakingNow) {
+            this.localUser.isSpeaking = isSpeakingNow;
+            if (this.speakAction) this.speakAction({ isSpeaking: isSpeakingNow });
+            this.notify();
+        }
+    }, 100);
+}
+
+stopMicMonitoring() {
+    if (this.simulationInterval) clearInterval(this.simulationInterval);
+    this.localUser.isSpeaking = false;
+    if (this.audioContext) {
+        this.audioContext.close();
+        this.audioContext = null;
+    }
+    if (this.speakAction) this.speakAction({ isSpeaking: false });
+}
 }
 
 export const voiceService = new VoiceService();
