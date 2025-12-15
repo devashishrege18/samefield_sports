@@ -24,6 +24,10 @@ const Fandom = () => {
     const [posts, setPosts] = useState([]);
     const [newPostContent, setNewPostContent] = useState('');
 
+    // Comments State
+    const [expandedPost, setExpandedPost] = useState(null);
+    const [commentInputs, setCommentInputs] = useState({});
+
     // Socket / Chat State
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
@@ -208,8 +212,36 @@ const Fandom = () => {
             text: chatInput
         });
         setChatInput('');
-        // Optimistic append?
-        // setChatMessages(prev => [...prev, { guest_name: guestIdentity.guest_name, text: chatInput, ... }])
+    };
+
+    // Add Comment
+    const handleAddComment = async (postId) => {
+        const text = commentInputs[postId];
+        if (!text || !text.trim() || !guestIdentity) return;
+
+        try {
+            const res = await fetch(`${SOCKET_URL}/posts/${postId}/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    guest_id: guestIdentity.guest_id,
+                    guest_name: guestIdentity.guest_name,
+                    text: text.trim()
+                })
+            });
+
+            if (res.ok) {
+                setCommentInputs(prev => ({ ...prev, [postId]: '' }));
+                fetchPosts();
+            }
+        } catch (err) {
+            console.error('Failed to add comment', err);
+        }
+    };
+
+    // Toggle Comments Section
+    const toggleComments = (postId) => {
+        setExpandedPost(expandedPost === postId ? null : postId);
     };
 
     // Existing Handlers
@@ -296,6 +328,8 @@ const Fandom = () => {
                             // Handle Like Count (Array vs Number)
                             const likeCount = Array.isArray(post.likes) ? post.likes.length : 0;
                             const isLiked = Array.isArray(post.likes) && post.likes.includes(guestIdentity.guest_id);
+                            const commentCount = Array.isArray(post.comments) ? post.comments.length : 0;
+                            const isExpanded = expandedPost === post.id;
 
                             return (
                                 <div key={post.id} className="feed-post">
@@ -318,8 +352,62 @@ const Fandom = () => {
                                             <Heart size={18} fill={isLiked ? "red" : "none"} color={isLiked ? "red" : "currentColor"} />
                                             {likeCount}
                                         </button>
+                                        <button
+                                            className={`action-btn ${isExpanded ? 'active' : ''}`}
+                                            onClick={() => toggleComments(post.id)}
+                                        >
+                                            <MessageCircle size={18} />
+                                            {commentCount}
+                                        </button>
                                         <button className="action-btn"><Share2 size={18} /></button>
                                     </div>
+
+                                    {/* Comments Section */}
+                                    {isExpanded && (
+                                        <div className="comments-section">
+                                            <div className="comments-list">
+                                                {post.comments && post.comments.length > 0 ? (
+                                                    post.comments.map(comment => (
+                                                        <div key={comment.id} className="comment-item">
+                                                            <div className="comment-avatar">
+                                                                {comment.author_name.charAt(0)}
+                                                            </div>
+                                                            <div className="comment-content">
+                                                                <div className="comment-header">
+                                                                    <span className="comment-author">{comment.author_name}</span>
+                                                                    <span className="comment-time">
+                                                                        {new Date(comment.created_at).toLocaleTimeString()}
+                                                                    </span>
+                                                                </div>
+                                                                <p className="comment-text">{comment.text}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <div className="no-comments">No comments yet. Be the first!</div>
+                                                )}
+                                            </div>
+
+                                            <div className="comment-input-box">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Write a comment..."
+                                                    value={commentInputs[post.id] || ''}
+                                                    onChange={(e) => setCommentInputs(prev => ({
+                                                        ...prev,
+                                                        [post.id]: e.target.value
+                                                    }))}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                                                />
+                                                <button
+                                                    className="btn-comment"
+                                                    onClick={() => handleAddComment(post.id)}
+                                                >
+                                                    <Send size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             );
                         })}
