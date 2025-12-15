@@ -559,3 +559,217 @@
 .action-btn:hover {
     color: var(--color-gold-primary);
 }
+
+/* --- NEW STYLES for Backend Integration --- */
+
+/* Guest Identity Banner */
+.guest-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 215, 0, 0.05); /* faint gold */
+    border: 1px solid var(--color-gold-muted);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: 0.9rem;
+    color: var(--color-gold-text);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ccc;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.status-dot.online {
+    background: #4CAF50;
+    box-shadow: 0 0 8px #4CAF50;
+}
+
+.status-dot.offline {
+    background: #F44336;
+}
+
+/* Fan Room Container */
+.fan-room-container {
+    background: var(--color-black-surface);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.room-locked {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-text-secondary);
+    gap: var(--spacing-md);
+    text-align: center;
+}
+
+.room-locked h3 {
+    color: #F44336;
+}
+
+.chat-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #F44336;
+    font-weight: 800;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    background: rgba(244, 67, 54, 0.1);
+    border-radius: 4px;
+}
+
+.live-indicator .dot {
+    width: 6px;
+    height: 6px;
+    background: #F44336;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.5; }
+}
+
+/* Chat Messages */
+.chat-messages {
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.sys-msg {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin: var(--spacing-sm) 0;
+    font-style: italic;
+}
+
+.chat-bubble {
+    max-width: 80%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.chat-bubble.me {
+    align-self: flex-end;
+    background: var(--color-gold-primary);
+    color: #000;
+    border-bottom-right-radius: 2px;
+}
+
+.chat-bubble.them {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-bottom-left-radius: 2px;
+}
+
+.chat-user {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* Chat Input */
+.chat-input-area {
+    padding: var(--spacing-md);
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    gap: var(--spacing-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-input-area input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: #fff;
+    font-family: inherit;
+}
+
+.chat-input-area input:focus {
+    outline: none;
+    border-color: var(--color-gold-muted);
+}
+
+.btn-send-chat {
+    background: var(--color-gold-primary);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #000;
+    transition: transform 0.2s;
+}
+
+.btn-send-chat:hover {
+    transform: scale(1.1);
+}
+
+/* Avatar Placeholder */
+.post-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #333, #555);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.action-btn.liked {
+    color: #F44336;
+}
+
+.error-banner {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid #F44336;
+    color: #F44336;
+    padding: 10px;
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
