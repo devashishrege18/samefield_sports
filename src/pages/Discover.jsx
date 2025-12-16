@@ -2,6 +2,32 @@ import React from 'react';
 import { Search, MapPin, Ticket, UserPlus, ShoppingBag, Heart, Globe, Briefcase, Leaf, ArrowRight } from 'lucide-react';
 
 const Discover = () => {
+
+    // START: Task 2 - Define the API Call Handler (Pari's Work)
+    const handleSupportClick = async (athleteName) => {
+        try {
+            // Send POST request to the API endpoint defined at app/api/support/route.js
+            // Note: We need to ensure this route is handled by our server
+            const response = await fetch('/api/support', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ athleteId: athleteName }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert(`Support registered for ${athleteName}! ${result.message}`);
+            } else {
+                alert(`Error: ${result.error || 'Failed to record support.'}`);
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            alert('A network error occurred. Ensure the backend is running.');
+        }
+    };
+    // END: Task 2
+
     return (
         <div className="space-y-10">
 
@@ -46,7 +72,11 @@ const Discover = () => {
                                     <MapPin className="w-3 h-3" /> {talent.location}
                                 </div>
                                 <div className="flex gap-2">
-                                    <button className="flex-1 py-2 bg-primary text-black text-[10px] font-black uppercase rounded hover:bg-white transition-colors">Support</button>
+                                    <button
+                                        onClick={() => handleSupportClick(talent.name)}
+                                        className="flex-1 py-2 bg-primary text-black text-[10px] font-black uppercase rounded hover:bg-white transition-colors">
+                                        Support
+                                    </button>
                                     <button className="p-2 border border-surfaceHighlight rounded text-textMuted hover:text-white hover:border-white transition-colors"><UserPlus className="w-4 h-4" /></button>
                                 </div>
                             </div>

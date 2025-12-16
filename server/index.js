@@ -21,7 +21,7 @@ const io = new Server(server, {
     }
 });
 
-// --- In-Memory State (Socket only) ---
+// --- In-Memory State (Socket only & Support) ---
 // connectedUsers: { [guest_id]: { name, socketId, room } }
 let connectedUsers = {};
 const MAX_USERS = 10;
@@ -174,6 +174,24 @@ app.post('/posts/:id/comments', async (req, res) => {
     }
 });
 
+// --- NEW API: Support (Ported from app/api/support/route.js) ---
+app.post('/api/support', async (req, res) => {
+    try {
+        const { athleteId } = req.body;
+        // In a real app, this would integrate with a payment gateway or DB.
+        // For now, we simulate a successful transaction.
+        console.log(`[Support API] Received support for: ${athleteId} `);
+
+        // Emulate some verification/processing delay
+        await new Promise(r => setTimeout(r, 500));
+
+        res.status(200).json({ message: "Thank you for supporting rising talent!" });
+    } catch (error) {
+        console.error("Support API Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 // --- Socket.IO Logic (Real-time Chat & Presence) ---
 
@@ -229,7 +247,7 @@ io.on('connection', (socket) => {
         io.to(newRoom).emit('user_joined', { guest_id, guest_name });
         io.to(newRoom).emit('update_users', Object.values(connectedUsers).filter(u => u.room === newRoom));
 
-        console.log(`${guest_name} switched from ${oldRoom} to ${newRoom}`);
+        console.log(`${guest_name} switched from ${oldRoom} to ${newRoom} `);
     });
 
     socket.on('send_message', (data) => {
@@ -248,7 +266,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const userData = connectedUsers[guest_id];
         if (userData) {
-            console.log(`User disconnected: ${userData.name}`);
+            console.log(`User disconnected: ${userData.name} `);
             const userRoom = userData.room;
             delete connectedUsers[guest_id];
 
@@ -262,6 +280,6 @@ io.on('connection', (socket) => {
 
 const PORT = 3001;
 server.listen(PORT, () => {
-    console.log(`SERVER RUNNING on port ${PORT}`);
-    console.log(`Real-time + MongoDB Fandom ready.`);
+    console.log(`SERVER RUNNING on port ${PORT} `);
+    console.log(`Real - time + MongoDB Fandom ready.`);
 });

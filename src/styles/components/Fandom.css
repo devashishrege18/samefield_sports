@@ -567,8 +567,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+<<<<<<< HEAD
     background: rgba(255, 215, 0, 0.05);
     /* faint gold */
+=======
+    background: rgba(255, 215, 0, 0.05); /* faint gold */
+>>>>>>> a8252db (Done)
     border: 1px solid var(--color-gold-muted);
     padding: 8px 16px;
     border-radius: var(--border-radius-md);
@@ -650,9 +654,13 @@
 }
 
 @keyframes blink {
+<<<<<<< HEAD
     50% {
         opacity: 0.5;
     }
+=======
+    50% { opacity: 0.5; }
+>>>>>>> a8252db (Done)
 }
 
 /* Chat Messages */
@@ -757,7 +765,11 @@
     justify-content: center;
     font-weight: bold;
     color: #fff;
+<<<<<<< HEAD
     border: 1px solid rgba(255, 255, 255, 0.2);
+=======
+    border: 1px solid rgba(255,255,255,0.2);
+>>>>>>> a8252db (Done)
 }
 
 .action-btn.liked {
@@ -775,6 +787,7 @@
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
+<<<<<<< HEAD
 }
 
 /* Comments Section Styles */
@@ -914,4 +927,6 @@
 
 .action-btn.active {
     color: var(--color-gold-primary);
+=======
+>>>>>>> a8252db (Done)
 }
