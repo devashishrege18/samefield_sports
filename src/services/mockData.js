@@ -61,3 +61,20 @@ export const userStats = {
     joinedCircles: ['c1'],
     predictions: { total: 10, correct: 6 }
 };
+
+export const circleMedia = {
+    'c1': [
+        { id: 'm1', type: 'image', url: '/assets/talent_gully_cricket_1765787655210.png', title: 'Smriti in Action' },
+        { id: 'm2', type: 'video', vidId: '_Hlq_TaPoYw', title: 'Match Highlight' },
+        { id: 'm3', type: 'image', url: '/assets/store_vk18_fitness_1765787964441.png', title: 'Training Session' }
+    ],
+    'c5': [
+        { id: 'm4', type: 'image', url: '/assets/store_vk18_fitness_1765787964441.png', title: 'King Kohli' },
+        { id: 'm5', type: 'video', vidId: 'NsZ-BiPzmOw', title: 'Haaland vs Neymar' },
+        { id: 'm6', type: 'image', url: '/assets/product_leather_gloves_1765788007746.png', title: 'Equipments' }
+    ],
+    'default': [
+        { id: 'd1', type: 'image', url: '/assets/talent_street_football_1765787693394.png', title: 'Community Spirit' },
+        { id: 'd2', type: 'image', url: '/assets/talent_boxing_training_1765787719934.png', title: 'The Grind' }
+    ]
+};

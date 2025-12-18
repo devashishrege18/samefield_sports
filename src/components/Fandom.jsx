@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import '../styles/components/Fandom.css';
 
 import { joinRoom } from 'trystero/nostr';
-import { predictionQuestions, circles as mockCircles } from '../services/mockData';
+import { predictionQuestions, circles as mockCircles, circleMedia } from '../services/mockData';
 
 const Fandom = () => {
     const { id } = useParams();
@@ -74,7 +74,10 @@ const Fandom = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [guestIdentity, setGuestIdentity] = useState(null);
-    const [chatMessages, setChatMessages] = useState([]);
+    const [chatMessages, setChatMessages] = useState([
+        { guest_id: 'sys', guest_name: 'System', text: 'Welcome to the circle! Stay respectful.', time: new Date().toISOString() },
+        { guest_id: 'u1', guest_name: 'Fan_42', text: 'Stoked to be here! Anyone else excited for the match?', time: new Date().toISOString() }
+    ]);
     const [chatInput, setChatInput] = useState('');
     const [floatingHearts, setFloatingHearts] = useState([]);
 
@@ -297,7 +300,11 @@ const Fandom = () => {
                                 <span className="bg-primary text-black text-[10px] px-1.5 rounded-full animate-pulse">ON</span>
                             )}
                         </button>
-                        <button className="py-4 text-sm font-bold uppercase tracking-wider border-b-2 border-transparent text-gray-400 hover:text-white opacity-50 cursor-not-allowed">
+                        <button
+                            onClick={() => setActiveTab('media')}
+                            className={`py-4 text-sm font-bold uppercase tracking-wider border-b-2 transition-all ${activeTab === 'media' ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-white'
+                                }`}
+                        >
                             Media
                         </button>
                         <button className="py-4 text-sm font-bold uppercase tracking-wider border-b-2 border-transparent text-gray-400 hover:text-white opacity-50 cursor-not-allowed">
@@ -410,6 +417,39 @@ const Fandom = () => {
                                         </div>
                                     );
                                 })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* MEDIA VIEW */}
+                    {activeTab === 'media' && (
+                        <div className="fade-in">
+                            <h3 className="text-xl font-black text-white uppercase italic tracking-tighter mb-6">Gallery & Highlights</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {(circleMedia[id] || circleMedia['default']).map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="group relative aspect-video bg-surface rounded-xl overflow-hidden border border-white/5 cursor-pointer hover:border-primary/50 transition-all"
+                                        onClick={() => item.type === 'video' ? setActiveVideo(item.vidId) : null}
+                                    >
+                                        <img
+                                            src={item.type === 'video' ? `https://img.youtube.com/vi/${item.vidId}/mqdefault.jpg` : item.url}
+                                            className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all"
+                                            alt={item.title}
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                                            <p className="text-[10px] font-black text-white uppercase tracking-widest">{item.title}</p>
+                                        </div>
+                                        {item.type === 'video' && (
+                                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                <div className="w-10 h-10 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center text-primary border border-primary/30">
+                                                    <Play size={16} fill="currentColor" />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     )}

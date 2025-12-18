@@ -123,6 +123,8 @@ class ForumService {
             if (this.sendAction) {
                 this.sendAction({ type: 'ADD_COMMENT', threadId, comment });
             }
+            // Trigger local sync so the sender's UI updates immediately
+            this.syncCallbacks.forEach(cb => cb());
         }
     }
 
