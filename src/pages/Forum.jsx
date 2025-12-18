@@ -89,13 +89,11 @@ const Forum = () => {
             timestamp: new Date().toISOString()
         };
 
-        // Update local thread instance
-        const updatedThread = { ...selectedThread };
-        updatedThread.comments = (updatedThread.comments || 0) + 1;
-        // In a real P2P app, we'd send this via ForumService. 
-        // For now, we update the local list and selected view.
-        setSelectedThread(updatedThread);
-        setThreads(prev => prev.map(t => t.id === updatedThread.id ? updatedThread : t));
+        // Broadcast the comment via P2P
+        forumService.broadcastComment(selectedThread.id, newComment);
+
+        // The onSync listener in useEffect will update the threads and selectedThread state
+        // providing a consistent path for both local and remote updates.
 
         setCommentText('');
         addPoints(10, 'Replied to Discussion');

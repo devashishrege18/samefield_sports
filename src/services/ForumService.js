@@ -67,6 +67,11 @@ class ForumService {
                 } else if (data.type === 'UPVOTE') {
                     const thread = this.threads.find(t => t.id === data.threadId);
                     if (thread) thread.votes += 1;
+                } else if (data.type === 'ADD_COMMENT') {
+                    const thread = this.threads.find(t => t.id === data.threadId);
+                    if (thread) {
+                        thread.comments = (thread.comments || 0) + 1;
+                    }
                 }
                 this.syncCallbacks.forEach(cb => cb());
             });
@@ -106,6 +111,17 @@ class ForumService {
             thread.votes += 1;
             if (this.sendAction) {
                 this.sendAction({ type: 'UPVOTE', threadId });
+            }
+        }
+    }
+
+    broadcastComment(threadId, comment) {
+        const thread = this.threads.find(t => t.id === threadId);
+        if (thread) {
+            // Already added locally in UI in some flows, but service should maintain state
+            thread.comments = (thread.comments || 0) + 1;
+            if (this.sendAction) {
+                this.sendAction({ type: 'ADD_COMMENT', threadId, comment });
             }
         }
     }
