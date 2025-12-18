@@ -5,11 +5,28 @@ const PointsContext = createContext();
 export const usePoints = () => useContext(PointsContext);
 
 export const PointsProvider = ({ children }) => {
-    const [points, setPoints] = useState(9150);
+    const [points, setPoints] = useState(() => {
+        const saved = localStorage.getItem('samefield_xp');
+        return saved ? parseInt(saved, 10) : 9150;
+    });
     const [notifications, setNotifications] = useState([]);
 
+    useEffect(() => {
+        const handleStorageChange = (e) => {
+            if (e.key === 'samefield_xp' && e.newValue) {
+                setPoints(parseInt(e.newValue, 10));
+            }
+        };
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+
     const addPoints = (amount, reason) => {
-        setPoints(prev => prev + amount);
+        setPoints(prev => {
+            const newPoints = prev + amount;
+            localStorage.setItem('samefield_xp', newPoints);
+            return newPoints;
+        });
 
         const id = Date.now();
         const notification = { id, amount, reason };

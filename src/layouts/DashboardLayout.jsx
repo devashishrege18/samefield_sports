@@ -110,11 +110,13 @@ const DashboardLayout = () => {
                         {/* Profile Avatar - Premium */}
                         <Link to="/profile" className="flex items-center gap-3 md:pl-6 md:border-l md:border-surfaceHighlight cursor-pointer hover:opacity-80 transition-opacity">
                             <div className="text-right hidden md:block">
-                                <span className="block text-sm font-bold text-white leading-none">Alex Johnson</span>
+                                <span className="block text-sm font-bold text-white leading-none">
+                                    {localStorage.getItem('samefield_username') || 'Guest Fan'}
+                                </span>
                                 <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Super Fan</span>
                             </div>
                             <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-surfaceHighlight p-0.5">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User" className="w-full h-full rounded-full bg-surface" />
+                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${localStorage.getItem('samefield_username') || 'Guest'}`} alt="User" className="w-full h-full rounded-full bg-surface" />
                             </div>
                         </Link>
                     </div>
