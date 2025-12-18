@@ -1,4 +1,8 @@
 {
-  "name": "samefield-sports",
-  "alias": ["samefield-sports.vercel.app"]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }

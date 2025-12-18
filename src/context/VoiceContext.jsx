@@ -7,33 +7,42 @@ export const useVoice = () => useContext(VoiceContext);
 
 export const VoiceProvider = ({ children }) => {
     const [voiceState, setVoiceState] = useState({
+        rooms: [],
         currentRoom: null,
-        participants: [],
-        rooms: voiceService.getRooms(),
-        localUser: voiceService.localUser
+        localUser: { isMuted: true, isVideoEnabled: false, isDeafened: false },
+        remoteStreams: {}
     });
 
     useEffect(() => {
-        const unsubscribe = voiceService.subscribe((newState) => {
-            setVoiceState(newState);
-        });
-        return () => unsubscribe();
+        const updateState = (state) => {
+            if (state) {
+                setVoiceState({
+                    rooms: state.rooms || [],
+                    currentRoom: state.currentRoom || null,
+                    localUser: state.localUser || { isMuted: true, isVideoEnabled: false, isDeafened: false },
+                    remoteStreams: state.remoteStreams || {}
+                });
+            }
+        };
+
+        const unsubscribe = voiceService.subscribe(updateState);
+        return unsubscribe;
     }, []);
 
     const joinRoom = (roomId) => voiceService.joinRoom(roomId);
-    const createRoom = (name) => voiceService.createRoom(name);
     const leaveRoom = () => voiceService.leaveRoom();
     const toggleMute = () => voiceService.toggleMute();
-    const toggleDeafen = () => voiceService.toggleDeafen();
+    const toggleVideo = () => voiceService.toggleVideo();
+    const createRoom = (name) => voiceService.createRoom(name);
 
     return (
         <VoiceContext.Provider value={{
             ...voiceState,
             joinRoom,
-            createRoom,
             leaveRoom,
+            createRoom,
             toggleMute,
-            toggleDeafen
+            toggleVideo
         }}>
             {children}
         </VoiceContext.Provider>

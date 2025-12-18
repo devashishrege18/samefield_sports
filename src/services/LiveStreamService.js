@@ -9,27 +9,27 @@ class LiveStreamService {
                 name: 'T20 WC: NZ vs SA',
                 type: 'Cricket',
                 gender: 'F',
-                url: 'https://www.youtube.com/embed/_LfB2RF5AkM', // Verified ICC Final
+                url: 'https://www.youtube.com/embed/_LfB2RF5AkM',
                 description: 'Women\'s T20 World Cup 2024 Final • Full Highlights',
-                thumbnail: '/assets/thumb_t20_wc_1765784945102.png'
+                thumbnail: 'https://img.youtube.com/vi/_LfB2RF5AkM/maxresdefault.jpg'
             },
             {
                 id: 't20_wc_semi',
                 name: 'T20 WC: Semi-Final Thriller',
                 type: 'Cricket',
                 gender: 'F',
-                url: 'https://www.youtube.com/embed/_LfB2RF5AkM?start=120', // Verified (Start offset for variety)
+                url: 'https://www.youtube.com/embed/_LfB2RF5AkM?start=120',
                 description: 'Key Moments & Final Overs',
-                thumbnail: '/assets/thumb_wpl_cricket_1765784920230.png'
+                thumbnail: 'https://img.youtube.com/vi/_LfB2RF5AkM/mqdefault.jpg'
             },
             {
                 id: 'w_football_best',
                 name: 'Best Women\'s Goals 2024',
                 type: 'Football',
                 gender: 'F',
-                url: 'https://www.youtube.com/embed/e1v9x_B8q2E', // Trying generic again, or fallback to PL if fails
+                url: 'https://www.youtube.com/embed/e1v9x_B8q2E',
                 description: 'FIFA Puskas Contenders',
-                thumbnail: '/assets/thumb_womens_goals_1765785050100.png'
+                thumbnail: 'https://img.youtube.com/vi/e1v9x_B8q2E/maxresdefault.jpg'
             },
             // --- MEN'S SPORTS (Pool B: ~30%) ---
             {
@@ -37,39 +37,35 @@ class LiveStreamService {
                 name: 'PL Best Goals 24/25',
                 type: 'Football',
                 gender: 'M',
-                url: 'https://www.youtube.com/embed/D-nUfS77i7Y', // Verified Premier League
+                url: 'https://www.youtube.com/embed/D-nUfS77i7Y',
                 description: 'The BEST Premier League Goals of 2024/25',
-                thumbnail: '/assets/thumb_ucl_football_1765785070300.png'
+                thumbnail: 'https://img.youtube.com/vi/D-nUfS77i7Y/maxresdefault.jpg'
             },
             {
                 id: 'pl_last_minute',
                 name: 'PL Last Minute Drama',
                 type: 'Football',
                 gender: 'M',
-                url: 'https://www.youtube.com/embed/3-5_f_kK-2U', // Verified Premier League
+                url: 'https://www.youtube.com/embed/3-5_f_kK-2U',
                 description: 'Last Minute Goals That Stole the Game',
-                thumbnail: '/assets/thumb_ipl_cricket_1765785060200.png'
+                thumbnail: 'https://img.youtube.com/vi/3-5_f_kK-2U/maxresdefault.jpg'
             }
         ];
     }
 
     getWeightedStream(currentId = null) {
         // Algorithm: 70% Female, 30% Male
-        // 1. Decide Target Gender
         const roll = Math.random();
         const targetGender = roll < 0.70 ? 'F' : 'M';
 
-        // 2. Filter Pool
         let pool = this.allChannels.filter(c => c.gender === targetGender);
 
-        // Fallback: If pool is empty (unlikely), swap
         if (pool.length === 0) {
             pool = this.allChannels.filter(c => c.gender === (targetGender === 'F' ? 'M' : 'F'));
         }
 
-        // 3. Select Random from Pool (avoiding current if possible)
         let candidates = pool.filter(c => c.id !== currentId);
-        if (candidates.length === 0) candidates = pool; // Allow repeat if strictly limited
+        if (candidates.length === 0) candidates = pool;
 
         const randomIndex = Math.floor(Math.random() * candidates.length);
         const selected = candidates[randomIndex];
