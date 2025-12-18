@@ -42,7 +42,8 @@ const RoomList = () => {
         localUser,
         toggleMute,
         toggleVideo,
-        remoteStreams
+        remoteStreams,
+        localStream
     } = useVoice();
 
     // Check if any peer has video enabled
@@ -62,7 +63,7 @@ const RoomList = () => {
                     <div className="space-y-2">
                         <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Active Feeds</span>
                         <div className="grid grid-cols-1 gap-2">
-                            {localUser.isVideoEnabled && <VideoFeed stream={window.voiceService?.localStream} isLocal={true} name={localUser.name} />}
+                            {localUser.isVideoEnabled && <VideoFeed stream={localStream} isLocal={true} name={localUser.name} />}
                             {activeVideoPeers.map(([peerId, stream]) => (
                                 <VideoFeed key={peerId} stream={stream} isLocal={false} name={peerId.substring(0, 5)} />
                             ))}

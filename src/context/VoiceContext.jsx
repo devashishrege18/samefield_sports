@@ -10,7 +10,8 @@ export const VoiceProvider = ({ children }) => {
         rooms: [],
         currentRoom: null,
         localUser: { isMuted: true, isVideoEnabled: false, isDeafened: false },
-        remoteStreams: {}
+        remoteStreams: {},
+        localStream: null
     });
 
     useEffect(() => {
@@ -20,7 +21,8 @@ export const VoiceProvider = ({ children }) => {
                     rooms: state.rooms || [],
                     currentRoom: state.currentRoom || null,
                     localUser: state.localUser || { isMuted: true, isVideoEnabled: false, isDeafened: false },
-                    remoteStreams: state.remoteStreams || {}
+                    remoteStreams: state.remoteStreams || {},
+                    localStream: state.localStream || null
                 });
             }
         };

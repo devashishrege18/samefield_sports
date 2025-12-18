@@ -109,7 +109,8 @@ class VoiceService {
             currentRoom: this.currentRoom,
             rooms: this.getRooms(),
             localUser: { ...this.localUser },
-            remoteStreams: { ...this.remoteStreams }
+            remoteStreams: { ...this.remoteStreams },
+            localStream: this.localStream
         }));
     }
 
