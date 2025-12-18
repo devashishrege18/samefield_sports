@@ -8,6 +8,7 @@ const VideoFeed = ({ stream, isLocal, name }) => {
     useEffect(() => {
         if (videoRef.current && stream) {
             videoRef.current.srcObject = stream;
+            videoRef.current.play().catch(e => console.warn("Video Play Error", e));
         }
     }, [stream]);
 

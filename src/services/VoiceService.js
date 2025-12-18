@@ -79,19 +79,20 @@ class VoiceService {
             if (this.presenceInstance) this.presenceInstance.leave();
         });
 
+        window.voiceService = this;
         setInterval(() => this.cleanupStaleUsers(), 10000);
     }
 
     getRooms() {
         const roomsWithUsers = this.rooms.map(room => {
+            // Filter out the local user from the presence list to avoid seeing yourself as a remote peer
             const usersInRoom = Object.values(this.onlineUsers)
-                .filter(u => u.currentRoomId === room.id)
+                .filter(u => u.currentRoomId === room.id && u.name !== this.localUser.name)
                 .map(u => ({ ...u, isLocal: false }));
 
             if (this.currentRoom && this.currentRoom.id === room.id) {
-                if (!usersInRoom.find(u => u.name === this.localUser.name)) {
-                    usersInRoom.push({ ...this.localUser, isLocal: true });
-                }
+                // Manually add the local user with isLocal: true
+                usersInRoom.push({ ...this.localUser, isLocal: true });
             }
 
             return { ...room, users: usersInRoom };
@@ -286,6 +287,7 @@ class VoiceService {
             }
         } else {
             this.broadcastPresence();
+            this.notify();
         }
     }
 
@@ -295,6 +297,7 @@ class VoiceService {
             this.localStream = null;
         }
         this.stopMicMonitoring();
+        this.notify();
     }
 
     startMicMonitoring(stream) {
