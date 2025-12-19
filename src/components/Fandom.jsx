@@ -637,7 +637,7 @@ const Fandom = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {circles.map(c => {
-                                const isJoined = stats.joinedCircles.includes(c.id);
+                                const isJoined = stats.joinedCircles?.includes(c.id);
                                 return (
                                     <div key={c.id} className="group relative bg-surface hover:bg-white/5 border border-white/5 p-5 rounded-2xl transition-all hover:scale-[1.01] cursor-pointer"
                                         onClick={() => isJoined ? navigate(`/fandom/${c.id}`) : handleJoin(c.id)}>

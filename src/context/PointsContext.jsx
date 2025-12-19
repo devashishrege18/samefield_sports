@@ -31,6 +31,8 @@ export const PointsProvider = ({ children }) => {
                     name,
                     xp: 9150,
                     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
+                    joinedCircles: [],
+                    predictions: { total: 0, correct: 0 },
                     lastActive: new Date()
                 });
             }
