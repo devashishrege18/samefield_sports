@@ -65,9 +65,18 @@ const RoomList = () => {
                         <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Active Feeds</span>
                         <div className="grid grid-cols-1 gap-2">
                             {localUser.isVideoEnabled && <VideoFeed stream={localStream} isLocal={true} name={localUser.name} />}
-                            {activeVideoPeers.map(([peerId, stream]) => (
-                                <VideoFeed key={peerId} stream={stream} isLocal={false} name={peerId.substring(0, 5)} />
-                            ))}
+                            {activeVideoPeers.map(([peerId, stream]) => {
+                                // Find user in ANY room by peerId (stable ID)
+                                const user = rooms.flatMap(r => r.users).find(u => u.id === peerId);
+                                return (
+                                    <VideoFeed
+                                        key={peerId}
+                                        stream={stream}
+                                        isLocal={false}
+                                        name={user ? user.name : 'Connecting...'}
+                                    />
+                                );
+                            })}
                             {!localUser.isVideoEnabled && activeVideoPeers.length === 0 && (
                                 <div className="p-4 border border-white/5 bg-white/5 rounded-lg text-center">
                                     <p className="text-[10px] text-gray-500 font-bold uppercase">No cameras active</p>
@@ -90,13 +99,13 @@ const RoomList = () => {
                                     <h4 className="font-bold text-white text-sm">{room.name}</h4>
                                     <span className="text-[10px] text-gray-500 font-bold">{room.users.length} Users</span>
                                 </div>
-                                {currentRoom?.id === room.id && <span className="text-[10px] text-green-500 font-bold uppercase flex items-center gap-1 mt-1"><span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> Live Now</span>}
+                                {currentRoom?.id === room.id && <span className="text-[10px] text-green-500 font-bold uppercase flex items-center gap-1 mt-1"><span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> Connected</span>}
                             </div>
 
                             {/* User Presence Tree */}
                             <div className="pl-4 space-y-2">
-                                {room.users.map((u, i) => (
-                                    <div key={i} className="flex items-center gap-2">
+                                {room.users.map((u) => (
+                                    <div key={u.id} className="flex items-center gap-2">
                                         <div className="w-6 h-6 rounded-full border border-white/10 overflow-hidden relative">
                                             <img src={u.avatar} className="w-full h-full object-cover" alt="" />
                                             {u.isSpeaking && <div className="absolute inset-0 border-2 border-green-500 animate-pulse rounded-full" />}

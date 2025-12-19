@@ -1,72 +1,76 @@
-import { circles, levels, userStats } from './mockData';
+import { db } from '../firebase/config';
+import { doc, getDoc, updateDoc, increment, arrayUnion } from 'firebase/firestore';
+import { circles, levels } from './mockData';
 
 class FandomService {
     constructor() {
         this.circles = circles;
-        this.currentUser = { ...userStats }; // Local state simulation
         this.levels = levels;
     }
 
-    getUserStats() {
-        return this.currentUser;
+    async getUserStats(userId) {
+        if (!userId) return null;
+        const userRef = doc(db, 'users', userId);
+        const snap = await getDoc(userRef);
+        return snap.data();
     }
 
     getCircles() {
         return this.circles;
     }
 
-    joinCircle(circleId) {
+    async joinCircle(userId, circleId) {
+        if (!userId) return { success: false, msg: 'Login required' };
+
+        const userRef = doc(db, 'users', userId);
+        const snap = await getDoc(userRef);
+        const userData = snap.data();
+
         const circle = this.circles.find(c => c.id === circleId);
         if (!circle) return { success: false, msg: 'Circle not found' };
 
-        if (this.currentUser.joinedCircles.includes(circleId)) {
+        if (userData.joinedCircles?.includes(circleId)) {
             return { success: false, msg: 'Already a member' };
         }
 
-        if (this.currentUser.reputation < circle.reqReputation) {
+        if (userData.xp < circle.reqReputation) {
             return { success: false, msg: `Reputation too low. Need ${circle.reqReputation}` };
         }
 
-        // Success
-        this.currentUser.joinedCircles.push(circleId);
-        this.addPoints(50); // Bonus for joining
+        await updateDoc(userRef, {
+            joinedCircles: arrayUnion(circleId),
+            xp: increment(50)
+        });
+
         return { success: true, msg: `Joined ${circle.name}!` };
     }
 
-    makePrediction(isCorrectSimulation = true) {
-        // Simulate prediction result for demo
-        this.currentUser.predictions.total += 1;
+    async makePrediction(userId, isCorrectSimulation = true) {
+        if (!userId) return { result: 'ERROR', msg: 'Login required' };
+
+        const userRef = doc(db, 'users', userId);
+        const updateData = {
+            'predictions.total': increment(1)
+        };
+
         if (isCorrectSimulation) {
-            this.currentUser.predictions.correct += 1;
-            this.addPoints(100);
-            return { result: 'WIN', msg: 'Prediction Correct! +100 Points' };
+            updateData['predictions.correct'] = increment(1);
+            updateData.xp = increment(100);
+            await updateDoc(userRef, updateData);
+            return { result: 'WIN', msg: 'Prediction Correct! +100 XP' };
         } else {
+            await updateDoc(userRef, updateData);
             return { result: 'LOSS', msg: 'Better luck next time!' };
         }
     }
 
-    addPoints(amount) {
-        this.currentUser.points += amount;
-        this.checkLevelUp();
-    }
-
-    checkLevelUp() {
-        // Find highest level user qualifies for
+    getLevel(xp) {
         for (let i = this.levels.length - 1; i >= 0; i--) {
-            if (this.currentUser.points >= this.levels[i].minPoints) {
-                if (this.currentUser.level !== this.levels[i].name) {
-                    this.currentUser.level = this.levels[i].name;
-                    // Could trigger a toast here
-                }
-                break;
+            if (xp >= this.levels[i].minPoints) {
+                return this.levels[i];
             }
         }
-    }
-
-    getNextLevel() {
-        const current = this.levels.find(l => l.name === this.currentUser.level);
-        const next = this.levels.find(l => l.minPoints > this.currentUser.points);
-        return next || { name: 'Max Level', minPoints: this.currentUser.points };
+        return this.levels[0];
     }
 }
 

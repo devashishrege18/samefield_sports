@@ -38,9 +38,17 @@ class VoiceService {
         this.listeners = [];
         this.isTransiting = false;
 
+        // Unified Stable ID
+        let stableId = localStorage.getItem('samefield_p2p_id');
+        if (!stableId) {
+            stableId = 'p2p_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('samefield_p2p_id', stableId);
+        }
+        this.stableId = stableId;
+
         const savedName = localStorage.getItem('samefield_username');
         this.localUser = {
-            id: 'local_user',
+            id: stableId, // Use stable ID as the local user ID
             name: savedName || 'Guest',
             isMuted: true,
             isVideoEnabled: false,
@@ -58,9 +66,11 @@ class VoiceService {
         this.lastHeartbeat = {};
         this.simulationInterval = null;
         this.heartbeatInterval = null;
+        this.roomMetaInterval = null; // New interval for room metadata
         this.remoteStreams = {}; // peerId -> stream
         this.speakAction = null;
         this.presenceAction = null;
+        this.metaAction = null; // New action for room metadata
 
         setTimeout(() => this.initGlobalPresence(), 1000);
 
@@ -84,20 +94,17 @@ class VoiceService {
     }
 
     getRooms() {
-        const roomsWithUsers = this.rooms.map(room => {
-            // Filter out the local user from the presence list to avoid seeing yourself as a remote peer
+        return this.rooms.map(room => {
             const usersInRoom = Object.values(this.onlineUsers)
-                .filter(u => u.currentRoomId === room.id && u.name !== this.localUser.name)
+                .filter(u => u.currentRoomId === room.id && u.id !== this.localUser.id)
                 .map(u => ({ ...u, isLocal: false }));
 
             if (this.currentRoom && this.currentRoom.id === room.id) {
-                // Manually add the local user with isLocal: true
                 usersInRoom.push({ ...this.localUser, isLocal: true });
             }
 
             return { ...room, users: usersInRoom };
         });
-        return roomsWithUsers;
     }
 
     subscribe(callback) {
@@ -123,7 +130,8 @@ class VoiceService {
             'wss://relay.snort.social',
             'wss://relay.current.fyi'
         ];
-        const config = { appId: 'samefield_sports_v4', relayUrls: RELAYS };
+        // Use stableId as the peer ID for global presence
+        const config = { appId: 'samefield_sports_v5', relayUrls: RELAYS };
 
         try {
             this.presenceInstance = joinRoom(config, 'lobby');
@@ -131,12 +139,13 @@ class VoiceService {
             this.presenceAction = sendPresence;
 
             getPresence((data, peerId) => {
+                // Incoming peerId is our stableId from 'getSync' scope
                 this.onlineUsers[peerId] = {
                     id: peerId,
                     name: data.name,
                     currentRoomId: data.currentRoomId,
                     isVideoEnabled: data.isVideoEnabled || false,
-                    isSpeaking: false,
+                    isSpeaking: data.isSpeaking || false,
                     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`
                 };
                 this.lastHeartbeat[peerId] = Date.now();
@@ -176,7 +185,8 @@ class VoiceService {
             this.presenceAction({
                 name: this.localUser.name,
                 currentRoomId: this.currentRoom ? this.currentRoom.id : null,
-                isVideoEnabled: this.localUser.isVideoEnabled
+                isVideoEnabled: this.localUser.isVideoEnabled,
+                isSpeaking: this.localUser.isSpeaking
             });
         }
     }
@@ -203,12 +213,22 @@ class VoiceService {
                 'wss://relay.snort.social',
                 'wss://relay.current.fyi'
             ];
-            const config = { appId: 'samefield_sports_v4_rooms', relayUrls: RELAYS };
+            // Use stableId for room-specific connections too
+            const config = { appId: 'samefield_sports_v5_rooms', relayUrls: RELAYS };
             this.roomInstance = joinRoom(config, roomId);
+
+            // Action for real-time metadata (name mapping)
+            const [sendMeta, getMeta] = this.roomInstance.makeAction('meta');
+            this.metaAction = sendMeta;
+            getMeta((data, peerId) => {
+                if (this.onlineUsers[peerId]) {
+                    this.onlineUsers[peerId] = { ...this.onlineUsers[peerId], ...data };
+                    this.notify();
+                }
+            });
 
             const [sendSpeaking, getSpeaking] = this.roomInstance.makeAction('speak');
             this.speakAction = sendSpeaking;
-
             getSpeaking((data, peerId) => {
                 if (this.onlineUsers[peerId]) {
                     this.onlineUsers[peerId].isSpeaking = data.isSpeaking;
@@ -218,7 +238,11 @@ class VoiceService {
 
             this.roomInstance.onPeerJoin(peerId => {
                 playSound('JOIN');
-                if (this.localStream) this.roomInstance.addStream(this.localStream, peerId);
+                this.broadcastRoomMeta();
+                if (this.localStream) {
+                    // Slight delay to ensure PeerConnection is ready
+                    setTimeout(() => this.roomInstance.addStream(this.localStream, peerId), 500);
+                }
             });
 
             this.roomInstance.onPeerLeave(peerId => {
@@ -228,11 +252,15 @@ class VoiceService {
             });
 
             this.roomInstance.onPeerStream((stream, peerId) => {
+                console.log("[Voice] Received stream from", peerId);
                 this.remoteStreams[peerId] = stream;
                 this.notify();
+                this.broadcastRoomMeta(); // Sync meta again when stream arrives
             });
 
-            // If audio or video was already enabled, restart the stream to include the roomInstance
+            // Start room-specific metadata heartbeat
+            this.roomMetaInterval = setInterval(() => this.broadcastRoomMeta(), 2000);
+
             if (!this.localUser.isMuted || this.localUser.isVideoEnabled) {
                 await this.updateMediaStream();
             }
@@ -245,10 +273,21 @@ class VoiceService {
         }
     }
 
+    broadcastRoomMeta() {
+        if (this.metaAction) {
+            this.metaAction({
+                name: this.localUser.name,
+                isVideoEnabled: this.localUser.isVideoEnabled,
+                avatar: this.localUser.avatar
+            });
+        }
+    }
+
     async leaveRoom() {
         if (!this.currentRoom) return;
         playSound('LEAVE');
 
+        if (this.roomMetaInterval) clearInterval(this.roomMetaInterval);
         if (this.roomInstance) {
             this.roomInstance.leave();
             this.roomInstance = null;
@@ -256,6 +295,7 @@ class VoiceService {
 
         this.remoteStreams = {};
         this.speakAction = null;
+        this.metaAction = null;
         this.stopLocalStream();
         this.currentRoom = null;
         this.broadcastPresence();
@@ -279,31 +319,43 @@ class VoiceService {
 
         const constraints = {
             audio: !this.localUser.isMuted,
-            video: this.localUser.isVideoEnabled
+            video: this.localUser.isVideoEnabled ? {
+                width: { ideal: 640 },
+                height: { ideal: 360 },
+                frameRate: { ideal: 15 }
+            } : false
         };
 
         if (constraints.audio || constraints.video) {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 this.localStream = stream;
-                if (this.roomInstance) this.roomInstance.addStream(stream);
+                if (this.roomInstance) {
+                    this.roomInstance.addStream(stream);
+                }
 
                 if (constraints.audio) this.startMicMonitoring(stream);
                 this.broadcastPresence();
+                this.broadcastRoomMeta();
             } catch (err) {
                 console.error("Media Access Denied:", err);
                 this.localUser.isMuted = true;
                 this.localUser.isVideoEnabled = false;
+                this.notify();
             }
         } else {
             this.broadcastPresence();
+            this.broadcastRoomMeta();
             this.notify();
         }
     }
 
     stopLocalStream() {
         if (this.localStream) {
-            this.localStream.getTracks().forEach(track => track.stop());
+            this.localStream.getTracks().forEach(track => {
+                track.stop();
+                if (this.roomInstance) this.roomInstance.removeStream(this.localStream);
+            });
             this.localStream = null;
         }
         this.stopMicMonitoring();
@@ -312,29 +364,32 @@ class VoiceService {
 
     startMicMonitoring(stream) {
         if (!stream || stream.getAudioTracks().length === 0) return;
-        if (this.audioContext) this.audioContext.close();
 
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.audioContext = new AudioContext();
-        this.analyser = this.audioContext.createAnalyser();
-        const source = this.audioContext.createMediaStreamSource(stream);
-        source.connect(this.analyser);
-        this.analyser.fftSize = 256;
-        const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (this.audioContext) this.audioContext.close();
 
-        this.simulationInterval = setInterval(() => {
-            if (!this.currentRoom || this.localUser.isMuted) return;
-            this.analyser.getByteFrequencyData(dataArray);
-            const sum = dataArray.reduce((a, b) => a + b, 0);
-            const avg = sum / dataArray.length;
-            const isSpeakingNow = avg > 15;
+            this.audioContext = new AudioContext();
+            this.analyser = this.audioContext.createAnalyser();
+            const source = this.audioContext.createMediaStreamSource(stream);
+            source.connect(this.analyser);
+            this.analyser.fftSize = 128;
+            const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
 
-            if (this.localUser.isSpeaking !== isSpeakingNow) {
-                this.localUser.isSpeaking = isSpeakingNow;
-                if (this.speakAction) this.speakAction({ isSpeaking: isSpeakingNow });
-                this.notify();
-            }
-        }, 100);
+            this.simulationInterval = setInterval(() => {
+                if (!this.currentRoom || this.localUser.isMuted) return;
+                this.analyser.getByteFrequencyData(dataArray);
+                const sum = dataArray.reduce((a, b) => a + b, 0);
+                const avg = sum / dataArray.length;
+                const isSpeakingNow = avg > 20;
+
+                if (this.localUser.isSpeaking !== isSpeakingNow) {
+                    this.localUser.isSpeaking = isSpeakingNow;
+                    if (this.speakAction) this.speakAction({ isSpeaking: isSpeakingNow });
+                    this.notify();
+                }
+            }, 150);
+        } catch (e) { console.error("Mic Monitor Error", e); }
     }
 
     stopMicMonitoring() {
@@ -344,7 +399,6 @@ class VoiceService {
             this.audioContext.close();
             this.audioContext = null;
         }
-        if (this.speakAction) this.speakAction({ isSpeaking: false });
     }
 }
 

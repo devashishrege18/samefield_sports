@@ -1,16 +1,37 @@
-# React + Vite
+# 🏆 SameField | The Ultimate Fan Experience
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SameField is a cutting-edge, hybrid social platform designed to revolutionize the way sports fans connect. By combining the persistence of **Firebase** with the low-latency power of **P2P Mesh Networking**, we've built a "hall of fame" experience that scales.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Hall of Fandom (Global Leaderboard)**: Compete with fans worldwide. Earn XP by participating in forums, winning predictions, and engaging with the community.
+- **Infinite Real-time Forums**: Cloud-synced discussions that update instantly as fans post, powered by Firestore.
+- **Live Fan Circles**: Low-latency voice and video watch parties for the ultimate match-day synergy.
+- **Persistent Fan Profiles**: Your XP, level, and reputation are saved globally across sessions.
 
-## React Compiler
+## 💻 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React.js, Tailwind CSS, Lucide Icons
+- **Real-time Persistence**: Firebase (Firestore & Auth)
+- **P2P Signaling**: Trystero (Nostr-based)
+- **Branding**: Custom SVG Design System
 
-## Expanding the ESLint configuration
+## 🛠️ Deployment Instructions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Vercel (Recommended)
+SameField is pre-configured for **Vercel**. 
+1. Push your code to a GitHub repository.
+2. Connect the repository to Vercel.
+3. **Environment Variables**: Make sure to add any production API keys in the Vercel dashboard.
+4. Click **Deploy**.
+
+### 2. Manual Build
+If you wish to host it yourself:
+```bash
+npm install
+npm run build
+```
+The production-ready files will be in the `/dist` directory.
+
+---
+*Built with ❤️ for the Hackathon. May the best fans win!*

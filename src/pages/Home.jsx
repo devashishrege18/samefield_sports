@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, Play, Calendar, Search, TrendingUp, Award, BarChart2, Activity, ChevronRight, ChevronLeft, Target } from 'lucide-react';
 import { usePoints } from '../context/PointsContext';
+import Leaderboard from '../components/Leaderboard';
 
 const Home = () => {
     const { addPoints } = usePoints();
@@ -287,32 +288,8 @@ const Home = () => {
                         </div>
                     </div>
 
-                    {/* Monthly Leaderboard */}
-                    <div className="premium-card p-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
-                                <Award className="w-4 h-4 text-primary" /> Leaderboard
-                            </h3>
-                            <span className="text-[10px] bg-surfaceHighlight px-2 py-0.5 rounded text-textMuted uppercase">Sept</span>
-                        </div>
-                        <div className="space-y-4">
-                            {[
-                                { name: 'Sarah J.', points: '12.5k', av: 'bg-primary' },
-                                { name: 'Mike T.', points: '11.2k', av: 'bg-purple-500' },
-                                { name: 'You', points: '8.4k', av: 'bg-green-500' }
-                            ].map((user, idx) => (
-                                <div key={idx} className={`flex items-center justify-between ${user.name === 'You' ? 'p-2 -mx-2 bg-white/5 rounded-lg border border-primary/20' : ''}`}>
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-xs font-bold text-textMuted w-4">{idx + 1}</span>
-                                        <div className={`w-6 h-6 rounded-full ${user.av}`} />
-                                        <span className="text-sm font-bold text-white">{user.name}</span>
-                                    </div>
-                                    <span className="text-xs font-bold text-primary">{user.points}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <button className="w-full mt-4 text-[10px] font-bold text-textMuted hover:text-white uppercase tracking-widest text-center">View Full Standings</button>
-                    </div>
+                    {/* Global Leaderboard */}
+                    <Leaderboard />
 
                 </div>
             </div >
