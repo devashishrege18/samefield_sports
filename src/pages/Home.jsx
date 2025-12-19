@@ -39,8 +39,40 @@ const Home = () => {
             </div>
 
             {/* Hero Section: Mixed Team Cricket */}
-            {/* Purpose Hero Section: Watch. Support. Elevate. */}
-            <PurposeHero />
+            <div className="relative h-[300px] md:h-[450px] rounded-[32px] overflow-hidden group">
+                <img
+                    src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2674&auto=format&fit=crop"
+                    alt="Cricket Stadium"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+
+                <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-12 space-y-4">
+                    <div className="flex items-center gap-2">
+                        <div className="px-3 py-1 bg-primary text-black text-[10px] font-black uppercase rounded-lg animate-pulse">
+                            ● World Premiere
+                        </div>
+                    </div>
+                    <h1 className="text-4xl md:text-7xl font-black text-white italic tracking-tighter leading-none uppercase">
+                        History in the <br />
+                        <span className="text-primary">Making</span>
+                    </h1>
+                    <p className="text-sm md:text-xl font-bold text-white uppercase tracking-wider max-w-xl">
+                        First-Ever Mixed Team Cricket Tournament
+                    </p>
+                    <p className="text-xs md:text-sm text-gray-300 italic max-w-md font-medium">
+                        "Redefining how teams are formed in modern sport."
+                    </p>
+                    <div className="flex items-center gap-4 pt-4">
+                        <button className="px-8 py-3 bg-primary text-black rounded-full font-black uppercase text-sm flex items-center gap-2 hover:bg-white transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
+                            Watch Live <Play className="w-4 h-4 fill-current" />
+                        </button>
+                        <button className="px-8 py-3 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-full font-black uppercase text-sm hover:bg-white/10 transition-all">
+                            Tournament Info
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
