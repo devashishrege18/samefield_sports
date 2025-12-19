@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ArrowUpRight, Play, Calendar, Search, TrendingUp, Award, BarChart2, Activity, ChevronRight, ChevronLeft, Target } from 'lucide-react';
 import { usePoints } from '../context/PointsContext';
 import Leaderboard from '../components/Leaderboard';
-import PurposeHero from '../components/PurposeHero';
 
 const Home = () => {
     const { addPoints } = usePoints();
