@@ -11,7 +11,8 @@ import {
     serverTimestamp,
     getDocs,
     where,
-    setDoc
+    setDoc,
+    deleteDoc
 } from 'firebase/firestore';
 
 class ForumService {
@@ -35,8 +36,11 @@ class ForumService {
         // Initialize with seed data if too few threads remain
         const snapshot = await getDocs(collection(db, 'threads'));
         if (snapshot.size < 5) {
-            this.seedData();
+            await this.seedData();
         }
+
+        // ONE-TIME CLEANUP: Remove duplicates with random IDs
+        await this.cleanupLegacyThreads(snapshot);
     }
 
     async seedData() {
@@ -123,6 +127,31 @@ class ForumService {
 
         for (const [id, thread] of Object.entries(initialThreads)) {
             await setDoc(doc(db, 'threads', id), thread);
+        }
+    }
+
+    async cleanupLegacyThreads(snapshot) {
+        // Find threads that have titles matching our fixed seed data but are NOT the fixed IDs
+        const seedTitles = [
+            "Why split-captaincy is the future of Mixed Cricket",
+            "India vs Australia - Match Thread",
+            "Caitlin Clark: Redefining the Guard Position",
+            "RCB Women: The Unstoppable Momentum",
+            "AI in Sports: Prediction or Spoilers?",
+            "The Rise of Mixed Sports Leagues",
+            "Predictions: MVP of WPL 2025?"
+        ];
+
+        const fixedIds = ['thread_1', 'thread_2', 'thread_3', 'thread_4', 'thread_5', 'thread_6', 'thread_7'];
+
+        const toDelete = snapshot.docs.filter(doc => {
+            const data = doc.data();
+            return seedTitles.includes(data.title) && !fixedIds.includes(doc.id);
+        });
+
+        for (const docSnap of toDelete) {
+            await deleteDoc(doc(db, 'threads', docSnap.id));
+            console.log(`Cleaned up legacy thread duplicate: ${docSnap.id}`);
         }
     }
 
