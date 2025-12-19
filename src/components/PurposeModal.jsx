@@ -45,10 +45,10 @@ const BlockbusterPurposeModal = () => {
     return (
         <div className="fixed inset-0 z-[9999] bg-black overflow-hidden font-outfit select-none flex flex-col items-center justify-center">
 
-            {/* BACKGROUND: High-Density Texture Wall */}
+            {/* BACKGROUND: High-Density Texture Wall (Restored Visibility) */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <div
-                    className="absolute inset-[-20%] grid grid-cols-6 md:grid-cols-10 lg:grid-cols-12 gap-2 opacity-30 blur-[6px] grayscale-[60%] animate-slow-drift"
+                    className="absolute inset-[-20%] grid grid-cols-6 md:grid-cols-10 lg:grid-cols-12 gap-2 opacity-55 blur-[4px] grayscale-[20%] animate-slow-drift"
                 >
                     {[...posters, ...posters, ...posters, ...posters].map((img, i) => (
                         <div key={i} className="aspect-[2/3] rounded-sm overflow-hidden border border-white/5">
@@ -57,34 +57,34 @@ const BlockbusterPurposeModal = () => {
                     ))}
                 </div>
 
-                {/* BACKGROUND TREATMENT: Vignette & Gradient Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-80" />
+                {/* BACKGROUND TREATMENT: Eased Vignette & Gradient Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-black/20 to-black" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-70" />
             </div>
 
             {/* FOREGROUND: Core Content Layer */}
             <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center text-center space-y-12 animate-blockbuster-entry">
 
-                {/* TEXT HIERARCHY: Dominant Headline */}
+                {/* TEXT HIERARCHY: Dominant Headline (Premium Styles) */}
                 <div className="space-y-6">
-                    <div className="flex items-center justify-center gap-3 mb-4 opacity-50">
+                    <div className="flex items-center justify-center gap-6 mb-4 opacity-100">
                         <Trophy className="w-4 h-4 text-primary" />
-                        <span className="text-[10px] font-black text-white uppercase tracking-[0.6em]">Samefield Sports</span>
+                        <span className="text-[10px] font-black text-white uppercase tracking-[0.6em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Samefield Sports</span>
                         <Trophy className="w-4 h-4 text-primary" />
                     </div>
 
-                    <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-[0.85] uppercase">
+                    <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-[0.85] uppercase drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
                         Watch. Support.<br />
-                        <span className="text-primary italic">Elevate.</span>
+                        <span className="text-primary italic drop-shadow-[0_2px_10px_rgba(255,215,0,0.3)]">Elevate.</span>
                     </h1>
 
                     {/* Body Text: Human-Written Clean Statement */}
                     <div className="max-w-3xl mx-auto pt-4">
-                        <p className="text-lg md:text-3xl font-medium text-gray-300 tracking-tight leading-tight">
+                        <p className="text-lg md:text-3xl font-medium text-gray-200 tracking-tight leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                             Join the movement to amplify women athletes. <br className="hidden md:block" />
                             Every point you earn creates <span className="text-white">real impact.</span>
                         </p>
-                        <p className="text-xs md:text-sm font-bold text-primary/80 tracking-[0.2em] uppercase mt-6 italic">
+                        <p className="text-xs md:text-sm font-bold text-primary/100 tracking-[0.2em] uppercase mt-6 italic bg-black/40 py-1 px-4 inline-block rounded-full backdrop-blur-sm shadow-xl">
                             Elevating women’s sports, one point at a time.
                         </p>
                     </div>
@@ -97,9 +97,9 @@ const BlockbusterPurposeModal = () => {
                         { icon: Heart, text: "Earn XP" },
                         { icon: Star, text: "Unlock Rewards" }
                     ].map((item, idx) => (
-                        <div key={idx} className="flex flex-col items-center gap-2">
-                            <item.icon className="w-6 h-6 text-primary" />
-                            <span className="text-[10px] font-black text-white uppercase tracking-widest">{item.text}</span>
+                        <div key={idx} className="flex flex-col items-center gap-2 group">
+                            <item.icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                            <span className="text-[10px] font-black text-white uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">{item.text}</span>
                         </div>
                     ))}
                 </div>
@@ -108,7 +108,7 @@ const BlockbusterPurposeModal = () => {
                 <div className="pt-4">
                     <button
                         onClick={handleDismiss}
-                        className="px-16 py-6 bg-primary text-black rounded-lg font-black uppercase text-lg tracking-[0.2em] transition-all hover:bg-white hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,215,0,0.2)]"
+                        className="px-16 py-6 bg-primary text-black rounded-lg font-black uppercase text-lg tracking-[0.2em] transition-all hover:bg-white hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,215,0,0.25)] border-none outline-none"
                     >
                         Start Supporting
                     </button>
