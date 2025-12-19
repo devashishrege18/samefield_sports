@@ -62,57 +62,57 @@ const BlockbusterPurposeModal = () => {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-70" />
             </div>
 
-            {/* FOREGROUND: Core Content Layer (Normalized Proportions) */}
-            <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center text-center space-y-8 md:space-y-10 animate-blockbuster-entry">
+            {/* FOREGROUND: Core Content Layer (90% Zoom Normalization) */}
+            <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center text-center space-y-10 animate-blockbuster-entry">
 
-                {/* TEXT HIERARCHY: Dominant Headline (Premium Stylized Scaling) */}
-                <div className="space-y-5">
+                {/* TEXT HIERARCHY: Dominant Headline (Aesthetic Scaling) */}
+                <div className="space-y-6">
                     <div className="flex items-center justify-center gap-6 mb-2 opacity-100">
                         <Trophy className="w-4 h-4 text-primary" />
                         <span className="text-[10px] font-black text-white uppercase tracking-[0.6em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Samefield Sports</span>
                         <Trophy className="w-4 h-4 text-primary" />
                     </div>
 
-                    <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-[0.85] uppercase drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
+                    <h1 className="text-5xl md:text-9xl font-black text-white tracking-tighter leading-[0.85] uppercase drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent transform md:scale-95">
                         Watch. Support.<br />
                         <span className="text-primary italic drop-shadow-[0_2px_10px_rgba(255,215,0,0.3)]">Elevate.</span>
                     </h1>
 
-                    {/* Body Text: Human-Written Clean Statement (Scaled Down) */}
-                    <div className="max-w-2xl mx-auto pt-2">
-                        <p className="text-base md:text-2xl font-medium text-gray-200 tracking-tight leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {/* Body Text: Human-Written Clean Statement (90% Aesthetic) */}
+                    <div className="max-w-3xl mx-auto pt-3">
+                        <p className="text-lg md:text-2xl font-medium text-gray-200 tracking-tight leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                             Join the movement to amplify women athletes. <br className="hidden md:block" />
                             Every point you earn creates <span className="text-white">real impact.</span>
                         </p>
-                        <p className="text-[10px] md:text-xs font-bold text-primary/100 tracking-[0.2em] uppercase mt-5 italic bg-black/40 py-1 px-4 inline-block rounded-full backdrop-blur-sm shadow-xl">
+                        <p className="text-[11px] md:text-xs font-bold text-primary/100 tracking-[0.2em] uppercase mt-6 italic bg-black/40 py-1 px-4 inline-block rounded-full backdrop-blur-sm shadow-xl">
                             Elevating women’s sports, one point at a time.
                         </p>
                     </div>
                 </div>
 
-                {/* PROCESS: Minimalist Icons (Tighter Spacing) */}
-                <div className="w-full max-w-lg grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-y border-white/10">
+                {/* PROCESS: Minimalist Icons (Proportional Spacing) */}
+                <div className="w-full max-w-lg grid grid-cols-1 md:grid-cols-3 gap-6 py-8 border-y border-white/10">
                     {[
                         { icon: Video, text: "Watch Matches" },
                         { icon: Heart, text: "Earn XP" },
                         { icon: Star, text: "Unlock Rewards" }
                     ].map((item, idx) => (
-                        <div key={idx} className="flex flex-col items-center gap-1 group">
+                        <div key={idx} className="flex flex-col items-center gap-2 group">
                             <item.icon className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
                             <span className="text-[9px] font-black text-white uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">{item.text}</span>
                         </div>
                     ))}
                 </div>
 
-                {/* CTA: Rock Solid Confidence (Normalized Scale) */}
+                {/* CTA: Rock Solid Confidence (90% Scaled) */}
                 <div className="pt-2">
                     <button
                         onClick={handleDismiss}
-                        className="px-14 py-5 bg-primary text-black rounded-lg font-black uppercase text-base md:text-lg tracking-[0.2em] transition-all hover:bg-white hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,215,0,0.25)] border-none outline-none"
+                        className="px-16 py-6 bg-primary text-black rounded-lg font-black uppercase text-base md:text-lg tracking-[0.2em] transition-all hover:bg-white hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,215,0,0.25)] border-none outline-none"
                     >
                         Start Supporting
                     </button>
-                    <p className="mt-6 text-[8px] text-white/30 uppercase tracking-[0.8em] font-black">EST. 2025 • Purpose First</p>
+                    <p className="mt-8 text-[9px] text-white/30 uppercase tracking-[0.8em] font-black">EST. 2025 • Purpose First</p>
                 </div>
 
             </div>
