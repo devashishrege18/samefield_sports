@@ -124,17 +124,15 @@ const DashboardLayout = () => {
                         </div>
                     </main>
 
-                    {showVoicePanel && (
-                        <div className="fixed inset-0 top-16 md:static md:inset-auto z-[60] bg-background md:bg-transparent flex flex-col">
-                            <div className="h-full w-full md:w-80 border-l border-white/5 bg-black/20 backdrop-blur-sm">
-                                <div className="md:hidden p-4 border-b border-white/5 flex items-center justify-between">
-                                    <span className="font-black text-white uppercase">Voice Rooms</span>
-                                    <button onClick={() => setShowVoicePanel(false)} className="text-xs font-bold text-primary">CLOSE</button>
-                                </div>
-                                <RoomList />
+                    <div className={`${showVoicePanel ? 'fixed inset-0 top-16 md:static md:inset-auto z-[60] bg-background md:bg-transparent flex flex-col' : 'hidden'}`}>
+                        <div className="h-full w-full md:w-80 border-l border-white/5 bg-black/20 backdrop-blur-sm">
+                            <div className="md:hidden p-4 border-b border-white/5 flex items-center justify-between">
+                                <span className="font-black text-white uppercase">Voice Rooms</span>
+                                <button onClick={() => setShowVoicePanel(false)} className="text-xs font-bold text-primary">CLOSE</button>
                             </div>
+                            <RoomList />
                         </div>
-                    )}
+                    </div>
                 </div>
                 <MobileNav />
             </div>

@@ -315,37 +315,48 @@ class VoiceService {
     }
 
     async updateMediaStream() {
-        this.stopLocalStream();
-
         const constraints = {
-            audio: !this.localUser.isMuted,
-            video: this.localUser.isVideoEnabled ? {
+            audio: true, // Always request audio to avoid permission re-prompts
+            video: {
                 width: { ideal: 640 },
                 height: { ideal: 360 },
                 frameRate: { ideal: 15 }
-            } : false
+            }
         };
 
-        if (constraints.audio || constraints.video) {
-            try {
+        try {
+            if (!this.localStream) {
+                console.log("[Voice] Initializing new MediaStream");
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 this.localStream = stream;
                 if (this.roomInstance) {
                     this.roomInstance.addStream(stream);
                 }
-
-                if (constraints.audio) this.startMicMonitoring(stream);
-                this.broadcastPresence();
-                this.broadcastRoomMeta();
-            } catch (err) {
-                console.error("Media Access Denied:", err);
-                this.localUser.isMuted = true;
-                this.localUser.isVideoEnabled = false;
-                this.notify();
+                this.startMicMonitoring(stream);
             }
-        } else {
+
+            // Sync track states WITHOUT stopping the stream
+            const audioTrack = this.localStream.getAudioTracks()[0];
+            const videoTrack = this.localStream.getVideoTracks()[0];
+
+            if (audioTrack) {
+                audioTrack.enabled = !this.localUser.isMuted;
+                console.log(`[Voice] Audio track ${audioTrack.enabled ? 'ENABLED' : 'DISABLED'}`);
+            }
+
+            if (videoTrack) {
+                videoTrack.enabled = this.localUser.isVideoEnabled;
+                console.log(`[Voice] Video track ${videoTrack.enabled ? 'ENABLED' : 'DISABLED'}`);
+            }
+
             this.broadcastPresence();
             this.broadcastRoomMeta();
+            this.notify();
+
+        } catch (err) {
+            console.error("Media Access Denied:", err);
+            this.localUser.isMuted = true;
+            this.localUser.isVideoEnabled = false;
             this.notify();
         }
     }

@@ -37,7 +37,6 @@ const Watch = () => {
 
         // Init Chat for this specific channel
         streamChatService.init(channel.id);
-        setMessages(streamChatService.messages || []); // Load history/mock
 
         setTimeout(() => setIsLoading(false), 1500);
     };
@@ -46,19 +45,18 @@ const Watch = () => {
     useEffect(() => {
         // Initialize chat for the initially loaded channel
         streamChatService.init(currentChannel.id);
-        setMessages(streamChatService.messages || []);
         setTimeout(() => setIsLoading(false), 1500);
 
         // Cleanup on unmount
         return () => streamChatService.leave();
-    }, [currentChannel.id]); // Re-run if initial channel changes (though it's set once)
+    }, [currentChannel.id]); // Re-run if initial channel changes
 
 
     // Chat Subscription
     useEffect(() => {
         const unsubscribe = streamChatService.subscribe((type, payload) => {
-            if (type === 'message') {
-                setMessages(prev => [...prev, payload]);
+            if (type === 'messages') {
+                setMessages(payload || []);
                 scrollToBottom();
             }
             if (type === 'reaction') {
