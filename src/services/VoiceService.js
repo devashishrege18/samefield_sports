@@ -172,7 +172,11 @@ class VoiceService {
     cleanupStaleUsers() {
         const now = Date.now();
         Object.keys(this.lastHeartbeat).forEach(peerId => {
-            if (now - this.lastHeartbeat[peerId] > 15000) {
+            // Aggressive purge for "tester" or "Guest" ghosts
+            const user = this.onlineUsers[peerId];
+            const isTester = user && (user.name === 'Guest' || user.name === 'Fan' || user.name.includes('Tester'));
+
+            if (now - this.lastHeartbeat[peerId] > (isTester ? 8000 : 15000)) {
                 delete this.onlineUsers[peerId];
                 delete this.lastHeartbeat[peerId];
             }
@@ -316,7 +320,11 @@ class VoiceService {
 
     async updateMediaStream() {
         const constraints = {
-            audio: true, // Always request audio to avoid permission re-prompts
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            },
             video: {
                 width: { ideal: 640 },
                 height: { ideal: 360 },

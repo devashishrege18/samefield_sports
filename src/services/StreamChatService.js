@@ -93,19 +93,22 @@ class StreamChatService {
     }
 
     async cleanupTesterMessages(videoId) {
-        // Find messages by the tester ID and delete them
-        const testerId = localStorage.getItem('samefield_p2p_id'); // If I am currently acting as the tester
-        // Note: In real scenarios, we search for specific IDs or patterns
-        // For this specific task, I'll purge the recent test patterns
-        const q = query(
-            collection(db, 'watch_chats', videoId, 'messages'),
-            where('userId', '==', testerId)
-        );
+        // Broadened sweep for any problematic test content
+        const testerId = localStorage.getItem('samefield_p2p_id');
 
-        const snapshot = await getDocs(q);
+        const snapshot = await getDocs(collection(db, 'watch_chats', videoId, 'messages'));
+
         for (const msgDoc of snapshot.docs) {
-            await deleteDoc(doc(db, 'watch_chats', videoId, 'messages', msgDoc.id));
-            console.log(`[StreamChat] Cleaned up tester message: ${msgDoc.id}`);
+            const data = msgDoc.data();
+            const isTesterId = data.userId === testerId;
+            const isTestContent = data.text?.toLowerCase().includes('persistence test') ||
+                data.text?.toLowerCase().includes('tester') ||
+                data.user === 'Fan' || data.user === 'Guest';
+
+            if (isTesterId || isTestContent) {
+                await deleteDoc(doc(db, 'watch_chats', videoId, 'messages', msgDoc.id));
+                console.log(`[StreamChat] Deep Cleaned: ${msgDoc.id} (${data.text})`);
+            }
         }
     }
 

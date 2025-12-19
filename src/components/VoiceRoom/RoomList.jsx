@@ -65,7 +65,7 @@ const RoomList = () => {
                 {currentRoom && (
                     <div className="space-y-2">
                         <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Active Feeds</span>
-                        <div className="grid grid-cols-1 gap-2">
+                        <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto scrollbar-hide pr-1">
                             {localUser.isVideoEnabled && <VideoFeed stream={localStream} isLocal={true} name={localUser.name} />}
                             {activeVideoPeers.map(([peerId, stream]) => {
                                 // Find user in ANY room by peerId (stable ID)
