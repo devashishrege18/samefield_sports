@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Award, Star, Users, TrendingUp, Lock, Heart, MessageCircle, Share2, Send, Zap, ChevronRight, Globe, Image as ImageIcon, Play, X, Pin } from 'lucide-react';
 import { fandomService } from '../services/FandomService';
+import { usePoints } from '../context/PointsContext';
 import { v4 as uuidv4 } from 'uuid';
 import '../styles/components/Fandom.css';
 
@@ -13,8 +14,8 @@ const Fandom = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('feed');
 
-    // Stats & Data
-    const [stats, setStats] = useState(fandomService.getUserStats());
+    const { points: globalPoints, userId } = usePoints();
+    const [stats, setStats] = useState({ points: 0, level: '...', joinedCircles: [] });
     const [circles, setCircles] = useState(fandomService.getCircles());
 
     // Active Highlights (Video Player)
@@ -82,6 +83,14 @@ const Fandom = () => {
     const [floatingHearts, setFloatingHearts] = useState([]);
 
     const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+        if (userId) {
+            fandomService.getUserStats(userId).then(data => {
+                if (data) setStats(data);
+            });
+        }
+    }, [userId, globalPoints]);
 
     useEffect(() => {
         const storedId = localStorage.getItem('fandom_guest_id') || uuidv4();
@@ -244,8 +253,10 @@ const Fandom = () => {
     if (!guestIdentity) return <div className="text-white p-10">Initializing Fan ID...</div>;
 
     const currentCircle = circles.find(c => c.id === id);
-    const nextLevel = fandomService.getNextLevel();
-    const progressPercent = Math.min(100, (stats.points / nextLevel.minPoints) * 100);
+    const currentPoints = stats.xp || globalPoints || 0;
+    const currentLevelObj = fandomService.getLevel(currentPoints);
+    const nextLevel = fandomService.getNextLevel(currentPoints);
+    const progressPercent = nextLevel ? Math.min(100, (currentPoints / nextLevel.minPoints) * 100) : 100;
 
     // ============================================
     // WEVERSE-INSPIRED CHANNEL VIEW
@@ -594,19 +605,19 @@ const Fandom = () => {
                             <div className="space-y-6">
                                 <div>
                                     <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Current Level</p>
-                                    <h2 className="text-5xl font-black text-white tracking-tight">{stats.level}</h2>
+                                    <h2 className="text-5xl font-black text-white tracking-tight">{currentLevelObj?.name}</h2>
                                 </div>
 
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-xs font-bold text-gray-500 w-64">
                                         <span>Progress</span>
-                                        <span>{stats.points} / {nextLevel.minPoints} XP</span>
+                                        <span>{currentPoints} / {nextLevel?.minPoints || 0} XP</span>
                                     </div>
                                     <div className="w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
                                         <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${progressPercent}%` }}></div>
                                     </div>
                                     <p className="text-xs text-primary font-bold pt-1">
-                                        {nextLevel.minPoints - stats.points} XP needed for {nextLevel.name}
+                                        {(nextLevel?.minPoints || 0) - currentPoints} XP needed for {nextLevel?.name}
                                     </p>
                                 </div>
                             </div>

@@ -72,6 +72,15 @@ class FandomService {
         }
         return this.levels[0];
     }
+
+    getNextLevel(xp) {
+        for (let i = 0; i < this.levels.length; i++) {
+            if (xp < this.levels[i].minPoints) {
+                return this.levels[i];
+            }
+        }
+        return this.levels[this.levels.length - 1]; // Max level
+    }
 }
 
 export const fandomService = new FandomService();
