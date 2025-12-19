@@ -10,7 +10,8 @@ import {
     increment,
     serverTimestamp,
     getDocs,
-    where
+    where,
+    setDoc
 } from 'firebase/firestore';
 
 class ForumService {
@@ -39,8 +40,8 @@ class ForumService {
     }
 
     async seedData() {
-        const initialThreads = [
-            {
+        const initialThreads = {
+            'thread_1': {
                 title: "Why split-captaincy is the future of Mixed Cricket",
                 author: 'TacticalGenius',
                 category: 'Tactical Analysis',
@@ -51,7 +52,7 @@ class ForumService {
                 aiSummary: "Analysis suggests 12% boost in strategic speed via dual leadership.",
                 aiTags: ["Strategy", "Metrics"]
             },
-            {
+            'thread_2': {
                 title: "India vs Australia - Match Thread",
                 author: 'System Bot',
                 category: 'Live Match Reactions',
@@ -63,7 +64,7 @@ class ForumService {
                 aiSummary: "Live tracking of IND vs AUS game events.",
                 aiTags: ["Live", "Trending"]
             },
-            {
+            'thread_3': {
                 title: "Caitlin Clark: Redefining the Guard Position",
                 author: 'HoopsMaster',
                 category: 'Player Performance Talk',
@@ -74,7 +75,7 @@ class ForumService {
                 aiSummary: "Deep dive into Clark's playmaking and court vision.",
                 aiTags: ["WNBA", "GOAT-Talk"]
             },
-            {
+            'thread_4': {
                 title: "RCB Women: The Unstoppable Momentum",
                 author: 'WPL_Fanatic',
                 category: 'Live Match Reactions',
@@ -85,7 +86,7 @@ class ForumService {
                 aiSummary: "Fans debating if RCB W is the most balanced team ever.",
                 aiTags: ["WPL", "RCB"]
             },
-            {
+            'thread_5': {
                 title: "AI in Sports: Prediction or Spoilers?",
                 author: 'DataSciFan',
                 category: 'Fan Predictions',
@@ -95,11 +96,33 @@ class ForumService {
                 timestamp: serverTimestamp(),
                 aiSummary: "Community debate on AI's role in sports anticipation.",
                 aiTags: ["AI", "Ethics"]
+            },
+            'thread_6': {
+                title: "The Rise of Mixed Sports Leagues",
+                author: 'SportsFuturist',
+                category: 'Tactical Analysis',
+                votes: 430,
+                comments: 24,
+                content: "Watching men and women compete on the same pitch is changing the dynamics of teamwork. Is this the future of the Olympics?",
+                timestamp: serverTimestamp(),
+                aiSummary: "Discussion on the societal and athletic impact of mixed leagues.",
+                aiTags: ["Future", "Equality"]
+            },
+            'thread_7': {
+                title: "Predictions: MVP of WPL 2025?",
+                author: 'StatWatcher',
+                category: 'Fan Predictions',
+                votes: 95,
+                comments: 150,
+                content: "Based on current strike rates, it's a three-way race. Who's your pick?",
+                timestamp: serverTimestamp(),
+                aiSummary: "Community voting on WPL season MVP favorites.",
+                aiTags: ["Stats", "MVP"]
             }
-        ];
+        };
 
-        for (const thread of initialThreads) {
-            await addDoc(collection(db, 'threads'), thread);
+        for (const [id, thread] of Object.entries(initialThreads)) {
+            await setDoc(doc(db, 'threads', id), thread);
         }
     }
 
