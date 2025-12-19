@@ -147,81 +147,81 @@ const Fandom = () => {
         setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
     };
 
-    const handleCreatePost = () => {
+    useEffect(() => {
+        // Subscribe to PERSISTENT Posts
+        const unsubPosts = fandomService.subscribeToPosts(id, (updatedPosts) => {
+            setPosts(updatedPosts);
+        });
+
+        // Subscribe to PERSISTENT Chat
+        const unsubChat = fandomService.subscribeToChat(id, (updatedMessages) => {
+            setChatMessages(updatedMessages);
+            scrollToBottom();
+        });
+
+        return () => {
+            unsubPosts();
+            unsubChat();
+        };
+    }, [id]);
+
+    const handleCreatePost = async () => {
         if (!newPostContent.trim() || !guestIdentity) return;
 
-        const newPost = {
-            id: 'p' + Date.now(),
+        const postData = {
             author_name: guestIdentity.guest_name,
             content: newPostContent,
-            created_at: new Date().toISOString(),
-            likes: [],
-            comments: []
+            author_id: guestIdentity.guest_id
         };
 
-        setPosts(prev => [newPost, ...prev]);
+        await fandomService.addPost(id, postData);
         setNewPostContent('');
 
-        if (sendSync) {
-            sendSync({ type: 'NEW_POST', post: newPost });
-        }
-
-        fandomService.addPoints(10);
-        setStats({ ...fandomService.getUserStats() });
+        // Bonus points
+        fandomService.joinCircle(userId, id); // Just to reuse the logic for points if not joined
+        setStats({ ...fandomService.getUserStats() || {} });
     };
 
-    const handleLike = (postId) => {
+    const handleLike = async (postId) => {
         if (!guestIdentity) return;
-        setPosts(prev => prev.map(p =>
-            p.id === postId ? { ...p, likes: [...(p.likes || []), guestIdentity.guest_id] } : p
-        ));
-
-        if (sendSync) {
-            sendSync({ type: 'LIKE', postId, guest_id: guestIdentity.guest_id });
-        }
+        await fandomService.likePost(id, postId, guestIdentity.guest_id);
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (!chatInput.trim() || !guestIdentity) return;
         const msg = {
             guest_id: guestIdentity.guest_id,
             guest_name: guestIdentity.guest_name,
-            text: chatInput,
-            time: new Date().toISOString()
+            text: chatInput
         };
-        setChatMessages(prev => [...prev, msg]);
+        await fandomService.sendChatMessage(id, msg);
         setChatInput('');
         scrollToBottom();
-
-        if (sendSync) {
-            sendSync({ type: 'CHAT', message: msg });
-        }
     };
 
-    const handleAddComment = (postId) => {
+    const handleAddComment = async (postId) => {
         const text = commentInputs[postId];
         if (!text || !text.trim() || !guestIdentity) return;
 
-        const newComment = {
-            id: 'c' + Date.now(),
+        const commentData = {
             author_name: guestIdentity.guest_name,
-            text: text.trim()
+            text: text.trim(),
+            author_id: guestIdentity.guest_id
         };
 
-        setPosts(prev => prev.map(p =>
-            p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p
-        ));
+        await fandomService.addComment(id, postId, commentData);
         setCommentInputs(prev => ({ ...prev, [postId]: '' }));
-
-        if (sendSync) {
-            sendSync({ type: 'COMMENT', postId, comment: newComment });
-        }
     };
 
-    const handleJoin = (id) => {
-        const res = fandomService.joinCircle(id);
+    const handleJoin = async (id) => {
+        if (!userId) {
+            alert("Please wait for account initialization...");
+            return;
+        }
+        const res = await fandomService.joinCircle(userId, id);
         if (res.success) {
-            setStats({ ...fandomService.getUserStats() });
+            const upStats = await fandomService.getUserStats(userId);
+            if (upStats) setStats(upStats);
             alert(res.msg);
         } else { alert(res.msg); }
     };

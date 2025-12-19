@@ -121,6 +121,12 @@ class ForumService {
             callback(comments);
         });
     }
+
+    simulateLiveActivity(callback) {
+        // Placeholder for legacy support to prevent crashes
+        console.log("Forum simulation active (LEGACY)");
+        return () => { };
+    }
 }
 
 export const forumService = new ForumService();

@@ -1,5 +1,5 @@
 import { db } from '../firebase/config';
-import { doc, getDoc, updateDoc, increment, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment, arrayUnion, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { circles, levels } from './mockData';
 
 class FandomService {
@@ -80,6 +80,74 @@ class FandomService {
             }
         }
         return this.levels[this.levels.length - 1]; // Max level
+    }
+
+    // --- PERSISTENCE METHODS ---
+
+    subscribeToPosts(circleId, callback) {
+        const postsRef = collection(db, 'communities', circleId || 'global', 'posts');
+        const q = query(postsRef, orderBy('created_at', 'desc'));
+
+        return onSnapshot(q, (snapshot) => {
+            const posts = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                created_at: doc.data().created_at?.toDate()?.toISOString() || new Date().toISOString()
+            }));
+            callback(posts);
+        });
+    }
+
+    async addPost(circleId, postData) {
+        const postsRef = collection(db, 'communities', circleId || 'global', 'posts');
+        const post = {
+            ...postData,
+            created_at: serverTimestamp(),
+            likes: [],
+            comments: []
+        };
+        const docRef = await addDoc(postsRef, post);
+        return { id: docRef.id, ...post };
+    }
+
+    async addComment(circleId, postId, commentData) {
+        const postRef = doc(db, 'communities', circleId || 'global', 'posts', postId);
+        await updateDoc(postRef, {
+            comments: arrayUnion({
+                ...commentData,
+                id: 'c' + Date.now(),
+                created_at: new Date().toISOString()
+            })
+        });
+    }
+
+    async likePost(circleId, postId, userId) {
+        const postRef = doc(db, 'communities', circleId || 'global', 'posts', postId);
+        await updateDoc(postRef, {
+            likes: arrayUnion(userId)
+        });
+    }
+
+    subscribeToChat(circleId, callback) {
+        const chatRef = collection(db, 'communities', circleId || 'global', 'chat');
+        const q = query(chatRef, orderBy('time', 'asc'));
+
+        return onSnapshot(q, (snapshot) => {
+            const messages = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                time: doc.data().time?.toDate()?.toISOString() || new Date().toISOString()
+            }));
+            callback(messages);
+        });
+    }
+
+    async sendChatMessage(circleId, msgData) {
+        const chatRef = collection(db, 'communities', circleId || 'global', 'chat');
+        await addDoc(chatRef, {
+            ...msgData,
+            time: serverTimestamp()
+        });
     }
 }
 
