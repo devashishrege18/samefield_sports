@@ -48,7 +48,9 @@ const RoomList = () => {
     } = useVoice();
 
     // Check if any peer has video enabled
-    const activeVideoPeers = Object.entries(remoteStreams).filter(([peerId, stream]) => stream.getVideoTracks().length > 0);
+    const activeVideoPeers = Object.entries(remoteStreams || {}).filter(([peerId, stream]) =>
+        stream && typeof stream.getVideoTracks === 'function' && stream.getVideoTracks().length > 0
+    );
 
     return (
         <div className="w-80 bg-[#0a0a0a] border-l border-white/10 flex flex-col hidden lg:flex shrink-0">
@@ -67,7 +69,7 @@ const RoomList = () => {
                             {localUser.isVideoEnabled && <VideoFeed stream={localStream} isLocal={true} name={localUser.name} />}
                             {activeVideoPeers.map(([peerId, stream]) => {
                                 // Find user in ANY room by peerId (stable ID)
-                                const user = rooms.flatMap(r => r.users).find(u => u.id === peerId);
+                                const user = (rooms || []).flatMap(r => r.users || []).find(u => u.id === peerId);
                                 return (
                                     <VideoFeed
                                         key={peerId}
@@ -89,7 +91,7 @@ const RoomList = () => {
                 {/* ROOM LIST */}
                 <div className="space-y-4">
                     <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Available Rooms</span>
-                    {rooms.map(room => (
+                    {(rooms || []).map(room => (
                         <div key={room.id} className="space-y-2">
                             <div
                                 onClick={() => joinRoom(room.id)}
@@ -104,7 +106,7 @@ const RoomList = () => {
 
                             {/* User Presence Tree */}
                             <div className="pl-4 space-y-2">
-                                {room.users.map((u) => (
+                                {(room.users || []).map((u) => (
                                     <div key={u.id} className="flex items-center gap-2">
                                         <div className="w-6 h-6 rounded-full border border-white/10 overflow-hidden relative">
                                             <img src={u.avatar} className="w-full h-full object-cover" alt="" />

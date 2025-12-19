@@ -40,7 +40,7 @@ const Discover = () => {
         if (actionType === 'store_visit') {
             modalData.description = `Welcome to the official ${itemName} curated collection. Explore exclusive high-performance gear designed for elite athletes.`;
             modalData.stats = { members: '150k+', products: '42 items' };
-            modalData.img = itemName.includes('VK18') ? '/assets/store_vk18_fitness_1765787964441.png' : '/assets/store_serena_ventures_1765787984356.png';
+            modalData.img = (itemName || "").includes('VK18') ? '/assets/store_vk18_fitness_1765787964441.png' : '/assets/store_serena_ventures_1765787984356.png';
         } else if (actionType === 'ticket_buy') {
             modalData.description = `Secure your spot at the ${itemName}. Experience the energy of grassroots sports and support local communities.`;
             modalData.stats = { availability: 'Limited', category: 'General' };

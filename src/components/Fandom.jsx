@@ -357,7 +357,7 @@ const Fandom = () => {
                             <div className="space-y-6">
                                 {posts.map(post => {
                                     const likeCount = Array.isArray(post.likes) ? post.likes.length : 0;
-                                    const isLiked = Array.isArray(post.likes) && post.likes.includes(guestIdentity.guest_id);
+                                    const isLiked = Array.isArray(post.likes) && (post.likes || []).includes(guestIdentity.guest_id);
 
                                     return (
                                         <div key={post.id} className="bg-surface rounded-2xl p-6 border border-white/5 hover:border-white/10 transition-colors shadow-lg">
@@ -637,7 +637,7 @@ const Fandom = () => {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {circles.map(c => {
-                                const isJoined = stats.joinedCircles?.includes(c.id);
+                                const isJoined = (stats.joinedCircles || []).includes(c.id);
                                 return (
                                     <div key={c.id} className="group relative bg-surface hover:bg-white/5 border border-white/5 p-5 rounded-2xl transition-all hover:scale-[1.01] cursor-pointer"
                                         onClick={() => isJoined ? navigate(`/fandom/${c.id}`) : handleJoin(c.id)}>

@@ -29,7 +29,7 @@ class FandomService {
         const circle = this.circles.find(c => c.id === circleId);
         if (!circle) return { success: false, msg: 'Circle not found' };
 
-        if (userData.joinedCircles?.includes(circleId)) {
+        if ((userData.joinedCircles || []).includes(circleId)) {
             return { success: false, msg: 'Already a member' };
         }
 
