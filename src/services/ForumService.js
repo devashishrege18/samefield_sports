@@ -31,9 +31,9 @@ class ForumService {
             this.syncCallbacks.forEach(cb => cb());
         });
 
-        // Initialize with seed data if empty
+        // Initialize with seed data if too few threads remain
         const snapshot = await getDocs(collection(db, 'threads'));
-        if (snapshot.empty) {
+        if (snapshot.size < 5) {
             this.seedData();
         }
     }
