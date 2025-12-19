@@ -140,10 +140,10 @@ const Forum = () => {
         }, 300);
     };
 
-    const handleCreateMockThread = () => {
+    const handleCreateMockThread = async () => {
         const savedName = localStorage.getItem('samefield_username') || 'You (Demo)';
         // Simulate user creating a thread
-        const newT = forumService.createThread({
+        const newT = await forumService.createThread({
             title: "Community Insight: The Rise of Mixed Teams",
             author: savedName,
             category: filter === 'All' ? 'Tactical Analysis' : filter,
@@ -151,9 +151,11 @@ const Forum = () => {
             content: "Sharing my thoughts on progress in the community leagues... I believe the integration of diverse skillsets is the key to our future success. What do you all think?",
             votes: 1
         });
+
+        // Wait for sync or force local update
         setThreads(forumService.getThreads(filter));
-        addPoints(50, 'Created New Topic');
         setSelectedThread(newT);
+        addPoints(50, 'Created New Topic');
     };
 
     const handleUpvote = (e, threadId) => {

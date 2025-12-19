@@ -45,25 +45,67 @@ class ForumService {
                 author: 'TacticalGenius',
                 category: 'Tactical Analysis',
                 votes: 342,
-                comments: 42,
-                content: "I've been analyzing the win rates...",
-                timestamp: serverTimestamp()
+                comments: 5,
+                content: "I've been analyzing the win rates of teams with dual leadership. The split in workload between batting and bowling specialists as captains shows a 12% improvement in decision-making speed.",
+                timestamp: serverTimestamp(),
+                aiSummary: "Analysis suggests 12% boost in strategic speed via dual leadership.",
+                aiTags: ["Strategy", "Metrics"]
             },
             {
                 title: "India vs Australia - Match Thread",
                 author: 'System Bot',
                 category: 'Live Match Reactions',
                 votes: 156,
-                comments: 89,
+                comments: 12,
                 isLive: true,
-                content: `Official live discussion thread. Keep it civil!`,
-                timestamp: serverTimestamp()
+                content: `Official live discussion thread for the heavyweight clash. Keep it civil and focus on the game!`,
+                timestamp: serverTimestamp(),
+                aiSummary: "Live tracking of IND vs AUS game events.",
+                aiTags: ["Live", "Trending"]
+            },
+            {
+                title: "Caitlin Clark: Redefining the Guard Position",
+                author: 'HoopsMaster',
+                category: 'Player Performance Talk',
+                votes: 890,
+                comments: 45,
+                content: "The way she scans the floor is reminiscent of prime Bird. Her range is just the tip of the iceberg.",
+                timestamp: serverTimestamp(),
+                aiSummary: "Deep dive into Clark's playmaking and court vision.",
+                aiTags: ["WNBA", "GOAT-Talk"]
+            },
+            {
+                title: "RCB Women: The Unstoppable Momentum",
+                author: 'WPL_Fanatic',
+                category: 'Live Match Reactions',
+                votes: 620,
+                comments: 31,
+                content: "Is this the strongest lineup in league history? The balance between Perry and Mandhana is perfect.",
+                timestamp: serverTimestamp(),
+                aiSummary: "Fans debating if RCB W is the most balanced team ever.",
+                aiTags: ["WPL", "RCB"]
+            },
+            {
+                title: "AI in Sports: Prediction or Spoilers?",
+                author: 'DataSciFan',
+                category: 'Fan Predictions',
+                votes: 215,
+                comments: 18,
+                content: "With LLMs predicting player moves, are we losing the magic of the unexpected?",
+                timestamp: serverTimestamp(),
+                aiSummary: "Community debate on AI's role in sports anticipation.",
+                aiTags: ["AI", "Ethics"]
             }
         ];
 
         for (const thread of initialThreads) {
             await addDoc(collection(db, 'threads'), thread);
         }
+    }
+
+    async broadcastComment(threadId, comment) {
+        // Alias for addComment to fix UI crash
+        return this.addComment(threadId, comment);
     }
 
     onSync(callback) {
