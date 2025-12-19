@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Star, Heart, Trophy, ChevronRight } from 'lucide-react';
 
-const NetflixPurposeModal = () => {
+const BlockbusterPurposeModal = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const NetflixPurposeModal = () => {
 
     if (!isVisible) return null;
 
-    // High-quality vertical posters (2:3 aspect)
+    // Rich content: Women in sports focus (training, matches, crowds, grassroots)
     const posters = [
         "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?q=80&w=400&auto=format&fit=crop",
         "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=400&auto=format&fit=crop",
@@ -35,111 +35,107 @@ const NetflixPurposeModal = () => {
         "https://images.unsplash.com/photo-1511886929837-354d827aae26?q=80&w=400&auto=format&fit=crop",
         "https://images.unsplash.com/photo-1599586120429-48281b6f0ece?q=80&w=400&auto=format&fit=crop",
         "https://images.unsplash.com/photo-1526676037777-05a232534f57?q=80&w=400&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1504450758481-7338eba7524a?q=80&w=400&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1518611012118-29a7d63d0c24?q=80&w=400&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1547941126-3d5322b218b0?q=80&w=400&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1471295253337-3ceaaedca402?q=80&w=400&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1431324155629-1a6eda1dec2d?q=80&w=400&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1511886929837-354d827aae26?q=80&w=400&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=400&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1519315901367-f34ff9154487?q=80&w=400&auto=format&fit=crop",
         "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=400&auto=format&fit=crop",
     ];
 
     return (
-        <div className="fixed inset-0 z-[9999] bg-black overflow-hidden font-outfit select-none flex items-center">
+        <div className="fixed inset-0 z-[9999] bg-black overflow-hidden font-outfit select-none flex flex-col items-center justify-center">
 
-            {/* Netflix-style Horizontal Poster Wall (Infinite Loop) */}
-            <div className="absolute inset-0 z-0 overflow-hidden opacity-40 pointer-events-none">
-                <div className="absolute inset-[-20%] grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-3 transform rotate-[-10deg] scale-125 animate-poster-drift">
+            {/* BACKGROUND: High-Density Texture Wall */}
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <div
+                    className="absolute inset-[-20%] grid grid-cols-6 md:grid-cols-10 lg:grid-cols-12 gap-2 opacity-30 blur-[6px] grayscale-[60%] animate-slow-drift"
+                >
                     {[...posters, ...posters, ...posters, ...posters].map((img, i) => (
-                        <div key={i} className="aspect-[2/3] rounded-md overflow-hidden bg-surfaceHighlight border border-white/5 shadow-2xl">
-                            <img src={img} className="w-full h-full object-cover grayscale-[20%] opacity-80" alt="" />
+                        <div key={i} className="aspect-[2/3] rounded-sm overflow-hidden border border-white/5">
+                            <img src={img} className="w-full h-full object-cover" alt="" />
                         </div>
                     ))}
                 </div>
-                {/* Vignetting & Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-black" />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
+
+                {/* BACKGROUND TREATMENT: Vignette & Gradient Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-80" />
             </div>
 
-            {/* Content Container (Sign-In Box Style - Right Positioned) */}
-            <div className="relative z-10 w-full h-full flex items-center justify-center lg:justify-end lg:pr-32 px-4">
+            {/* FOREGROUND: Core Content Layer */}
+            <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center text-center space-y-12 animate-blockbuster-entry">
 
-                <div className="w-full max-w-md bg-black/75 backdrop-blur-3xl border border-white/10 rounded-xl p-10 md:p-12 shadow-2xl flex flex-col space-y-8 animate-zoom-in">
+                {/* TEXT HIERARCHY: Dominant Headline */}
+                <div className="space-y-6">
+                    <div className="flex items-center justify-center gap-3 mb-4 opacity-50">
+                        <Trophy className="w-4 h-4 text-primary" />
+                        <span className="text-[10px] font-black text-white uppercase tracking-[0.6em]">Samefield Sports</span>
+                        <Trophy className="w-4 h-4 text-primary" />
+                    </div>
 
-                    {/* Header */}
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Trophy className="w-5 h-5 text-primary" />
-                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Our Purpose</span>
-                        </div>
-                        <h1 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none uppercase">
-                            Watch. Support. <br />
-                            <span className="text-primary not-italic font-bold tracking-tight">ELEVATE.</span>
-                        </h1>
-                        <p className="text-textMuted text-sm font-medium tracking-tight leading-relaxed pt-2">
-                            A sports platform where supporting women athletes turns into <span className="text-white italic">real impact.</span>
+                    <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-[0.85] uppercase">
+                        Watch. Support.<br />
+                        <span className="text-primary italic">Elevate.</span>
+                    </h1>
+
+                    {/* Body Text: Human-Written Clean Statement */}
+                    <div className="max-w-3xl mx-auto pt-4">
+                        <p className="text-lg md:text-3xl font-medium text-gray-300 tracking-tight leading-tight">
+                            Join the movement to amplify women athletes. <br className="hidden md:block" />
+                            Every point you earn creates <span className="text-white">real impact.</span>
+                        </p>
+                        <p className="text-xs md:text-sm font-bold text-primary/80 tracking-[0.2em] uppercase mt-6 italic">
+                            Elevating women’s sports, one point at a time.
                         </p>
                     </div>
-
-                    {/* How It Works List (Minimalist) */}
-                    <div className="space-y-4 pt-4 border-t border-white/10">
-                        {[
-                            { icon: Video, text: "Watch Women's Sports" },
-                            { icon: Heart, text: "Earn Support Points" },
-                            { icon: Star, text: "Unlock Opportunities" }
-                        ].map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-4 group">
-                                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                                    <item.icon className="w-5 h-5 text-primary" />
-                                </div>
-                                <span className="text-xs font-bold text-gray-300 uppercase tracking-widest group-hover:text-white transition-colors">{item.text}</span>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Footer Info */}
-                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest text-center italic">
-                            Points represent active support.
-                        </p>
-                    </div>
-
-                    {/* Action Button */}
-                    <div className="pt-4">
-                        <button
-                            onClick={handleDismiss}
-                            className="w-full py-4 bg-primary text-black rounded-lg font-black uppercase text-sm tracking-[0.2em] hover:bg-white transition-all transform hover:scale-[1.02] active:scale-95 shadow-xl shadow-primary/20"
-                        >
-                            Start Supporting
-                        </button>
-                        <div className="flex items-center justify-center gap-2 mt-6 opacity-30">
-                            <div className="h-[1px] w-8 bg-white" />
-                            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white">Samefield Sports</span>
-                            <div className="h-[1px] w-8 bg-white" />
-                        </div>
-                    </div>
-
                 </div>
+
+                {/* PROCESS: Minimalist Icons */}
+                <div className="w-full max-w-xl grid grid-cols-1 md:grid-cols-3 gap-8 py-8 border-y border-white/10">
+                    {[
+                        { icon: Video, text: "Watch Matches" },
+                        { icon: Heart, text: "Earn XP" },
+                        { icon: Star, text: "Unlock Rewards" }
+                    ].map((item, idx) => (
+                        <div key={idx} className="flex flex-col items-center gap-2">
+                            <item.icon className="w-6 h-6 text-primary" />
+                            <span className="text-[10px] font-black text-white uppercase tracking-widest">{item.text}</span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* CTA: Rock Solid Confidence */}
+                <div className="pt-4">
+                    <button
+                        onClick={handleDismiss}
+                        className="px-16 py-6 bg-primary text-black rounded-lg font-black uppercase text-lg tracking-[0.2em] transition-all hover:bg-white hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,215,0,0.2)]"
+                    >
+                        Start Supporting
+                    </button>
+                    <p className="mt-8 text-[9px] text-white/30 uppercase tracking-[0.8em] font-black">EST. 2025 • Purpose First</p>
+                </div>
+
             </div>
 
             <style>{`
-                @keyframes poster-drift {
-                    0% { transform: rotate(-10deg) scale(1.25) translateY(0); }
-                    100% { transform: rotate(-10deg) scale(1.25) translateY(-10%); }
+                @keyframes slow-drift {
+                    0% { transform: scale(1.1) translate(0, 0); }
+                    100% { transform: scale(1.1) translate(-2%, -2%); }
                 }
-                .animate-poster-drift {
-                    animation: poster-drift 40s linear infinite alternate;
+                .animate-slow-drift {
+                    animation: slow-drift 60s linear infinite alternate;
                 }
-                @keyframes zoom-in {
-                    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-                    to { opacity: 1; transform: scale(1) translateY(0); }
+                @keyframes blockbuster-entry {
+                    0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+                    100% { opacity: 1; transform: scale(1) translateY(0); }
                 }
-                .animate-zoom-in {
-                    animation: zoom-in 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
+                .animate-blockbuster-entry {
+                    animation: blockbuster-entry 1s cubic-bezier(0.2, 0, 0, 1) forwards;
                 }
-                .font-playfair { font-family: 'Playfair Display', serif; }
                 .font-outfit { font-family: 'Outfit', sans-serif; }
             `}</style>
         </div>
     );
 };
 
-export default NetflixPurposeModal;
+export default BlockbusterPurposeModal;
