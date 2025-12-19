@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, MessageSquare, Share2, Heart, Send, Smile, ArrowUpRight } from 'lucide-react';
+import { Play, MessageSquare, Share2, Heart, Send, Smile, ArrowUpRight, Trash2 } from 'lucide-react';
 import { usePoints } from '../context/PointsContext';
 import { liveStreamService } from '../services/LiveStreamService';
 import { streamChatService } from '../services/StreamChatService';
@@ -100,6 +100,10 @@ const Watch = () => {
         streamChatService.sendMessage(newMessage, username);
         setNewMessage('');
         addPoints(2, 'Chat Message');
+    };
+
+    const handleDeleteMessage = async (messageId) => {
+        await streamChatService.deleteMessage(messageId);
     };
 
     // Points Loop
@@ -207,10 +211,19 @@ const Watch = () => {
                                     <span className={`text-[10px] font-bold ${msg.isSelf ? 'text-primary' : 'text-blue-400'}`}>
                                         {msg.user}
                                     </span>
-                                    <div className={`px-3 py-1.5 rounded-lg text-xs leading-5 break-words ${msg.type === 'system' ? 'bg-yellow-500/10 text-yellow-500 text-center w-full' :
+                                    <div className={`px-3 py-1.5 rounded-lg text-xs leading-5 break-words relative group ${msg.type === 'system' ? 'bg-yellow-500/10 text-yellow-500 text-center w-full' :
                                         msg.isSelf ? 'bg-primary/10 text-white' : 'bg-surfaceHighlight text-gray-200'
                                         }`}>
                                         {msg.text}
+                                        {msg.isSelf && (
+                                            <button
+                                                onClick={() => handleDeleteMessage(msg.id)}
+                                                className="absolute -left-6 top-1/2 -translate-y-1/2 p-1 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                title="Delete Message"
+                                            >
+                                                <Trash2 className="w-3 h-3" />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

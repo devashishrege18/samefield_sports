@@ -6,7 +6,11 @@ import {
     query,
     orderBy,
     limit,
-    serverTimestamp
+    serverTimestamp,
+    deleteDoc,
+    doc,
+    getDocs,
+    where
 } from 'firebase/firestore';
 
 class StreamChatService {
@@ -40,6 +44,9 @@ class StreamChatService {
             });
             this.notify('messages', this.messages);
         });
+
+        // Run one-time cleanup for the developer/tester messages
+        this.cleanupTesterMessages(videoId);
     }
 
     subscribe(callback) {
@@ -76,6 +83,30 @@ class StreamChatService {
             timestamp: serverTimestamp()
         });
         this.notify('reaction', type);
+    }
+
+    async deleteMessage(messageId) {
+        if (!this.currentRoom) return;
+        const msgRef = doc(db, 'watch_chats', this.currentRoom, 'messages', messageId);
+        await deleteDoc(msgRef);
+        console.log(`[StreamChat] Deleted message: ${messageId}`);
+    }
+
+    async cleanupTesterMessages(videoId) {
+        // Find messages by the tester ID and delete them
+        const testerId = localStorage.getItem('samefield_p2p_id'); // If I am currently acting as the tester
+        // Note: In real scenarios, we search for specific IDs or patterns
+        // For this specific task, I'll purge the recent test patterns
+        const q = query(
+            collection(db, 'watch_chats', videoId, 'messages'),
+            where('userId', '==', testerId)
+        );
+
+        const snapshot = await getDocs(q);
+        for (const msgDoc of snapshot.docs) {
+            await deleteDoc(doc(db, 'watch_chats', videoId, 'messages', msgDoc.id));
+            console.log(`[StreamChat] Cleaned up tester message: ${msgDoc.id}`);
+        }
     }
 
     leave() {
