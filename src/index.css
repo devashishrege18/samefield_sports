@@ -1,158 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0B0B0B;
-  --color-surface: #161616;
-  --color-surfaceHighlight: #1E1E1E;
-  --color-primary: #F5C400;
-  /* Electric Gold */
-  --color-primaryHover: #FFD54A;
-  --color-secondary: #CFA000;
-  /* Muted Gold */
-  --color-text: #FFFFFF;
-  --color-textMuted: #B0B0B0;
+  --font-outfit: "Outfit", sans-serif;
+  --font-inter: "Inter", sans-serif;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-primary: #F5C400;
+  --color-primary-glow: rgba(245, 196, 0, 0.4);
+  --color-primary-deep: rgba(245, 196, 0, 0.05);
+
+  --color-background: #050505;
+  --color-surface: #0a0a0a;
+  --color-surface-accent: #111111;
+  --color-surface-highlight: rgba(255, 255, 255, 0.03);
+
+  --color-text-main: #FFFFFF;
+  --color-text-muted: #999999;
+  --color-text-dim: #555555;
+
+  --color-black: #080808;
+  --color-glass: rgba(10, 10, 10, 0.6);
+  --color-border: rgba(255, 255, 255, 0.08);
+
+  --radius-hud: 32px;
+  --radius-module: 20px;
+  --radius-compact: 12px;
+
+  --animate-fade-in: fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-up: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-netflix-hover: netflixHover 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  --shadow-premium: 0 40px 80px rgba(0, 0, 0, 0.7);
+  --shadow-primary-glow: 0 0 30px var(--color-primary-glow);
 }
 
 :root {
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: dark;
-  color: var(--color-text);
-  background-color: var(--color-background);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --transition-classic: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: var(--color-background);
+@layer base {
+  body {
+    @apply bg-background text-text-main font-outfit antialiased min-h-screen overflow-x-hidden;
+    scrollbar-color: var(--color-primary) transparent;
+  }
+
+  ::selection {
+    @apply bg-primary text-black;
+  }
 }
 
-#root {
-  width: 100%;
+@layer components {
+
+  /* CINEMATIC PAGE CONTAINER */
+  .page-container {
+    @apply max-w-[1700px] mx-auto px-8 md:px-12 py-12 space-y-20 animate-fade-in;
+  }
+
+  /* REFINED NETFLIX-STYLE GLASS CARDS */
+  .premium-card {
+    @apply bg-glass backdrop-blur-[40px] border border-border rounded-module transition-all duration-700 relative overflow-hidden;
+    @apply hover:border-white/30 hover:shadow-premium hover:bg-white/[0.04] hover:scale-[1.02];
+  }
+
+  /* ELEGANT MINIMAL BUTTONS */
+  .btn-primary {
+    @apply bg-white text-black font-extrabold uppercase tracking-[0.2em] px-10 py-5 rounded-compact transition-all duration-500 text-[11px];
+    @apply hover:bg-primary hover:shadow-primary-glow active:scale-95;
+  }
+
+  .btn-outline {
+    @apply bg-transparent border border-white/20 text-white font-extrabold uppercase tracking-[0.2em] px-10 py-5 rounded-compact transition-all duration-500 text-[11px];
+    @apply hover:bg-white hover:text-black hover:border-transparent active:scale-95;
+  }
+
+  /* ATMOSPHERIC SECTION TITLES */
+  .section-title {
+    @apply text-sm font-black uppercase tracking-[0.4em] text-text-muted flex items-center gap-6;
+  }
+
+  /* GRADIENT OVERLAYS */
+  .vanguard-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent pointer-events-none;
+  }
 }
 
-/* Global Utility Classes for Premium UI */
-.premium-card {
-  @apply bg-surface rounded-xl border border-surfaceHighlight transition-all duration-300;
+@layer utilities {
+  .text-glow-primary {
+    text-shadow: 0 0 15px rgba(245, 196, 0, 0.4);
+  }
+
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-3xl border border-white/5;
+  }
+
+  .netflix-row {
+    @apply flex gap-6 overflow-x-auto scrollbar-hide py-10 px-2;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
 }
 
-.premium-card:hover {
-  @apply border-primary/50 shadow-[0_0_15px_-5px_theme('colors.primary/0.2')];
-}
-
-.text-gold {
-  color: var(--color-primary);
-}
-
-.bg-gold {
-  background-color: var(--color-primary);
-  color: #000000;
-}
-
-.btn-primary {
-  @apply bg-primary text-black font-bold px-6 py-2 rounded-full transition-transform active:scale-95 hover:bg-primaryHover hover:shadow-[0_0_10px_theme('colors.primary/0.4')];
-}
-
-/* Premium Golden Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-  border-left: 1px solid var(--color-surfaceHighlight);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--color-secondary), var(--color-primary));
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primaryHover);
-}
-
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
+    transform: scale(0.98);
   }
 
   to {
     opacity: 1;
-  }
-}
-
-@keyframes slideInFromTop {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromBottom {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-
-  to {
     transform: scale(1);
-    opacity: 1;
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.animate-in {
-  animation-duration: 0.5s;
-  animation-fill-mode: forwards;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+@keyframes netflixHover {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.05);
+  }
 }
 
-.slide-in-from-top {
-  animation-name: slideInFromTop;
+/* REFINED SCROLLBAR */
+::-webkit-scrollbar {
+  @apply w-1;
 }
 
-.slide-in-from-bottom {
-  animation-name: slideInFromBottom;
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
 }
 
-.fade-in {
-  animation-name: fadeIn;
+::-webkit-scrollbar-thumb {
+  @apply bg-white/5 rounded-full hover:bg-primary transition-colors;
 }
 
-.zoom-in {
-  animation-name: scaleIn;
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

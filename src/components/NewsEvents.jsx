@@ -1,8 +1,5 @@
 import React from 'react';
-import { Calendar, Tag, ArrowRight } from 'lucide-react';
-import newsTraining from '../assets/news_training.png';
-import newsChampionship from '../assets/news_championship.png';
-import '../styles/components/NewsEvents.css';
+import { Calendar, Tag, ArrowRight, Rss, Globe, Zap, ExternalLink } from 'lucide-react';
 
 const NewsEvents = () => {
     const news = [
@@ -10,7 +7,7 @@ const NewsEvents = () => {
             id: 1,
             title: 'India in WSF Squash World Cup final',
             date: 'Dec 14, 2025',
-            image: newsChampionship,
+            image: 'https://images.unsplash.com/photo-1541252260730-0412e8e2108e?auto=format&fit=crop&q=80&w=400',
             type: 'News',
             desc: 'India beat Egypt to reach the squash world cup final.',
             link: 'https://timesofindia.indiatimes.com/sports/more-sports/others/wsf-world-cup-india-beat-egypt-to-reach-squash-world-cup-final/articleshow/125958677.cms'
@@ -19,7 +16,7 @@ const NewsEvents = () => {
             id: 2,
             title: 'Sansad Khel Mahotsav polo match result',
             date: 'Dec 14, 2025',
-            image: newsTraining,
+            image: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&q=80&w=400',
             type: 'News',
             desc: 'Kurukshetra beats Kaithal in a competitive polo fixture.',
             link: 'https://timesofindia.indiatimes.com/city/chandigarh/sansad-khel-mahotsav-kurukshetra-polo-team-beats-kaithal/articleshow/125952436.cms'
@@ -28,7 +25,7 @@ const NewsEvents = () => {
             id: 3,
             title: 'Indian cricket team 2025 international schedule',
             date: 'Dec 14, 2025',
-            image: newsChampionship,
+            image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=400',
             type: 'Event',
             desc: 'Upcoming tours and dates for the Indian cricket team.',
             link: 'https://www.olympics.com/en/news/indian-cricket-team-2025-calendar-schedule-dates'
@@ -37,118 +34,74 @@ const NewsEvents = () => {
             id: 4,
             title: 'Lionel Messi in India',
             date: 'Dec 14, 2025',
-            image: newsTraining,
+            image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=400',
             type: 'Event',
             desc: 'Live updates from Kolkata & Hyderabad football event.',
             link: 'https://www.amarujala.com/live/sports/football/lionel-messi-in-india-live-updates-kolkata-hyderabad-messi-live-updates'
-        },
-        {
-            id: 5,
-            title: 'Tributes to India Women\'s Cricket Team',
-            date: 'Nov 3, 2025',
-            image: newsChampionship,
-            type: 'News',
-            desc: 'National reaction after World Cup win.',
-            link: 'https://www.aljazeera.com/sports/2025/11/3/narendra-modi-leads-tributes-to-womens-cricket-team-after-world-cup-win'
-        },
-        {
-            id: 6,
-            title: 'Women\'s ODI World Cup 2025: India v Pakistan',
-            date: 'Dec 14, 2025',
-            image: newsTraining,
-            type: 'Event',
-            desc: 'Live scores and updates during the match.',
-            link: 'https://www.abplive.com/sports/cricket/ind-w-vs-pak-w-live-score-women-odi-world-cup-2025-india-vs-pakistan-cricket-match-scorecard-live-updates-harmanpreet-kaur-smriti-mandhana-3023691'
-        },
-        {
-            id: 7,
-            title: 'Cricket highlights: India Women v South Africa final',
-            date: 'Dec 14, 2025',
-            image: newsChampionship,
-            type: 'News',
-            desc: 'Match highlights and scorecard from the final.',
-            link: 'https://hindi.news24online.com/sports-news/cricket/ind-w-vs-sa-w-final-live-cricket-score-and-updates-women-world-cup-2025-india-women-vs-australia-women-match-full-scorecard-dy-patil-mumbai-harmanpreet-kaur-laura-wolvaardt/1374222/'
-        },
-        {
-            id: 8,
-            title: 'SAAF Championships',
-            date: 'Dec 14, 2025',
-            image: newsTraining,
-            type: 'News',
-            desc: 'India bagged multiple medals at the South Asian Athletics meet.',
-            link: 'https://timesofindia.indiatimes.com/sports/more-sports/saaf-championships-india-wins-7-gold-on-day-2/articleshow/124822775.cms'
-        },
-        {
-            id: 9,
-            title: 'Junior Women\'s Hockey World Cup',
-            date: 'Dec 14, 2025',
-            image: newsChampionship,
-            type: 'News',
-            desc: 'India beat Namibia 13-0 in the tournament.',
-            link: 'https://navbharattimes.indiatimes.com/sports/hockey/news/india-beat-namibia-by13-0-in-junior-women-hockey-world-cup-2025-hina-bano-kanika-siwach-scored-hattricks/articleshow/125707233.cms'
-        },
-        {
-            id: 10,
-            title: 'India women\'s hockey Asia Cup final',
-            date: 'Dec 14, 2025',
-            image: newsTraining,
-            type: 'News',
-            desc: 'Runner-up finish for India in the Asia Cup.',
-            link: 'https://www.ibc24.in/sport/womens-hockey-asia-cup-india-womens-team-was-runner-up-in-asia-cup-china-defeated-them-4-1-in-the-final-3252299.html'
-        },
-        {
-            id: 11,
-            title: 'India\'s first pro basketball league',
-            date: 'Dec 14, 2025',
-            image: newsChampionship,
-            type: 'Event',
-            desc: 'BFI + ACG Sports launch professional league for men and women.',
-            link: 'https://www.business-standard.com/sports/other-sports-news/bfi-acg-unveil-india-s-first-pro-basketball-league-for-men-and-women-125060700324_1.html'
-        },
-        {
-            id: 12,
-            title: '2025 National Games of India',
-            date: 'Dec 14, 2025',
-            image: newsTraining,
-            type: 'Event',
-            desc: 'Multi-sport National Games hosted across Uttarakhand.',
-            link: 'https://en.wikipedia.org/wiki/2025_National_Games_of_India'
-        },
-        {
-            id: 13,
-            title: 'India Women\'s Cricket Team World Cup Win',
-            date: 'Nov 3, 2025',
-            image: newsChampionship,
-            type: 'News',
-            desc: 'Watch the highlights on YouTube.',
-            link: 'https://www.youtube.com/watch?v=Up_i0vku1e0'
         }
     ];
 
     return (
-        <div className="news-container">
-            <h2 className="section-title">News & Events</h2>
+        <div className="space-y-10 animate-fade-in">
+            <div className="flex justify-between items-end">
+                <h2 className="section-title !mb-0">
+                    <Rss className="icon" /> Intelligence Stream
+                </h2>
+                <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
+                    <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_red]" />
+                    <span className="text-[9px] font-black text-white uppercase tracking-widest">Live Signals</span>
+                </div>
+            </div>
 
-            <div className="news-grid">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {news.map(item => (
-                    <div key={item.id} className="news-card">
-                        <div className="news-image">
-                            <img src={item.image} alt={item.title} />
-                            <span className="news-tag">{item.type}</span>
+                    <div key={item.id} className="premium-card p-0 group/news border-white/5 hover:border-primary/40 relative overflow-hidden transition-all flex flex-col h-full">
+                        <div className="relative h-48 overflow-hidden">
+                            <img
+                                src={item.image}
+                                alt={item.title}
+                                className="w-full h-full object-cover grayscale opacity-60 group-hover/news:grayscale-0 group-hover/news:opacity-100 group-hover/news:scale-110 transition-all duration-[1000ms]"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                            <span className={`absolute top-4 left-4 flex items-center gap-2 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest backdrop-blur-md border ${item.type === 'Event' ? 'bg-primary/20 text-primary border-primary/30' : 'bg-white/10 text-white border-white/20'
+                                }`}>
+                                <Zap size={10} className={item.type === 'Event' ? 'animate-pulse' : ''} />
+                                {item.type}
+                            </span>
                         </div>
-                        <div className="news-content">
-                            <div className="news-date">
-                                <Calendar size={14} /> {item.date}
+
+                        <div className="p-6 flex-1 flex flex-col">
+                            <div className="flex items-center gap-2 text-[8px] font-black text-textMuted uppercase tracking-widest mb-3">
+                                <Calendar size={10} className="text-primary" /> {item.date}
                             </div>
-                            <h3 className="news-title">{item.title}</h3>
-                            <p className="news-desc">{item.desc}</p>
-                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="btn-ticket">
-                                {item.type === 'Event' ? 'Get Tickets' : 'Read Full Story'} <ArrowRight size={16} />
-                            </a>
+                            <h3 className="text-lg font-black text-white italic tracking-tighter uppercase leading-tight mb-3 group-hover/news:text-primary transition-colors line-clamp-2">{item.title}</h3>
+                            <p className="text-[11px] text-textMuted font-medium italic mb-6 line-clamp-2 leading-relaxed">"{item.desc}"</p>
+
+                            <div className="mt-auto pt-4 border-t border-white/5">
+                                <a
+                                    href={item.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`w-full flex items-center justify-between text-[9px] font-black uppercase tracking-widest transition-all p-2 rounded-lg group/link ${item.type === 'Event' ? 'text-primary' : 'text-textMuted hover:text-white'
+                                        }`}
+                                >
+                                    {item.type === 'Event' ? 'Secure Terminal' : 'Full Infiltration'}
+                                    <ArrowRight size={14} className="group-hover/link:translate-x-2 transition-transform" />
+                                </a>
+                            </div>
                         </div>
+
+                        <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent translate-y-full group-hover/news:translate-y-0 transition-transform" />
                     </div>
                 ))}
             </div>
+
+            <button className="w-full btn-outline py-5 text-[10px] shadow-xl group/more relative overflow-hidden">
+                <span className="relative z-10 flex items-center justify-center gap-4">
+                    ACCESS GLOBAL ARCHIVES <Globe size={16} className="group-hover/more:rotate-180 transition-transform duration-[1000ms]" />
+                </span>
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-primary scale-x-0 group-hover/more:scale-x-100 transition-transform origin-left" />
+            </button>
         </div>
     );
 };
