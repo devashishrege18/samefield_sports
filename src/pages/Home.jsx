@@ -1,34 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowUpRight, Play, Calendar, Search, TrendingUp, Award, BarChart2, Activity, ChevronRight, ChevronLeft, Target, Zap, Shield, Rss, Mic, Globe, Cpu, Radio, Signal } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowUpRight, Play, Calendar, Search, TrendingUp, Award, BarChart2, Activity, ChevronRight, ChevronLeft, Target } from 'lucide-react';
 import { usePoints } from '../context/PointsContext';
 import Leaderboard from '../components/Leaderboard';
-import LiveMatches from '../components/LiveMatches';
-import NewsEvents from '../components/NewsEvents';
-import PlayerMeet from '../components/PlayerMeet';
-import Commentary from '../components/Commentary';
 
 const Home = () => {
-    const { points, addPoints } = usePoints();
+    const { addPoints } = usePoints();
     const [pollVoted, setPollVoted] = useState(false);
     const [predictionMade, setPredictionMade] = useState(false);
-    const [displayPoints, setDisplayPoints] = useState(points);
-
-    useEffect(() => {
-        let start = displayPoints;
-        const end = points;
-        const duration = 1000;
-        const startTime = performance.now();
-
-        const animate = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const ease = 1 - Math.pow(1 - progress, 4);
-            const current = Math.floor(start + (end - start) * ease);
-            setDisplayPoints(current);
-            if (progress < 1) requestAnimationFrame(animate);
-        };
-        requestAnimationFrame(animate);
-    }, [points]);
 
     const handlePrediction = (player) => {
         if (!predictionMade) {
@@ -45,256 +23,277 @@ const Home = () => {
     };
 
     return (
-        <div className="page-container">
-            {/* ATMOSPHERIC SEARCH & NAVIGATION HEADER */}
-            <div className="flex flex-col xl:flex-row justify-between items-center gap-10">
-                <div className="flex flex-col gap-2">
-                    <h1 className="text-3xl font-bold text-white tracking-tight leading-none bg-gradient-to-r from-white via-white to-primary/50 bg-clip-text text-transparent">
-                        Sports<span className="text-primary drop-shadow-md">Central</span>
-                    </h1>
-                    <p className="text-primary/80 text-sm font-medium tracking-wide uppercase">Home • Live Events • Prestige • <span className="text-white/40">v2.0 Gold</span></p>
-                </div>
+        <div className="space-y-8">
 
-                <div className="relative w-full xl:w-[600px] group">
-                    <Search className="absolute left-8 top-1/2 transform -translate-y-1/2 text-white/20 w-4 h-4 group-focus-within:text-primary transition-all duration-500" />
+            {/* Top Section: Search Bar (Page Level) */}
+            <div className="flex justify-end">
+                <div className="relative w-full md:w-96">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary w-4 h-4" />
                     <input
                         type="text"
-                        placeholder="Search for players, matches, or legendary moments..."
-                        className="w-full bg-white/[0.03] border border-white/5 text-white pl-16 pr-8 py-5 rounded-2xl text-[11px] font-bold tracking-widest focus:outline-none focus:border-white/20 focus:bg-white/[0.05] transition-all placeholder:text-white/10"
+                        placeholder="Search matches, players, stats..."
+                        className="w-full bg-surface/50 border border-surfaceHighlight text-white pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:border-primary transition-all placeholder:text-textMuted"
                     />
                 </div>
             </div>
 
-            {/* CINEMATIC FEATURED HERO */}
-            <div className="relative min-h-[600px] rounded-[32px] overflow-hidden group shadow-premium border border-white/5 bg-black">
-                {/* DYNAMIC ATMOSPHERIC BACKGROUND */}
-                <img
-                    src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2674&auto=format&fit=crop"
-                    alt="Featured Arena"
-                    className="absolute inset-0 w-full h-full object-cover grayscale opacity-30 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-[4000ms] ease-out scale-105 group-hover:scale-100"
-                />
+            {/* Hero Section: Mixed Team Cricket */}
+            <section className="relative w-full h-[300px] md:h-[450px] rounded-2xl overflow-hidden border border-surfaceHighlight group">
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2669&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
 
-                {/* CINEMATIC OVERLAYS */}
-                <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
-                <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-black via-black/20 to-transparent z-10" />
-
-                <div className="absolute inset-y-0 left-0 flex flex-col justify-center px-12 xl:px-24 space-y-10 max-w-6xl z-30 pt-20">
-                    <div className="flex items-center gap-5 animate-slide-up">
-                        <div className="px-4 py-1.5 bg-primary/20 border border-primary/20 rounded-lg">
-                            <span className="text-[10px] font-black text-primary tracking-[0.2em] uppercase">Featured Event</span>
-                        </div>
-                        <span className="text-[10px] font-bold text-white/40 tracking-[0.4em] uppercase">Live from London</span>
+                <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full md:w-2/3">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-black font-black text-[8px] md:text-[10px] uppercase tracking-widest rounded-sm mb-4 md:mb-6">
+                        <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse" /> World Premiere
                     </div>
-
-                    <div className="space-y-6 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                        <h1 className="text-6xl xl:text-8xl font-black text-white tracking-tight leading-[0.9] flex flex-col">
-                            <span>Battle of</span>
-                            <span className="text-white/40">The Legends</span>
-                        </h1>
-                        <p className="text-lg text-text-muted max-w-2xl font-medium leading-relaxed">
-                            A historic encounter at the peak of athletic excellence. Witness the world's elite go head-to-head in a definitive clash of speed, power, and strategy.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row items-center gap-8 pt-8 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                        <button className="w-full sm:w-auto btn-primary flex items-center justify-center gap-4">
-                            Resume Watch <Play className="w-4 h-4 fill-current" />
+                    <h1 className="text-3xl md:text-7xl font-black text-white italic tracking-tighter mb-2 leading-none uppercase">
+                        History in the <span className="text-primary">Making</span>
+                    </h1>
+                    <h2 className="text-lg md:text-2xl font-bold text-white mb-2 uppercase tracking-wide">
+                        First-ever Mixed Team Cricket Tournament
+                    </h2>
+                    <p className="text-xs md:text-sm font-medium text-gray-300 italic mb-4 md:mb-6">"Redefining how teams are formed in modern sport."</p>
+                    <div className="flex flex-wrap gap-3 md:gap-4">
+                        <button className="btn-primary text-xs md:text-sm flex items-center gap-2">
+                            WATCH LIVE <Play className="w-3 h-3 md:w-4 md:h-4 fill-black" />
                         </button>
-                        <button className="w-full sm:w-auto btn-outline flex items-center justify-center gap-4">
-                            Event Intel <BarChart2 className="w-4 h-4" />
+                        <button className="px-4 py-1.5 md:px-6 md:py-2 rounded-full border border-surfaceHighlight hover:border-primary text-white hover:text-primary transition-all font-bold uppercase tracking-wide text-xs md:text-sm bg-black/50 backdrop-blur-sm">
+                            Tournament Info
                         </button>
                     </div>
                 </div>
+            </section>
 
-                {/* ATMOSPHERIC STATS HUD */}
-                <div className="absolute bottom-16 right-16 z-30 hidden xl:flex gap-10 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-                    {[
-                        { label: 'Active Viewers', val: '2.4M', icon: Globe },
-                        { label: 'Global Signals', val: '128K', icon: Radio },
-                    ].map((s, i) => (
-                        <div key={i} className="flex flex-col items-end">
-                            <p className="text-3xl font-black text-white italic tracking-tighter">{s.val}</p>
-                            <p className="text-[10px] text-primary font-black uppercase tracking-[0.4em] mt-1 italic">{s.label}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-16">
-                {/* MAIN CONTENT FEED */}
-                <div className="xl:col-span-8 space-y-32">
+                {/* LEFT COLUMN (Content Stream) */}
+                <div className="lg:col-span-2 space-y-8">
 
-                    {/* TRENDING NOW - NETFLIX ROW */}
-                    <section className="space-y-12">
-                        <div className="flex items-center justify-between">
-                            <h2 className="section-title">
-                                <TrendingUp className="w-4 h-4 text-primary" /> Recommended for You
-                            </h2>
-                            <div className="flex gap-4">
-                                <button className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white hover:text-black transition-all">
-                                    <ChevronLeft className="w-5 h-5" />
-                                </button>
-                                <button className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white hover:text-black transition-all">
-                                    <ChevronRight className="w-5 h-5" />
-                                </button>
+                    {/* Featured Events Carousel */}
+                    <section>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
+                                <Calendar className="w-5 h-5 text-primary" /> Featured Events
+                            </h3>
+                            <div className="flex gap-2">
+                                <button className="p-1 rounded bg-surfaceHighlight hover:bg-primary hover:text-black transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+                                <button className="p-1 rounded bg-surfaceHighlight hover:bg-primary hover:text-black transition-colors"><ChevronRight className="w-4 h-4" /></button>
                             </div>
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                             {[
-                                { id: 1, title: 'Titan League Finals', type: 'Upcoming', img: 'https://images.unsplash.com/photo-1541252260730-0412e8e2108e?q=80', date: 'Dec 24, 2023' },
-                                { id: 2, title: 'Sector Semis: Alpha', type: 'Live', img: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80', date: 'Dec 20, 2023' }
+                                { id: 1, title: 'Super Six Finals', type: 'Mixed Doubles', img: '/assets/thumb_womens_football_1765784471060.png', tag: 'Support Local Talent' },
+                                { id: 2, title: 'Slamball Semis', type: 'Extreme Sports', img: '/assets/thumb_redbull_extreme_1765784514775.png', tag: 'Low Viewership - Join In!' },
+                                { id: 3, title: 'Pro Surf League', type: 'World Tour', img: '/assets/thumb_surfing_wsl_1765784559697.png' },
+                                { id: 4, title: 'WNBA All-Stars', type: 'Exhibition', img: '/assets/thumb_wnba_basketball_1765784493211.png' },
+                                { id: 5, title: 'Gold Medal Rerun', type: 'Olympics', img: '/assets/thumb_olympics_gold_1765784536137.png' }
                             ].map((ev) => (
-                                <div key={ev.id} className="premium-card p-0 group aspect-[4/3] cursor-pointer">
-                                    <img src={ev.img} alt={ev.title} className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-105 opacity-60 group-hover:opacity-100" />
-                                    <div className="hero-overlay group-hover:opacity-60 transition-opacity" />
-
-                                    <div className="absolute top-8 left-8 z-20">
-                                        <div className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] border ${ev.type === 'Live' ? 'bg-primary/20 border-primary/40 text-primary' : 'bg-black/60 border-white/10 text-white/60'}`}>
-                                            {ev.type}
-                                        </div>
+                                <div key={ev.id} className="min-w-[280px] h-40 rounded-xl bg-surface border border-surfaceHighlight p-4 flex flex-col justify-between hover:border-primary transition-colors cursor-pointer relative overflow-hidden group">
+                                    <div className="absolute inset-0">
+                                        <img src={ev.img} alt="Event" className="w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
                                     </div>
-
-                                    <div className="absolute bottom-0 left-0 right-0 p-8 z-20 transition-all duration-500 transform group-hover:-translate-y-2 bg-gradient-to-t from-black/80 to-transparent">
-                                        <div className="flex flex-col gap-3">
-                                            <span className="text-xs text-white/60 font-medium uppercase tracking-wider">{ev.date}</span>
-                                            <h4 className="font-bold text-white text-2xl tracking-tight leading-none">{ev.title}</h4>
-                                            <div className="h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-700" />
-                                        </div>
+                                    <div className="relative z-10">
+                                        <span className="text-xs font-bold text-primary uppercase tracking-wider">Aug 24 • 14:00 GMT</span>
+                                    </div>
+                                    <div className="relative z-10">
+                                        <h4 className="font-bold text-white text-lg leading-tight mb-1">{ev.title}</h4>
+                                        <p className="text-xs text-gray-300 mb-2">{ev.type} • Match {ev.id}</p>
+                                        {ev.tag === 'Support Local Talent' && (
+                                            <span className="inline-block px-2 py-0.5 bg-white/10 text-white text-[10px] font-bold uppercase rounded border border-white/20">
+                                                Support Local Talent
+                                            </span>
+                                        )}
+                                        {ev.tag === 'Low Viewership - Join In!' && (
+                                            <span className="inline-block px-2 py-0.5 bg-red-500/10 text-red-500 text-[10px] font-bold uppercase rounded border border-red-500/20">
+                                                Low Viewership - Join In!
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </section>
 
-                    <LiveMatches />
-                    <div className="premium-card p-12 bg-white/[0.01]">
-                        <Commentary />
+                    {/* Live & Upcoming Matches */}
+                    <section>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-primary" /> Match Centre
+                            </h2>
+                        </div>
+                        <div className="space-y-3">
+                            {/* Live Card */}
+                            <div className="premium-card p-0 flex flex-col md:flex-row overflow-hidden group">
+                                <div className="w-full md:w-1/3 bg-black relative flex items-center justify-center p-6 border-r border-surfaceHighlight">
+                                    <img src="/assets/generic_sport_thumb.png" alt="Live" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold uppercase rounded-sm animate-pulse z-10">Live</div>
+                                    <div className="text-center relative z-10">
+                                        <div className="flex items-center justify-center gap-4 text-2xl font-black text-white mb-2">
+                                            <span>IND</span> <span className="text-textMuted text-lg">vs</span> <span>AUS</span>
+                                        </div>
+                                        <p className="text-xs text-primary font-bold uppercase tracking-widest">Mixed T20 • Innings 2</p>
+                                        <p className="text-sm text-textMuted mt-1">AUS needs 42 runs in 28 balls</p>
+                                    </div>
+                                </div>
+                                <div className="flex-1 p-6 flex flex-col justify-between bg-surface/50">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 className="font-bold text-white text-lg">Semi-Final 1</h3>
+                                            <p className="text-xs text-textMuted">Wankhede Stadium, Mumbai</p>
+                                        </div>
+                                        <button className="px-4 py-1.5 rounded-full bg-primary text-black text-xs font-bold uppercase hover:bg-white transition-colors">Watch</button>
+                                    </div>
+                                    <div className="w-full bg-surfaceHighlight h-1 rounded-full overflow-hidden">
+                                        <div className="w-[70%] h-full bg-primary" />
+                                    </div>
+                                    <p className="text-[10px] text-right text-textMuted mt-1">Win Probability: IND 70%</p>
+                                </div>
+                            </div>
+
+                            {/* Upcoming Card */}
+                            <div className="premium-card p-4 flex items-center justify-between hover:bg-surfaceHighlight/30 transition-colors">
+                                <div className="flex items-center gap-6">
+                                    <div className="text-center w-12 text-xs font-bold text-textMuted">
+                                        <span className="block text-white text-sm">18:00</span>
+                                        Today
+                                    </div>
+                                    <div className="h-8 w-[1px] bg-surfaceHighlight" />
+                                    <div className="flex items-center gap-4">
+                                        <span className="font-bold text-white">ENG (Mix)</span>
+                                        <span className="text-xs text-textMuted">vs</span>
+                                        <span className="font-bold text-white">SA (Mix)</span>
+                                    </div>
+                                </div>
+                                <button className="p-2 text-textMuted hover:text-white"><ArrowUpRight className="w-4 h-4" /></button>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Trending Highlights */}
+                    <section>
+                        <h2 className="text-lg font-black text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-primary" /> Trending Now
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                { title: 'Incredible one-handed catch!', img: '/assets/thumb_redbull_extreme_1765784514775.png' },
+                                { title: 'Last minute goal!', img: '/assets/thumb_womens_football_1765784471060.png' },
+                                { title: 'Perfect 10 Ride', img: '/assets/thumb_surfing_wsl_1765784559697.png' },
+                                { title: 'Buzzer Beater 3pt', img: '/assets/thumb_fiba_basketball_1765784610870.png' }
+                            ].map((highlight, i) => (
+                                <div key={i} className="premium-card relative aspect-video group overflow-hidden cursor-pointer">
+                                    <img src={highlight.img} alt="Highlight" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="p-3 bg-primary/90 rounded-full text-black">
+                                            <Play className="w-6 h-6 fill-current" />
+                                        </div>
+                                    </div>
+                                    <div className="absolute bottom-0 w-full p-4">
+                                        <span className="tiniest-text text-primary uppercase font-bold bg-black/50 px-1 rounded">Highlight</span>
+                                        <p className="text-white font-bold leading-tight mt-1">{highlight.title}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Social Proof Bar */}
+                    <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 rounded-xl border border-primary/20 flex items-center gap-4 animate-fade-in">
+                        <div className="p-2 bg-primary/20 rounded-full">
+                            <Activity className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                            <p className="text-white font-bold text-sm">
+                                🔥 <span className="text-primary">12,430 fans</span> watching history unfold right now
+                            </p>
+                            <p className="text-xs text-textMuted">Join the conversation in the Forum or Voice Rooms.</p>
+                        </div>
                     </div>
-                    <NewsEvents />
-                    <PlayerMeet />
                 </div>
 
-                {/* SIDEBAR - REFINED MODULES */}
-                <div className="xl:col-span-4 space-y-16 h-fit">
-
-                    {/* PREMIUM USER XP WIDGET */}
-                    <div className="premium-card p-12 bg-white/[0.02]">
-                        <div className="flex items-center justify-between mb-10">
-                            <h3 className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] flex items-center gap-4">
-                                <Zap className="w-4 h-4 text-primary" /> Member Progression
-                            </h3>
-                            <Award className="w-5 h-5 text-white/10" />
-                        </div>
-
-                        <div className="flex flex-col items-center py-8">
-                            <div className="relative">
-                                <span className="text-8xl font-black text-white tracking-tighter tabular-nums italic">
-                                    {displayPoints.toLocaleString()}
-                                </span>
-                                <div className="absolute -top-4 -right-8 w-16 h-16 bg-primary/10 rounded-full blur-2xl animate-pulse" />
-                            </div>
-                            <div className="flex items-center gap-4 mt-6 px-6 py-2 bg-white/[0.04] rounded-full border border-white/5">
-                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic">Elite Status</span>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-6 mt-10">
-                            <div className="bg-white/[0.03] p-6 rounded-2xl border border-white/5 text-center transition-all hover:bg-white/[0.05]">
-                                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Global Rank</p>
-                                <p className="text-3xl font-black text-white tracking-tighter italic">#42</p>
-                            </div>
-                            <div className="bg-white/[0.03] p-6 rounded-2xl border border-white/5 text-center transition-all hover:bg-white/[0.05]">
-                                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Win Parity</p>
-                                <p className="text-3xl font-black text-white tracking-tighter italic">87%</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* REFINED PREDICTION MODULE */}
-                    <div className="premium-card p-0 border-primary/20 group/predict scale-100 hover:scale-[1.03] transition-all duration-700">
-                        <div className="bg-primary/10 p-8 border-b border-primary/10 flex justify-between items-center">
-                            <div className="flex items-center gap-5">
-                                <Target className="w-5 h-5 text-primary" />
-                                <span className="text-[11px] font-black text-white/80 uppercase tracking-[0.2em]">Open Prediction</span>
-                            </div>
-                            <span className="text-[10px] font-black bg-primary text-black px-4 py-1.5 rounded-lg italic">2.5X Yield</span>
-                        </div>
-
-                        <div className="p-10 space-y-8">
-                            <h4 className="text-xl font-extrabold text-white uppercase tracking-tight leading-[1.2] italic">
-                                Who will secure the definitive wicket?
-                            </h4>
-
-                            <div className="space-y-4">
-                                {[
-                                    { id: 'A', name: 'Zara Williams', prob: '45%' },
-                                    { id: 'B', name: 'Sam Chen', prob: '55%' }
-                                ].map(p => (
-                                    <button
-                                        key={p.id}
-                                        onClick={() => handlePrediction(p.id)}
-                                        disabled={predictionMade}
-                                        className={`w-full p-6 rounded-2xl border flex items-center justify-between transition-all duration-500 ${predictionMade
-                                            ? 'bg-white/5 border-white/5 opacity-50 text-white/40 cursor-not-allowed'
-                                            : 'bg-white/[0.03] border-white/10 text-white hover:border-primary/60 hover:bg-white/[0.06] hover:translate-x-1'
-                                            }`}
-                                    >
-                                        <span className="text-xs font-black uppercase tracking-[0.1em] italic">{p.name}</span>
-                                        <span className="text-[10px] font-black text-primary italic">{p.prob}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-6 px-4">
-                            <Globe className="w-4 h-4 text-primary/40" />
-                            <span className="text-[11px] font-black text-white/30 uppercase tracking-[0.4em]">Global Leaderboard</span>
-                        </div>
-                        <Leaderboard />
-                    </div>
-
-                    {/* ACTIVITY STREAM */}
-                    <div className="bg-white/[0.02] rounded-[32px] p-10 border border-white/5 space-y-8">
-                        <h4 className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em] flex items-center gap-4">
-                            <Activity size={16} className="text-primary/40" /> Latest Activity
-                        </h4>
-                        <div className="space-y-6">
-                            <div className="flex items-start gap-5">
-                                <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 animate-pulse" />
-                                <p className="text-[11px] font-medium text-white/50 leading-relaxed italic">
-                                    Zara W. achieved <span className="text-white font-black">Elite Status</span> in London Sector
-                                </p>
-                            </div>
-                            <div className="flex items-start gap-5">
-                                <div className="w-1.5 h-1.5 bg-white/20 rounded-full mt-2" />
-                                <p className="text-[11px] font-medium text-white/30 leading-relaxed italic">
-                                    Global Event synchronization finalized 5m ago
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            {/* CALL TO ACTION - CINEMATIC FINALE */}
-            <div className="premium-card p-24 text-center space-y-12 mt-24 mb-32 bg-gradient-to-b from-white/[0.03] to-transparent border-white/10 group">
+                {/* RIGHT COLUMN (Stats & Interaction) */}
                 <div className="space-y-6">
-                    <h2 className="text-4xl xl:text-6xl font-black text-white tracking-tight leading-tight">The Future of <br /><span className="text-primary">Live Sports</span></h2>
-                    <p className="text-lg text-text-muted font-medium leading-relaxed max-w-2xl mx-auto">
-                        Experience every moment in cinematic fidelity. Join the world's most sophisticated sports community.
-                    </p>
-                </div>
 
-                <div className="flex flex-col sm:flex-row justify-center gap-10">
-                    <button className="btn-primary px-16 group-hover:scale-105 transition-transform duration-700">Enter Arena</button>
-                    <button className="btn-outline px-16 group-hover:scale-105 transition-transform duration-700">Explore Tiers</button>
+                    {/* Points Dashboard */}
+                    <div className="premium-card p-6">
+                        <h3 className="text-sm font-black text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <BarChart2 className="w-4 h-4 text-primary" /> My Points
+                        </h3>
+                        <div className="text-center py-4 border-b border-surfaceHighlight mb-4">
+                            {/* Live updated via context in real app, hardcoded fallback for layout */}
+                            <span className="text-5xl font-black text-primary italic tracking-tighter">
+                                8,450
+                            </span>
+                            <p className="text-xs text-textMuted mt-1 uppercase tracking-widest">Total XP Earned</p>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-textMuted">Weekly Rank</span>
+                                <span className="text-white font-bold">#42</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-textMuted">Prediction Accuracy</span>
+                                <span className="text-white font-bold">87%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Live Prediction Widget */}
+                    <div className="premium-card p-0 overflow-hidden border-primary/50">
+                        <div className="bg-primary/10 p-4 border-b border-primary/20">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Target className="w-4 h-4 text-primary animate-pulse" />
+                                <span className="text-xs font-black text-primary uppercase tracking-widest">Live Prediction</span>
+                            </div>
+                            <p className="text-white font-bold text-sm">Who will hit the next 6?</p>
+                        </div>
+                        <div className="p-4 space-y-2">
+                            <button
+                                onClick={() => handlePrediction('A')}
+                                disabled={predictionMade}
+                                className={`w-full py-2 rounded-lg ${predictionMade ? 'bg-surfaceHighlight text-textMuted' : 'bg-surfaceHighlight hover:bg-primary hover:text-black'} transition-colors text-xs font-bold text-white uppercase`}
+                            >
+                                Player A (1.5x)
+                            </button>
+                            <button
+                                onClick={() => handlePrediction('B')}
+                                disabled={predictionMade}
+                                className={`w-full py-2 rounded-lg ${predictionMade ? 'bg-surfaceHighlight text-textMuted' : 'bg-surfaceHighlight hover:bg-primary hover:text-black'} transition-colors text-xs font-bold text-white uppercase`}
+                            >
+                                Player B (2.0x)
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Mid-Match Poll */}
+                    <div className="premium-card p-6">
+                        <h3 className="text-sm font-black text-white uppercase tracking-wider mb-4">Quick Poll</h3>
+                        <p className="text-xs text-textMuted mb-3">Should mixed doubles be introduced in Test Cricket?</p>
+                        <div onClick={handlePoll} className={`w-full bg-surfaceHighlight rounded-full h-8 relative mb-2 cursor-pointer overflow-hidden group ${pollVoted ? 'opacity-50 pointer-events-none' : ''}`}>
+                            <div className="absolute inset-0 flex items-center justify-between px-3 z-10">
+                                <span className="text-[10px] font-bold text-white uppercase">YES</span>
+                                <span className="text-[10px] font-bold text-white">72%</span>
+                            </div>
+                            <div className="h-full bg-green-500/20 w-[72%] group-hover:bg-green-500/30 transition-colors" />
+                        </div>
+                        <div onClick={handlePoll} className={`w-full bg-surfaceHighlight rounded-full h-8 relative cursor-pointer overflow-hidden group ${pollVoted ? 'opacity-50 pointer-events-none' : ''}`}>
+                            <div className="absolute inset-0 flex items-center justify-between px-3 z-10">
+                                <span className="text-[10px] font-bold text-white uppercase">NO</span>
+                                <span className="text-[10px] font-bold text-white">28%</span>
+                            </div>
+                            <div className="h-full bg-red-500/20 w-[28%] group-hover:bg-red-500/30 transition-colors" />
+                        </div>
+                    </div>
+
+                    {/* Global Leaderboard */}
+                    <Leaderboard />
+
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

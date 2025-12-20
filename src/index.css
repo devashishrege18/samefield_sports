@@ -1,266 +1,158 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --color-background: #0B0B0B;
+  --color-surface: #161616;
+  --color-surfaceHighlight: #1E1E1E;
+  --color-primary: #F5C400;
+  /* Electric Gold */
+  --color-primaryHover: #FFD54A;
+  --color-secondary: #CFA000;
+  /* Muted Gold */
+  --color-text: #FFFFFF;
+  --color-textMuted: #B0B0B0;
 
-  --color-primary: #D4AF37;
-  /* Metallic Gold */
-  --color-primary-glow: rgba(212, 175, 55, 0.3);
-  --color-primary-deep: rgba(212, 175, 55, 0.05);
-
-  --color-background: #050505;
-  /* Deepest Black */
-  --color-surface: #0f0f0f;
-  /* Obsidian */
-  --color-surface-accent: #151515;
-  --color-surface-highlight: rgba(212, 175, 55, 0.09);
-
-  --color-text-main: #FFFFFF;
-  --color-text-muted: #9CA3AF;
-  --color-text-dim: #6B7280;
-
-  --color-black: #000000;
-  --color-glass: rgba(15, 15, 15, 0.95);
-  /* Opaque Obsidian Glass */
-  --color-border: rgba(212, 175, 55, 0.15);
-  /* Subtle Gold Border */
-
-  --radius-hud: 24px;
-  --radius-module: 16px;
-  --radius-compact: 8px;
-
-  --animate-fade-in: fadeIn 0.8s ease-out forwards;
-  --animate-slide-up: slideUp 0.6s ease-out forwards;
-  --animate-netflix-hover: netflixHover 0.3s ease-out forwards;
-
-  --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.6);
-  --shadow-primary-glow: 0 0 20px var(--color-primary-glow);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 :root {
-  --transition-classic: all 0.4s ease-out;
-  --transition-fast: all 0.2s ease-out;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--color-text);
+  background-color: var(--color-background);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer base {
-  body {
-    background-color: var(--color-background);
-    color: var(--color-text-main);
-    font-family: var(--font-sans);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    overflow-x: hidden;
-    scrollbar-color: var(--color-primary) transparent;
-  }
-
-  ::selection {
-    background-color: var(--color-primary);
-    color: var(--color-black);
-  }
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-background);
 }
 
-@layer components {
-
-  /* CINEMATIC PAGE CONTAINER */
-  .page-container {
-    max-width: 1700px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 3rem 2rem;
-    /* py-12 px-8 */
-    animation: var(--animate-fade-in);
-  }
-
-  @media (min-width: 768px) {
-    .page-container {
-      padding-left: 3rem;
-      padding-right: 3rem;
-      /* px-12 */
-    }
-  }
-
-  .page-container>*+* {
-    margin-top: 5rem;
-    /* space-y-20 */
-  }
-
-  /* PREMIUM GOLD CARDS */
-  .premium-card {
-    background: linear-gradient(180deg, var(--color-surface) 0%, #050505 100%);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-module);
-    transition: all 0.4s ease-out;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  }
-
-  .premium-card:hover {
-    border-color: rgba(212, 175, 55, 0.4);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.1);
-    transform: translateY(-2px);
-  }
-
-  /* LUXURY BUTTONS */
-  .btn-primary {
-    background: linear-gradient(135deg, #E5B80B 0%, #D4AF37 100%);
-    color: #000000;
-    font-weight: 700;
-    padding: 0.75rem 1.75rem;
-    border-radius: var(--radius-compact);
-    transition: all 0.3s;
-    font-size: 0.875rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    letter-spacing: 0.05em;
-    border: none;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-  }
-
-  .btn-primary:hover {
-    background: linear-gradient(135deg, #FFD700 0%, #E5C100 100%);
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-    transform: translateY(-1px);
-  }
-
-  .btn-primary:active {
-    transform: scale(0.98);
-  }
-
-  .btn-outline {
-    background-color: transparent;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    color: var(--color-primary);
-    font-weight: 600;
-    padding: 0.75rem 1.75rem;
-    border-radius: var(--radius-compact);
-    transition: all 0.3s;
-    font-size: 0.875rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    letter-spacing: 0.05em;
-  }
-
-  .btn-outline:hover {
-    background-color: rgba(212, 175, 55, 0.1);
-    border-color: var(--color-primary);
-    color: #FFF;
-  }
-
-  .btn-outline:active {
-    transform: scale(0.95);
-  }
-
-  /* PREMIUM SECTION TITLES */
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-text-main);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    letter-spacing: 0.02em;
-    border-left: 3px solid var(--color-primary);
-    padding-left: 1rem;
-  }
-
-  /* GRADIENT OVERLAYS */
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, #0a0a0a, rgba(10, 10, 10, 0.4), transparent);
-    pointer-events: none;
-  }
+#root {
+  width: 100%;
 }
 
-@layer utilities {
-  .text-glow-primary {
-    text-shadow: 0 0 15px rgba(245, 196, 0, 0.4);
-  }
-
-  .glass-dark {
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(64px);
-    /* backdrop-blur-3xl approx */
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .netflix-row {
-    display: flex;
-    gap: 1.5rem;
-    overflow-x: auto;
-    padding-top: 2.5rem;
-    padding-bottom: 2.5rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    scrollbar-width: none;
-  }
-
-  .netflix-row::-webkit-scrollbar {
-    display: none;
-  }
-
-  .animate-fade-in {
-    animation: var(--animate-fade-in);
-  }
+/* Global Utility Classes for Premium UI */
+.premium-card {
+  @apply bg-surface rounded-xl border border-surfaceHighlight transition-all duration-300;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.premium-card:hover {
+  @apply border-primary/50 shadow-[0_0_15px_-5px_theme('colors.primary/0.2')];
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.text-gold {
+  color: var(--color-primary);
 }
 
-@keyframes netflixHover {
-  from {
-    transform: scale(1);
-  }
-
-  to {
-    transform: scale(1.05);
-  }
+.bg-gold {
+  background-color: var(--color-primary);
+  color: #000000;
 }
 
-/* REFINED SCROLLBAR */
+.btn-primary {
+  @apply bg-primary text-black font-bold px-6 py-2 rounded-full transition-transform active:scale-95 hover:bg-primaryHover hover:shadow-[0_0_10px_theme('colors.primary/0.4')];
+}
+
+/* Premium Golden Scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: transparent;
+  background: var(--color-background);
+  border-left: 1px solid var(--color-surfaceHighlight);
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 9999px;
-  transition: background-color 0.3s;
+  background: linear-gradient(to bottom, var(--color-secondary), var(--color-primary));
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-primary);
+  background: var(--color-primaryHover);
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-in {
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-in-from-top {
+  animation-name: slideInFromTop;
+}
+
+.slide-in-from-bottom {
+  animation-name: slideInFromBottom;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.zoom-in {
+  animation-name: scaleIn;
 }

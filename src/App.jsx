@@ -9,14 +9,12 @@ import Discover from './pages/Discover';
 import Profile from './pages/Profile';
 import { PointsProvider } from './context/PointsContext';
 import { VoiceProvider } from './context/VoiceContext';
-import PurposeModal from './components/PurposeModal';
 
 const App = () => {
   return (
     <PointsProvider>
       <VoiceProvider>
         <Router>
-          <PurposeModal />
           <Routes>
             <Route path="/" element={<DashboardLayout />}>
               <Route index element={<Home />} />

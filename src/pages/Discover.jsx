@@ -1,93 +1,25 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Ticket, UserPlus, ShoppingBag, Heart, Globe, Briefcase, Leaf, ArrowRight, X, Shield, Star, Rocket, CheckCircle, TrendingUp, Zap, Filter, ChevronRight, Compass } from 'lucide-react';
-
-const DetailModal = ({ selectedItem, onClose, onConfirm }) => {
-    if (!selectedItem) return null;
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-lg animate-fade-in">
-            <div className="relative w-full max-w-2xl bg-[#050505] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
-                <button
-                    onClick={onClose}
-                    className="absolute top-6 right-6 p-2 bg-black/50 hover:bg-white hover:text-black rounded-full text-white z-40 transition-all border border-white/10"
-                >
-                    <X className="w-5 h-5" />
-                </button>
-
-                {selectedItem.img && (
-                    <div className="h-64 overflow-hidden relative">
-                        <img src={selectedItem.img} className="w-full h-full object-cover opacity-80" alt="" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
-                    </div>
-                )}
-
-                <div className="p-10">
-                    <div className="flex items-center gap-3 mb-4">
-                        <span className="bg-primary/20 text-primary text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">Verified</span>
-                    </div>
-                    <h2 className="text-4xl font-bold text-white mb-4 tracking-tight">{selectedItem.name}</h2>
-                    <p className="text-white/60 text-lg leading-relaxed mb-8">
-                        {selectedItem.description}
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-4 mb-10">
-                        {Object.entries(selectedItem.stats).map(([key, val]) => (
-                            <div key={key} className="p-6 bg-white/5 rounded-2xl border border-white/5">
-                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">{key}</p>
-                                <p className="text-xl font-bold text-white">{val}</p>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="flex gap-4">
-                        <button
-                            onClick={onConfirm}
-                            className="bg-white text-black hover:bg-primary hover:text-white transition-all flex-1 py-4 rounded-xl text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-3"
-                        >
-                            <Rocket className="w-4 h-4" />
-                            {selectedItem.type === 'store_visit' ? 'Enter Store' : 'Confirm'}
-                        </button>
-                        <button
-                            onClick={onClose}
-                            className="border border-white/10 hover:bg-white/5 transition-all text-white px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-widest"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const Toast = ({ toast }) => {
-    if (!toast) return null;
-    return (
-        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[200] animate-slide-up">
-            <div className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-full px-8 py-4 flex items-center gap-4 shadow-2xl">
-                <CheckCircle className="w-5 h-5 text-green-400" />
-                <span className="text-white font-medium">{toast.message}</span>
-            </div>
-        </div>
-    );
-};
+import { Search, MapPin, Ticket, UserPlus, ShoppingBag, Heart, Globe, Briefcase, Leaf, ArrowRight, X, Shield, Star, Rocket, CheckCircle } from 'lucide-react';
 
 const Discover = () => {
     const [selectedItem, setSelectedItem] = useState(null);
-    const [toast, setToast] = useState(null);
+    const [toast, setToast] = useState(null); // { message: string, type: 'success' | 'info' }
 
     const showToast = (message) => {
         setToast({ message, type: 'success' });
         setTimeout(() => setToast(null), 4000);
     };
 
+    // START: Task 2 - Define the API Call Handler (Pari's Work)
     const handleSupportClick = async (athleteName) => {
         setSelectedItem({
             type: 'support',
             name: athleteName,
-            description: `You are officially supporting ${athleteName}'s journey. Your support helps fund training and equipment.`,
+            description: `You are officially supporting ${athleteName}'s journey to the professional leagues. Your support helps fund training and equipment.`,
             stats: { support: '2.4k fans', level: 'Rising Star' },
             img: '/assets/talent_gully_cricket_1765787655210.png'
         });
+
         try {
             await fetch('/api/support', {
                 method: 'POST',
@@ -98,27 +30,34 @@ const Discover = () => {
     };
 
     const handleAction = async (actionType, itemName) => {
-        let modalData = { type: actionType, name: itemName, description: "Loading...", stats: {} };
+        let modalData = {
+            type: actionType,
+            name: itemName,
+            description: "Loading premium experience...",
+            stats: {}
+        };
+
         if (actionType === 'store_visit') {
-            modalData.description = `Welcome to the official ${itemName} collection. Explore exclusive high-performance gear.`;
+            modalData.description = `Welcome to the official ${itemName} curated collection. Explore exclusive high-performance gear designed for elite athletes.`;
             modalData.stats = { members: '150k+', products: '42 items' };
             modalData.img = (itemName || "").includes('VK18') ? '/assets/store_vk18_fitness_1765787964441.png' : '/assets/store_serena_ventures_1765787984356.png';
         } else if (actionType === 'ticket_buy') {
-            modalData.description = `Secure your spot at the ${itemName}. Experience the energy of grassroots sports.`;
+            modalData.description = `Secure your spot at the ${itemName}. Experience the energy of grassroots sports and support local communities.`;
             modalData.stats = { availability: 'Limited', category: 'General' };
-            modalData.img = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=800';
         } else if (actionType === 'purchase') {
-            modalData.description = `Support artisans by purchasing the ${itemName}. Handcrafted with sustainable materials.`;
+            modalData.description = `Directly support artisans by purchasing the ${itemName}. Each piece is handcrafted with sustainable materials.`;
             modalData.stats = { stock: 'In Stock', delivery: '3-5 Days' };
             modalData.img = '/assets/product_leather_gloves_1765788007746.png';
         } else if (actionType === 'meet_maker') {
-            modalData.description = `Connecting with the artisans... View the hand-stitching process in Kashmir.`;
+            modalData.description = `Connecting with the artisans... You'll soon see a live-story feature showing the hand-stitching process in Kashmir.`;
             modalData.stats = { tradition: '3rd Gen', impact: 'Supporting 50+ Families' };
         } else if (actionType === 'follow') {
-            showToast(`You're now following ${itemName}.`);
+            showToast(`Awesome! You're now following ${itemName}.`);
             return;
         }
+
         setSelectedItem(modalData);
+
         try {
             await fetch('/api/action', {
                 method: 'POST',
@@ -130,86 +69,159 @@ const Discover = () => {
 
     const handleConfirm = () => {
         if (!selectedItem) return;
+
         let msg = "";
         switch (selectedItem.type) {
-            case 'support': msg = `Success! You are now supporting ${selectedItem.name}. +10 XP earned!`; break;
-            case 'store_visit': msg = `Welcome! Access unlocked for ${selectedItem.name} store.`; break;
-            case 'ticket_buy': msg = `Confirmed! Your spot at ${selectedItem.name} is reserved.`; break;
-            case 'purchase': msg = `Ordered! Your ${selectedItem.name} will be shipped soon.`; break;
-            case 'meet_maker': msg = `Connecting... Starting your journey with ${selectedItem.name}.`; break;
-            default: msg = "Action processed successfully!";
+            case 'support': msg = `Success! You are now a verified supporter of ${selectedItem.name}. +10 XP earned!`; break;
+            case 'store_visit': msg = `Welcome! You've unlocked exclusive access to the ${selectedItem.name} premium store.`; break;
+            case 'ticket_buy': msg = `Confirmed! Your spot at ${selectedItem.name} is reserved. Check your profile for tickets.`; break;
+            case 'purchase': msg = `Ordered! Your ${selectedItem.name} will be handcrafted and shipped soon.`; break;
+            case 'meet_maker': msg = `Connecting... You've started a journey with the artisans of ${selectedItem.name}.`; break;
+            default: msg = "Action successfully processed by SameField Edge!";
         }
+
         showToast(msg);
         setSelectedItem(null);
     };
 
-    return (
-        <div className="space-y-16 pb-20 fade-in-section">
-            <DetailModal selectedItem={selectedItem} onClose={() => setSelectedItem(null)} onConfirm={handleConfirm} />
-            <Toast toast={toast} />
-
-            {/* HEADER */}
-            <div className="flex flex-col xl:flex-row justify-between items-end gap-10 px-8 md:px-12 pt-8">
-                <div className="max-w-3xl">
-                    <span className="text-primary font-bold tracking-widest text-xs uppercase mb-4 block">Discover</span>
-                    <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight mb-4">
-                        Explore the <span className="text-white/40">Network</span>
-                    </h1>
-                </div>
-                <div className="w-full xl:w-[400px] relative group">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40 w-5 h-5" />
-                    <input
-                        type="text"
-                        placeholder="Search athletes, events, gear..."
-                        className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-14 pr-6 text-white focus:outline-none focus:border-white/20 transition-all placeholder:text-white/20 text-sm font-medium"
-                    />
-                </div>
-            </div>
-
-            {/* PROMOTED ATHLETES */}
-            <section className="px-8 md:px-12">
-                <div className="flex justify-between items-end mb-8">
-                    <div>
-                        <span className="text-primary font-bold tracking-widest text-[10px] uppercase mb-2 block">Spotlight</span>
-                        <h2 className="text-2xl font-bold text-white">Rising Athletes</h2>
+    const Toast = () => {
+        if (!toast) return null;
+        return (
+            <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[200] animate-in slide-in-from-top duration-500">
+                <div className="bg-surface border border-green-500/50 rounded-lg shadow-2xl px-6 py-4 flex items-center gap-4 backdrop-blur-xl">
+                    <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                        <CheckCircle className="w-5 h-5 text-green-500" />
                     </div>
-                    <button className="text-xs font-bold text-white/60 hover:text-white transition-colors flex items-center gap-2">
-                        View All <ChevronRight className="w-4 h-4" />
+                    <div>
+                        <p className="text-white text-sm font-bold leading-tight">{toast.message}</p>
+                        <p className="text-[10px] text-green-500 font-extrabold uppercase tracking-[0.2em] mt-1">Verified Success</p>
+                    </div>
+                    <button onClick={() => setToast(null)} className="ml-4 p-1 hover:bg-white/10 rounded-full transition-colors">
+                        <X className="w-3 h-3 text-textMuted" />
                     </button>
                 </div>
+            </div>
+        );
+    };
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    const DetailModal = () => {
+        if (!selectedItem) return null;
+        return (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-in fade-in zoom-in duration-300">
+                <div className="relative w-full max-w-lg bg-surface border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                    <button
+                        onClick={() => setSelectedItem(null)}
+                        className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-primary hover:text-black rounded-full text-white z-10 transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+
+                    {selectedItem.img && (
+                        <div className="h-48 overflow-hidden relative">
+                            <img src={selectedItem.img} className="w-full h-full object-cover opacity-60" alt="" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent" />
+                        </div>
+                    )}
+
+                    <div className="p-8">
+                        <div className="flex items-center gap-3 mb-2">
+                            <Shield className="w-4 h-4 text-primary" />
+                            <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">Verified Secure</span>
+                        </div>
+                        <h2 className="text-3xl font-black text-white mb-4 uppercase italic tracking-tighter">{selectedItem.name}</h2>
+                        <p className="text-textMuted text-sm leading-relaxed mb-8">
+                            {selectedItem.description}
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-4 mb-8">
+                            {Object.entries(selectedItem.stats).map(([key, val]) => (
+                                <div key={key} className="p-3 bg-surfaceHighlight/30 rounded-lg border border-white/5">
+                                    <p className="text-[8px] font-bold text-textMuted uppercase mb-1">{key}</p>
+                                    <p className="text-sm font-black text-white">{val}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex gap-4">
+                            <button
+                                onClick={handleConfirm}
+                                className="flex-1 py-4 bg-primary text-black font-black uppercase rounded-lg hover:bg-white transition-all transform active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                <Rocket className="w-4 h-4" />
+                                {selectedItem.type === 'store_visit' ? 'Explore Store' : 'Confirm Action'}
+                            </button>
+                            <button
+                                onClick={() => setSelectedItem(null)}
+                                className="px-6 py-4 border border-white/10 text-white font-bold uppercase rounded-lg hover:bg-white/5 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+
+                        <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-center gap-2">
+                            <CheckCircle className="w-3 h-3 text-green-500" />
+                            <span className="text-[10px] text-textMuted font-bold uppercase tracking-widest">Transaction encrypted by SameField Edge</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div className="space-y-10">
+            <DetailModal />
+            <Toast />
+
+            {/* Search Header */}
+            <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-textMuted w-5 h-5" />
+                <input
+                    type="text"
+                    placeholder="Find local matches, rising stars, or ethical gear..."
+                    className="w-full bg-surface border border-surfaceHighlight rounded-full py-4 pl-12 pr-6 text-white focus:outline-none focus:border-primary transition-all placeholder:text-textMuted"
+                />
+            </div>
+
+            {/* Rising Talent Spotlight */}
+            <section>
+                <div className="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 className="text-xl font-black text-white uppercase tracking-wider mb-1">Rising <span className="text-primary">Talent</span></h2>
+                        <p className="text-textMuted text-sm">Discover the next generation of athletes before they go pro.</p>
+                    </div>
+                    <button className="text-xs font-bold text-white hover:text-primary uppercase flex items-center gap-1">View All <ArrowRight className="w-3 h-3" /></button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[
                         { name: 'Arjun K.', sport: 'Gully Cricket', location: 'Mumbai, IN', role: 'Fast Bowler', img: '/assets/talent_gully_cricket_1765787655210.png' },
                         { name: 'Sarah L.', sport: 'Wheelchair Tennis', location: 'London, UK', role: 'Seed #4', img: '/assets/talent_wheelchair_tennis_1765787672511.png' },
                         { name: 'Team Elevate', sport: 'Street Football', location: 'Lagos, NG', role: 'U-19 Squad', img: '/assets/talent_street_football_1765787693394.png' },
                         { name: 'Miguel R.', sport: 'Boxing', location: 'Bronx, NY', role: 'Amateur Champ', img: '/assets/talent_boxing_training_1765787719934.png' }
                     ].map((talent, i) => (
-                        <div key={i} className="group cursor-pointer relative rounded-2xl overflow-hidden aspect-[3/4]">
-                            <img src={talent.img} alt="Talent" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-
-                            <div className="absolute top-4 left-4 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/5">
-                                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Top Pick</span>
+                        <div key={i} className="premium-card p-0 group cursor-pointer hover:-translate-y-1 transition-transform">
+                            <div className="h-40 bg-surfaceHighlight relative overflow-hidden">
+                                <img src={talent.img} alt="Talent" className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                                <div className="absolute bottom-3 left-3">
+                                    <h3 className="font-bold text-white text-lg leading-none">{talent.name}</h3>
+                                    <p className="text-xs text-primary font-bold uppercase mt-1">{talent.sport}</p>
+                                </div>
                             </div>
-
-                            <div className="absolute bottom-0 inset-x-0 p-6">
-                                <h3 className="text-2xl font-bold text-white leading-none mb-2">{talent.name}</h3>
-                                <p className="text-sm text-primary font-medium mb-4">{talent.sport}</p>
-
-                                <div className="flex items-center gap-4 opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                            <div className="p-4 bg-surface">
+                                <div className="flex items-center gap-2 text-xs text-textMuted mb-3">
+                                    <MapPin className="w-3 h-3" /> {talent.location}
+                                </div>
+                                <div className="flex gap-2">
                                     <button
-                                        onClick={(e) => { e.stopPropagation(); handleSupportClick(talent.name); }}
-                                        className="bg-white text-black hover:bg-primary transition-colors py-2.5 px-6 rounded-lg text-xs font-bold uppercase tracking-wider flex-1"
-                                    >
+                                        onClick={() => handleSupportClick(talent.name)}
+                                        className="flex-1 py-2 bg-primary text-black text-[10px] font-black uppercase rounded hover:bg-white transition-colors">
                                         Support
                                     </button>
                                     <button
-                                        onClick={(e) => { e.stopPropagation(); handleAction('follow', talent.name); }}
-                                        className="bg-white/10 hover:bg-white hover:text-black text-white p-2.5 rounded-lg transition-colors border border-white/10"
-                                    >
-                                        <UserPlus className="w-4 h-4" />
-                                    </button>
+                                        onClick={() => handleAction('follow', talent.name)}
+                                        className="p-2 border border-surfaceHighlight rounded text-textMuted hover:text-white hover:border-white transition-colors"><UserPlus className="w-4 h-4" /></button>
                                 </div>
                             </div>
                         </div>
@@ -217,106 +229,121 @@ const Discover = () => {
                 </div>
             </section>
 
-            <div className="px-8 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-                {/* EVENTS LIST */}
-                <div className="lg:col-span-8">
-                    <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                            <Compass className="w-6 h-6 text-primary" /> Upcoming Events
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                {/* LEFT: Grassroots Events */}
+                <div className="lg:col-span-2 space-y-8">
+                    <section>
+                        <h2 className="text-xl font-black text-white uppercase tracking-wider mb-6 flex items-center gap-2">
+                            <MapPin className="w-5 h-5 text-primary" /> Grassroots & Local Events
                         </h2>
-                        <button className="p-2 hover:bg-white/5 rounded-full transition-colors"><Filter className="w-5 h-5 text-white/60" /></button>
-                    </div>
-
-                    <div className="space-y-4">
-                        {[
-                            { title: 'District T20 Finals', loc: 'Shivaji Park, Mumbai', date: 'Sat, Aug 28 • 10:00 AM', price: '₹50', img: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&q=80&w=800' },
-                            { title: 'Community Charity Run', loc: 'Hyde Park, London', date: 'Sun, Aug 29 • 07:00 AM', price: 'Free', img: 'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?auto=format&fit=crop&q=80&w=800' },
-                            { title: 'Corporate Mixed Doubles', loc: 'Downtown Arena', date: 'Fri, Sep 02 • 06:00 PM', price: '$15', img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800' },
-                            { title: 'Rising Stars Shootout', loc: 'Elite Sports Club', date: 'Sat, Sep 03 • 03:00 PM', price: 'Free', img: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80&w=800' }
-                        ].map((evt, i) => (
-                            <div key={i} onClick={() => handleAction('ticket_buy', evt.title)} className="group cursor-pointer premium-card p-4 flex gap-6 items-center transition-all">
-                                <div className="h-24 w-32 rounded-xl overflow-hidden relative flex-shrink-0">
-                                    <img src={evt.img} alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-wider mb-1">
-                                        <span>{evt.date}</span>
-                                    </div>
-                                    <h3 className="text-lg font-bold text-white truncate group-hover:text-primary transition-colors">{evt.title}</h3>
-                                    <p className="text-sm text-white/40 flex items-center gap-1.5 mt-1">
-                                        <MapPin className="w-3.5 h-3.5" /> {evt.loc}
-                                    </p>
-                                </div>
-                                <div className="text-right px-4">
-                                    <span className="block text-xl font-bold text-white mb-1">{evt.price}</span>
-                                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{evt.price === 'Free' ? 'Join' : 'Buy'}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* SIDEBAR */}
-                <div className="lg:col-span-4 space-y-8">
-                    {/* EXCLUSIVE DROPS */}
-                    <div className="bg-white/[0.02] rounded-3xl p-8 border border-white/5">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-3">
-                                <ShoppingBag className="w-4 h-4 text-primary" /> Exclusive Gear
-                            </h3>
-                        </div>
                         <div className="space-y-4">
                             {[
-                                { name: 'VK18 Fitness Tech', owner: 'Virat Kohli', img: '/assets/store_vk18_fitness_1765787964441.png' },
-                                { name: 'Serena Ventures', owner: 'Serena Williams', img: '/assets/store_serena_ventures_1765787984356.png' }
-                            ].map((store, i) => (
-                                <div
-                                    key={i}
-                                    onClick={() => handleAction('store_visit', store.name)}
-                                    className="p-4 premium-card flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-all">
-                                    <img src={store.img} className="w-12 h-12 rounded-lg object-cover grayscale" alt="" />
-                                    <div>
-                                        <h4 className="font-bold text-white text-sm mb-0.5">{store.name}</h4>
-                                        <p className="text-[10px] text-white/40 font-medium uppercase tracking-wider">{store.owner}</p>
+                                { title: 'District T20 Finals', loc: 'Shivaji Park, Mumbai', date: 'Sat, Aug 28 • 10:00 AM', price: '₹50', img: '/assets/thumb_fiba_basketball_1765784610870.png' },
+                                { title: 'Community Charity Run', loc: 'Hyde Park, London', date: 'Sun, Aug 29 • 07:00 AM', price: 'Free', img: '/assets/thumb_olympics_gold_1765784536137.png' },
+                                { title: 'Corporate Mixed Doubles', loc: 'Downtown Arena', date: 'Fri, Sep 02 • 06:00 PM', price: '$15 - Registration', img: '/assets/thumb_womens_football_1765784471060.png' }
+                            ].map((evt, i) => (
+                                <div key={i} className="premium-card p-5 flex flex-col md:flex-row items-center gap-6 hover:bg-surfaceHighlight/30 transition-colors">
+                                    <div className="w-full md:w-20 h-20 bg-surfaceHighlight rounded-lg flex flex-col items-center justify-center border border-white/5 text-center p-2 relative overflow-hidden">
+                                        <img src={evt.img} alt="Event" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+                                        <span className="text-xs text-primary font-bold uppercase relative z-10">{evt.date.split('•')[0].split(',')[0]}</span>
+                                        <span className="text-2xl font-black text-white relative z-10">{evt.date.split(' ')[2]}</span>
+                                    </div>
+                                    <div className="flex-1 text-center md:text-left">
+                                        <h3 className="font-bold text-white text-lg">{evt.title}</h3>
+                                        <p className="text-sm text-textMuted flex items-center justify-center md:justify-start gap-1 mt-1">
+                                            <MapPin className="w-3 h-3" /> {evt.loc} • <span className="text-white">{evt.date.split('•')[1]}</span>
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2 min-w-[120px]">
+                                        <span className="text-lg font-black text-primary">{evt.price}</span>
+                                        <button
+                                            onClick={() => handleAction('ticket_buy', evt.title)}
+                                            className="w-full py-2 px-4 rounded-full bg-white text-black text-xs font-black uppercase hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                                            <Ticket className="w-3 h-3" /> {evt.price === 'Free' ? 'Join' : 'Buy Ticket'}
+                                        </button>
                                     </div>
                                 </div>
                             ))}
                         </div>
+                    </section>
+                </div>
+
+                {/* RIGHT: Ethical Marketplace */}
+                <div className="space-y-8">
+
+                    {/* Athlete Stores */}
+                    <div className="premium-card p-6 border-l-4 border-l-green-500">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                                <ShoppingBag className="w-4 h-4 text-green-500" /> Athlete Owned
+                            </h3>
+                            <Globe className="w-4 h-4 text-textMuted" />
+                        </div>
+                        <div className="space-y-4">
+                            <div
+                                onClick={() => handleAction('store_visit', 'VK18 Fitness Tech')}
+                                className="bg-surfaceHighlight/30 p-3 rounded-lg flex gap-3 cursor-pointer group hover:bg-surfaceHighlight/50 transition-colors">
+                                <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden border border-white/10">
+                                    <img src="/assets/store_vk18_fitness_1765787964441.png" className="w-full h-full object-cover" alt="VK" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white text-sm group-hover:text-green-500 transition-colors">VK18 Fitness Tech</h4>
+                                    <p className="text-xs text-textMuted">Owned by Virat Kohli</p>
+                                </div>
+                            </div>
+                            <div
+                                onClick={() => handleAction('store_visit', 'Serena Ventures')}
+                                className="bg-surfaceHighlight/30 p-3 rounded-lg flex gap-3 cursor-pointer group hover:bg-surfaceHighlight/50 transition-colors">
+                                <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden border border-white/10">
+                                    <img src="/assets/store_serena_ventures_1765787984356.png" className="w-full h-full object-cover" alt="SW" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-white text-sm group-hover:text-green-500 transition-colors">Serena Ventures</h4>
+                                    <p className="text-xs text-textMuted">Owned by Serena Williams</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* ARTISAN HIGHLIGHT */}
-                    <div className="relative group rounded-3xl overflow-hidden cursor-pointer" onClick={() => handleAction('purchase', 'Hand-Stitched Leather Gloves')}>
-                        <img src="/assets/product_leather_gloves_1765788007746.png" alt="Product" className="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                        <div className="absolute top-4 left-4">
-                            <span className="bg-primary text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2">
-                                <Shield className="w-3 h-3" /> Fair Trade
-                            </span>
+                    {/* Ethical & Artisan Showcase */}
+                    <div className="premium-card p-6 border-t-4 border-t-primary">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Leaf className="w-4 h-4 text-primary" />
+                            <h3 className="text-sm font-black text-white uppercase tracking-wider">Ethical Choice</h3>
                         </div>
-                        <div className="absolute bottom-6 left-6 right-6">
-                            <h3 className="text-xl font-bold text-white mb-2">Artisan Collection</h3>
-                            <button className="text-xs font-bold text-white/80 hover:text-white flex items-center gap-2">
-                                View Product <ChevronRight className="w-4 h-4" />
+
+                        <div
+                            onClick={() => handleAction('purchase', 'Hand-Stitched Leather Gloves')}
+                            className="relative aspect-square bg-gray-800 rounded-lg overflow-hidden mb-4 group cursor-pointer">
+                            <img src="/assets/product_leather_gloves_1765788007746.png" alt="Product" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                            <div className="absolute top-2 left-2 px-2 py-1 bg-black/70 backdrop-blur-md rounded text-[10px] text-primary font-bold uppercase border border-primary/20 flex items-center gap-1 z-10">
+                                <Heart className="w-3 h-3 fill-primary" /> Fair Trade
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                            <div className="absolute bottom-0 p-4">
+                                <h4 className="text-white font-bold leading-tight mb-1">Hand-Stitched Leather Gloves</h4>
+                                <p className="text-xs text-gray-300 line-clamp-2">Crafted by artisans in Kashmir. 100% of profits go to worker welfare.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => handleAction('meet_maker', 'Hand-Stitched Leather Gloves')}
+                                className="w-full flex items-center justify-between p-3 rounded-lg bg-surfaceHighlight hover:bg-primary hover:text-black transition-colors group">
+                                <span className="text-xs font-bold uppercase flex items-center gap-2">
+                                    <Briefcase className="w-3 h-3" /> Meet the Maker
+                                </span>
+                                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                            <button
+                                onClick={() => handleAction('store_visit', 'Ethical Artisan Collection')}
+                                className="w-full py-2 bg-white text-black text-xs font-black uppercase rounded hover:bg-primary transition-colors">
+                                View Collection
                             </button>
                         </div>
                     </div>
 
-                    {/* STATS */}
-                    <div className="bg-gradient-to-br from-white/[0.05] to-transparent rounded-3xl p-8 border border-white/5">
-                        <TrendingUp className="w-8 h-8 text-primary mb-4" />
-                        <h4 className="text-xl font-bold text-white mb-2">Your Impact</h4>
-                        <p className="text-sm text-white/60 mb-6 leading-relaxed">Early support helps rising athletes secure funding and equipment.</p>
-                        <div className="pt-6 border-t border-white/10 flex justify-between">
-                            <div>
-                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Supporters</p>
-                                <p className="text-2xl font-bold text-white">1.4k</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Growth</p>
-                                <p className="text-2xl font-bold text-primary">+24%</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
