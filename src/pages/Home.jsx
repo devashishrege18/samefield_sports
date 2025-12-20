@@ -38,32 +38,40 @@ const Home = () => {
             </div>
 
             {/* Hero Section: Mixed Team Cricket */}
-            <section className="relative w-full h-[300px] md:h-[450px] rounded-2xl overflow-hidden border border-surfaceHighlight group">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2669&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-black/50 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
+            <div className="relative h-[300px] md:h-[450px] rounded-[32px] overflow-hidden group">
+                <img
+                    src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2674&auto=format&fit=crop"
+                    alt="Cricket Stadium"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
 
-                <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full md:w-2/3">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-black font-black text-[8px] md:text-[10px] uppercase tracking-widest rounded-sm mb-4 md:mb-6">
-                        <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse" /> World Premiere
+                <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-12 space-y-4">
+                    <div className="flex items-center gap-2">
+                        <div className="px-3 py-1 bg-primary text-black text-[10px] font-black uppercase rounded-lg animate-pulse">
+                            ● World Premiere
+                        </div>
                     </div>
-                    <h1 className="text-3xl md:text-7xl font-black text-white italic tracking-tighter mb-2 leading-none uppercase">
-                        History in the <span className="text-primary">Making</span>
+                    <h1 className="text-4xl md:text-7xl font-black text-white italic tracking-tighter leading-none uppercase">
+                        History in the <br />
+                        <span className="text-primary">Making</span>
                     </h1>
-                    <h2 className="text-lg md:text-2xl font-bold text-white mb-2 uppercase tracking-wide">
-                        First-ever Mixed Team Cricket Tournament
-                    </h2>
-                    <p className="text-xs md:text-sm font-medium text-gray-300 italic mb-4 md:mb-6">"Redefining how teams are formed in modern sport."</p>
-                    <div className="flex flex-wrap gap-3 md:gap-4">
-                        <button className="btn-primary text-xs md:text-sm flex items-center gap-2">
-                            WATCH LIVE <Play className="w-3 h-3 md:w-4 md:h-4 fill-black" />
+                    <p className="text-sm md:text-xl font-bold text-white uppercase tracking-wider max-w-xl">
+                        First-Ever Mixed Team Cricket Tournament
+                    </p>
+                    <p className="text-xs md:text-sm text-gray-300 italic max-w-md font-medium">
+                        "Redefining how teams are formed in modern sport."
+                    </p>
+                    <div className="flex items-center gap-4 pt-4">
+                        <button className="px-8 py-3 bg-primary text-black rounded-full font-black uppercase text-sm flex items-center gap-2 hover:bg-white transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
+                            Watch Live <Play className="w-4 h-4 fill-current" />
                         </button>
-                        <button className="px-4 py-1.5 md:px-6 md:py-2 rounded-full border border-surfaceHighlight hover:border-primary text-white hover:text-primary transition-all font-bold uppercase tracking-wide text-xs md:text-sm bg-black/50 backdrop-blur-sm">
+                        <button className="px-8 py-3 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-full font-black uppercase text-sm hover:bg-white/10 transition-all">
                             Tournament Info
                         </button>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
