@@ -8,10 +8,10 @@
   --color-primary-glow: rgba(245, 196, 0, 0.4);
   --color-primary-deep: rgba(245, 196, 0, 0.05);
 
-  --color-background: #050505;
-  --color-surface: #0a0a0a;
-  --color-surface-accent: #111111;
-  --color-surface-highlight: rgba(255, 255, 255, 0.03);
+  --color-background: #0a0a0a;
+  --color-surface: #111111;
+  --color-surface-accent: #161616;
+  --color-surface-highlight: rgba(255, 255, 255, 0.05);
 
   --color-text-main: #FFFFFF;
   --color-text-muted: #999999;
@@ -164,10 +164,10 @@
   }
 
   /* GRADIENT OVERLAYS */
-  .vanguard-overlay {
+  .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, #000000, rgba(0, 0, 0, 0.2), transparent);
+    background: linear-gradient(to top, #0a0a0a, rgba(10, 10, 10, 0.4), transparent);
     pointer-events: none;
   }
 }

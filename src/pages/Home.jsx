@@ -147,7 +147,7 @@ const Home = () => {
                             ].map((ev) => (
                                 <div key={ev.id} className="premium-card p-0 group h-[450px] cursor-pointer">
                                     <img src={ev.img} alt={ev.title} className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-105 opacity-60 group-hover:opacity-100" />
-                                    <div className="vanguard-overlay group-hover:opacity-60 transition-opacity" />
+                                    <div className="hero-overlay group-hover:opacity-60 transition-opacity" />
 
                                     <div className="absolute top-8 left-8 z-20">
                                         <div className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] border ${ev.type === 'Live' ? 'bg-primary/20 border-primary/40 text-primary' : 'bg-black/60 border-white/10 text-white/60'}`}>
@@ -195,7 +195,7 @@ const Home = () => {
                                 <div className="absolute -top-4 -right-8 w-16 h-16 bg-primary/10 rounded-full blur-2xl animate-pulse" />
                             </div>
                             <div className="flex items-center gap-4 mt-6 px-6 py-2 bg-white/[0.04] rounded-full border border-white/5">
-                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic">Vanguard Elite</span>
+                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic">Elite Status</span>
                             </div>
                         </div>
 

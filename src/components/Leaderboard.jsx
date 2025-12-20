@@ -27,21 +27,21 @@ const Leaderboard = () => {
     }, []);
 
     if (loading) return (
-        <div className="premium-card p-24 text-center flex flex-col items-center justify-center min-h-[600px] bg-vanguard-black backdrop-blur-3xl border-white/5 shadow-[0_100px_200px_rgba(0,0,0,1)]">
+        <div className="premium-card p-24 text-center flex flex-col items-center justify-center min-h-[600px] bg-black backdrop-blur-3xl border-white/5 shadow-[0_100px_200px_rgba(0,0,0,1)]">
             <div className="relative mb-16">
                 <div className="absolute inset-0 bg-primary/20 blur-3xl animate-pulse" />
                 <Activity className="w-32 h-32 text-primary animate-spin-slow opacity-20 relative z-10" />
                 <Cpu className="absolute inset-0 m-auto w-12 h-12 text-primary animate-pulse relative z-20" />
             </div>
             <div className="space-y-4">
-                <p className="text-[14px] text-primary font-black uppercase tracking-[0.8em] animate-pulse italic">DECRYPTING VANGUARD REGISTRY</p>
+                <p className="text-[14px] text-primary font-black uppercase tracking-[0.8em] animate-pulse italic">LOADING ELITE REGISTRY</p>
                 <p className="text-[10px] text-white/20 font-mono uppercase tracking-[0.4em]">Node: 0xA7D_SYNC_V4</p>
             </div>
         </div>
     );
 
     return (
-        <div className="premium-card overflow-hidden shadow-[0_100px_200px_rgba(0,0,0,1)] group bg-vanguard-black backdrop-blur-3xl border-white/10 relative">
+        <div className="premium-card overflow-hidden shadow-[0_100px_200px_rgba(0,0,0,1)] group bg-black backdrop-blur-3xl border-white/10 relative">
             {/* GLOBAL SCAN LINE */}
             <div className="absolute inset-x-0 h-[2px] bg-primary/40 animate-scan z-30 pointer-events-none opacity-40 top-0" />
 
@@ -123,7 +123,7 @@ const Leaderboard = () => {
                                 />
                             </div>
                             {index === 0 && (
-                                <div className="absolute -top-3 -right-3 bg-primary text-black p-2.5 rounded-2xl border-4 border-vanguard-black shadow-[0_15px_40px_rgba(245,196,0,0.6)] animate-bounce-in z-20">
+                                <div className="absolute -top-3 -right-3 bg-primary text-black p-2.5 rounded-2xl border-4 border-black shadow-[0_15px_40px_rgba(245,196,0,0.6)] animate-bounce-in z-20">
                                     <Star size={18} fill="currentColor" className="animate-pulse" />
                                 </div>
                             )}
@@ -174,7 +174,7 @@ const Leaderboard = () => {
                             <Activity className="w-32 h-32 text-primary animate-spin-slow opacity-5" />
                             <Cpu className="absolute inset-0 m-auto w-12 h-12 text-primary opacity-20 animate-pulse" />
                         </div>
-                        <p className="text-sm text-text-muted font-black uppercase tracking-[1em] italic leading-relaxed">NO ACTIVE VANGUARD SIGNALS <br /> DECRYPT PROTOCOL FAILED</p>
+                        <p className="text-sm text-text-muted font-black uppercase tracking-[1em] italic leading-relaxed">NO ACTIVE ELITE SIGNALS <br /> DECRYPT PROTOCOL FAILED</p>
                     </div>
                 )}
             </div>

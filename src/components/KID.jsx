@@ -7,7 +7,7 @@ const KID = () => {
         id: 'SF-B821-V4',
         points: 2450,
         rank: 12,
-        grade: 'Vanguard Elite',
+        grade: 'Elite Member',
         attributes: {
             speed: 92,
             stamina: 88,
@@ -20,7 +20,7 @@ const KID = () => {
         { rank: 1, name: 'Priya Sharma', points: 3100, trend: 'up', class: 'Striker' },
         { rank: 2, name: 'Jordan Lee', points: 3050, trend: 'same', class: 'Tactician' },
         { rank: 3, name: 'Casey Smith', points: 2980, trend: 'down', class: 'Scout' },
-        { rank: 4, name: 'Aisha Khan', points: 2900, trend: 'up', class: 'Vanguard' },
+        { rank: 4, name: 'Aisha Khan', points: 2900, trend: 'up', class: 'Elite' },
         { rank: 5, name: 'Maria Gonzalez', points: 2850, trend: 'up', class: 'Sentinel' },
     ];
 
@@ -46,7 +46,7 @@ const KID = () => {
                     <div className="w-4 h-4 bg-primary rounded-full animate-ping shadow-[0_0_20px_var(--primary-glow)]" />
                     <div>
                         <span className="text-[10px] font-black text-white uppercase tracking-[0.4em] italic block mb-1">Terminal Status</span>
-                        <span className="text-2xl font-black text-primary uppercase tracking-tighter italic">Vanguard Sync Active</span>
+                        <span className="text-2xl font-black text-primary uppercase tracking-tighter italic">Status Sync Active</span>
                     </div>
                 </div>
             </div>

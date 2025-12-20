@@ -558,7 +558,7 @@ const Fandom = () => {
                         <span className="text-[11px] font-black text-primary uppercase tracking-[0.6em] italic animate-pulse">Command Center</span>
                     </div>
                     <h1 className="text-7xl md:text-9xl font-black text-white italic tracking-tighter uppercase leading-[0.85] mb-8">
-                        Vanguard <span className="text-primary underline decoration-primary/40 decoration-[25px] underline-offset-[25px]">Control</span>
+                        Command <span className="text-primary underline decoration-primary/40 decoration-[25px] underline-offset-[25px]">Control</span>
                     </h1>
                     <div className="flex items-center gap-8">
                         <p className="text-lg text-textMuted font-black uppercase tracking-[0.4em] flex items-center gap-4 italic opacity-80">
@@ -594,12 +594,12 @@ const Fandom = () => {
                                 <div>
                                     <div className="flex items-center gap-4 mb-6">
                                         <Cpu className="text-primary w-6 h-6 animate-pulse" />
-                                        <p className="text-[12px] font-black text-primary uppercase tracking-[0.5em] italic">Vanguard Sync Protocol</p>
+                                        <p className="text-[12px] font-black text-primary uppercase tracking-[0.5em] italic">Status Synchronization</p>
                                     </div>
                                     <h2 className="text-7xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-[0.9] mb-4">{currentLevelObj?.name}</h2>
                                     <div className="flex items-center gap-4 text-textMuted">
                                         <Shield size={18} />
-                                        <p className="text-base font-black uppercase tracking-[0.4em] italic opacity-60">Status: Elite Operational Vanguard</p>
+                                        <p className="text-base font-black uppercase tracking-[0.4em] italic opacity-60">Status: Elite Member Verified</p>
                                     </div>
                                 </div>
 
@@ -727,12 +727,12 @@ const Fandom = () => {
                     <div className="premium-card p-12 border-primary/20 bg-gradient-to-br from-primary/[0.05] to-transparent relative overflow-hidden group shadow-2xl animate-fade-in [animation-delay:0.6s]">
                         <div className="absolute -right-10 -top-10 text-white/5 rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-[2000ms]"><ShoppingBag size={250} /></div>
                         <div className="flex justify-between items-center mb-12 relative z-10 italic">
-                            <h4 className="text-[11px] font-black text-white uppercase tracking-[0.5em] italic">Vanguard Supply Drop</h4>
+                            <h4 className="text-[11px] font-black text-white uppercase tracking-[0.5em] italic">Premium Supply Drop</h4>
                             <Lock size={18} className="text-primary animate-pulse" />
                         </div>
                         <div className="space-y-10 relative z-10">
                             {[
-                                { n: 'Vanguard Elite Jersey', p: '$140', c: 'V', desc: 'Gen-2 Stealth Fabric' },
+                                { n: 'Pro Elite Jersey', p: '$140', c: 'V', desc: 'Gen-2 Stealth Fabric' },
                                 { n: 'Alpha Match Protocol Ball', p: '$65', c: 'A', desc: 'Signal Integrated Ball' }
                             ].map((item, i) => (
                                 <div key={i} className="flex gap-8 items-center group/shop cursor-pointer">
