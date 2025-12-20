@@ -52,7 +52,7 @@ const Home = () => {
                     <h1 className="text-3xl font-bold text-white tracking-tight leading-none bg-gradient-to-r from-white via-white to-primary/50 bg-clip-text text-transparent">
                         Sports<span className="text-primary drop-shadow-md">Central</span>
                     </h1>
-                    <p className="text-primary/80 text-sm font-medium tracking-wide uppercase">Home • Live Events • Prestige</p>
+                    <p className="text-primary/80 text-sm font-medium tracking-wide uppercase">Home • Live Events • Prestige • <span className="text-white/40">v2.0 Gold</span></p>
                 </div>
 
                 <div className="relative w-full xl:w-[600px] group">
