@@ -173,7 +173,7 @@ const Fandom = () => {
     };
 
     const getColorFromInitials = (name) => {
-        const colors = ['bg-pink-500', 'bg-primary', 'bg-blue-600', 'bg-green-500', 'bg-purple-600', 'bg-orange-500'];
+        const colors = ['bg-white/10 text-white', 'bg-primary/20 text-primary', 'bg-white/5 text-white', 'bg-primary/10 text-primary'];
         let hash = 0;
         for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
         return colors[Math.abs(hash) % colors.length];
@@ -586,7 +586,7 @@ const Fandom = () => {
                     {/* Elite Synchronization Node */}
                     <div className="premium-card p-16 bg-black/40 border-primary/20 relative overflow-hidden group shadow-[0_60px_150px_rgba(0,0,0,1)]">
                         {/* GLOW DECOR */}
-                        <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-primary/10 blur-[150px] -z-10 rounded-full group-hover:bg-primary/20 transition-all duration-[3000ms]" />
+                        <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-primary/5 blur-[150px] -z-10 rounded-full group-hover:bg-primary/10 transition-all duration-[3000ms]" />
                         <div className="absolute bottom-[-50px] left-[-50px] w-56 h-56 bg-primary/5 blur-[80px] -z-10 rounded-full" />
 
                         <div className="relative z-10 flex flex-col lg:flex-row justify-between gap-16">
@@ -660,7 +660,7 @@ const Fandom = () => {
                                         style={{ animationDelay: `${i * 0.1}s` }}
                                         onClick={() => isJoined ? navigate(`/fandom/${c.id}`) : handleJoin(c.id)}>
 
-                                        <div className="absolute inset-x-0 h-[2px] bg-primary/20 animate-scan pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity" />
+                                        <div className="absolute inset-x-0 h-[1px] bg-primary/20 opacity-0 group-hover/card:opacity-100 transition-opacity" />
 
                                         <div className="flex items-center gap-10 relative z-10">
                                             <div className="w-28 h-28 rounded-[40px] bg-black border border-white/10 flex items-center justify-center text-5xl group-hover/card:bg-primary group-hover/card:text-black group-hover/card:border-transparent transition-all duration-500 shadow-2xl relative overflow-hidden">
@@ -752,7 +752,7 @@ const Fandom = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

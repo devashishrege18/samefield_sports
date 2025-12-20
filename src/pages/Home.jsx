@@ -49,10 +49,10 @@ const Home = () => {
             {/* ATMOSPHERIC SEARCH & NAVIGATION HEADER */}
             <div className="flex flex-col xl:flex-row justify-between items-center gap-10">
                 <div className="flex flex-col gap-2">
-                    <h1 className="text-3xl font-bold text-white tracking-tight leading-none">
-                        Sports<span className="text-primary">Central</span>
+                    <h1 className="text-3xl font-bold text-white tracking-tight leading-none bg-gradient-to-r from-white via-white to-primary/50 bg-clip-text text-transparent">
+                        Sports<span className="text-primary drop-shadow-md">Central</span>
                     </h1>
-                    <p className="text-text-muted text-sm font-medium">Home • Live Events • Recommendations</p>
+                    <p className="text-primary/80 text-sm font-medium tracking-wide uppercase">Home • Live Events • Prestige</p>
                 </div>
 
                 <div className="relative w-full xl:w-[600px] group">

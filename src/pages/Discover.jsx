@@ -5,7 +5,7 @@ const DetailModal = ({ selectedItem, onClose, onConfirm }) => {
     if (!selectedItem) return null;
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-lg animate-fade-in">
-            <div className="relative w-full max-w-2xl bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+            <div className="relative w-full max-w-2xl bg-[#050505] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
                 <button
                     onClick={onClose}
                     className="absolute top-6 right-6 p-2 bg-black/50 hover:bg-white hover:text-black rounded-full text-white z-40 transition-all border border-white/10"
@@ -234,7 +234,7 @@ const Discover = () => {
                             { title: 'Corporate Mixed Doubles', loc: 'Downtown Arena', date: 'Fri, Sep 02 • 06:00 PM', price: '$15', img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800' },
                             { title: 'Rising Stars Shootout', loc: 'Elite Sports Club', date: 'Sat, Sep 03 • 03:00 PM', price: 'Free', img: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80&w=800' }
                         ].map((evt, i) => (
-                            <div key={i} onClick={() => handleAction('ticket_buy', evt.title)} className="group cursor-pointer bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] rounded-2xl p-4 flex gap-6 items-center transition-all">
+                            <div key={i} onClick={() => handleAction('ticket_buy', evt.title)} className="group cursor-pointer premium-card p-4 flex gap-6 items-center transition-all">
                                 <div className="h-24 w-32 rounded-xl overflow-hidden relative flex-shrink-0">
                                     <img src={evt.img} alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                                 </div>
@@ -273,7 +273,7 @@ const Discover = () => {
                                 <div
                                     key={i}
                                     onClick={() => handleAction('store_visit', store.name)}
-                                    className="p-4 bg-black/40 border border-white/5 rounded-2xl flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-all">
+                                    className="p-4 premium-card flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-all">
                                     <img src={store.img} className="w-12 h-12 rounded-lg object-cover grayscale" alt="" />
                                     <div>
                                         <h4 className="font-bold text-white text-sm mb-0.5">{store.name}</h4>
