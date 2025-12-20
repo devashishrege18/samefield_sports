@@ -49,10 +49,10 @@ const Home = () => {
             {/* ATMOSPHERIC SEARCH & NAVIGATION HEADER */}
             <div className="flex flex-col xl:flex-row justify-between items-center gap-10">
                 <div className="flex flex-col gap-2">
-                    <h1 className="text-2xl font-black text-white italic tracking-tighter uppercase leading-none">
-                        Sports<span className="text-primary italic">Central</span>
+                    <h1 className="text-3xl font-bold text-white tracking-tight leading-none">
+                        Sports<span className="text-primary">Central</span>
                     </h1>
-                    <p className="text-text-muted text-[10px] font-bold uppercase tracking-[0.4em]">Home • Live Events • Recommendations</p>
+                    <p className="text-text-muted text-sm font-medium">Home • Live Events • Recommendations</p>
                 </div>
 
                 <div className="relative w-full xl:w-[600px] group">
@@ -66,7 +66,7 @@ const Home = () => {
             </div>
 
             {/* CINEMATIC FEATURED HERO */}
-            <div className="relative h-[650px] xl:h-[800px] rounded-[40px] overflow-hidden group shadow-premium border border-white/5 bg-black">
+            <div className="relative min-h-[600px] rounded-[32px] overflow-hidden group shadow-premium border border-white/5 bg-black">
                 {/* DYNAMIC ATMOSPHERIC BACKGROUND */}
                 <img
                     src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2674&auto=format&fit=crop"
@@ -87,11 +87,11 @@ const Home = () => {
                     </div>
 
                     <div className="space-y-6 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                        <h1 className="text-[70px] xl:text-[110px] font-black text-white tracking-tighter leading-[0.85] uppercase flex flex-col italic">
+                        <h1 className="text-6xl xl:text-8xl font-black text-white tracking-tight leading-[0.9] flex flex-col">
                             <span>Battle of</span>
-                            <span className="text-white/20">The Legends</span>
+                            <span className="text-white/40">The Legends</span>
                         </h1>
-                        <p className="text-sm xl:text-xl text-text-muted max-w-2xl font-medium leading-relaxed">
+                        <p className="text-lg text-text-muted max-w-2xl font-medium leading-relaxed">
                             A historic encounter at the peak of athletic excellence. Witness the world's elite go head-to-head in a definitive clash of speed, power, and strategy.
                         </p>
                     </div>
@@ -145,7 +145,7 @@ const Home = () => {
                                 { id: 1, title: 'Titan League Finals', type: 'Upcoming', img: 'https://images.unsplash.com/photo-1541252260730-0412e8e2108e?q=80', date: 'Dec 24, 2023' },
                                 { id: 2, title: 'Sector Semis: Alpha', type: 'Live', img: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80', date: 'Dec 20, 2023' }
                             ].map((ev) => (
-                                <div key={ev.id} className="premium-card p-0 group h-[450px] cursor-pointer">
+                                <div key={ev.id} className="premium-card p-0 group aspect-[4/3] cursor-pointer">
                                     <img src={ev.img} alt={ev.title} className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-105 opacity-60 group-hover:opacity-100" />
                                     <div className="hero-overlay group-hover:opacity-60 transition-opacity" />
 
@@ -155,10 +155,10 @@ const Home = () => {
                                         </div>
                                     </div>
 
-                                    <div className="absolute bottom-10 left-10 right-10 z-20 transition-all duration-500 transform group-hover:-translate-y-2">
-                                        <div className="flex flex-col gap-4">
-                                            <span className="text-[10px] text-white/40 font-black uppercase tracking-[0.4em] italic">{ev.date}</span>
-                                            <h4 className="font-extrabold text-white text-3xl tracking-tighter uppercase leading-none italic">{ev.title}</h4>
+                                    <div className="absolute bottom-0 left-0 right-0 p-8 z-20 transition-all duration-500 transform group-hover:-translate-y-2 bg-gradient-to-t from-black/80 to-transparent">
+                                        <div className="flex flex-col gap-3">
+                                            <span className="text-xs text-white/60 font-medium uppercase tracking-wider">{ev.date}</span>
+                                            <h4 className="font-bold text-white text-2xl tracking-tight leading-none">{ev.title}</h4>
                                             <div className="h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-700" />
                                         </div>
                                     </div>
@@ -283,8 +283,8 @@ const Home = () => {
             {/* CALL TO ACTION - CINEMATIC FINALE */}
             <div className="premium-card p-24 text-center space-y-12 mt-24 mb-32 bg-gradient-to-b from-white/[0.03] to-transparent border-white/10 group">
                 <div className="space-y-6">
-                    <h2 className="text-6xl xl:text-8xl font-black text-white tracking-tighter uppercase leading-[0.85] italic">The Future of <br /><span className="text-primary italic">Live Sports</span></h2>
-                    <p className="text-xs xl:text-sm text-text-muted font-bold uppercase tracking-[0.6em] leading-relaxed max-w-2xl mx-auto italic">
+                    <h2 className="text-4xl xl:text-6xl font-black text-white tracking-tight leading-tight">The Future of <br /><span className="text-primary">Live Sports</span></h2>
+                    <p className="text-lg text-text-muted font-medium leading-relaxed max-w-2xl mx-auto">
                         Experience every moment in cinematic fidelity. Join the world's most sophisticated sports community.
                     </p>
                 </div>

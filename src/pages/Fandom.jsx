@@ -197,7 +197,7 @@ const Fandom = () => {
     // ============================================
     if (id) {
         return (
-            <div className="page-container h-[calc(100vh-120px)] overflow-y-auto scrollbar-hide animate-fade-in relative bg-white/[0.02] rounded-[40px] border border-white/5">
+            <div className="page-container min-h-screen animate-fade-in relative bg-white/[0.02] rounded-[40px] border border-white/5 pb-20">
                 {/* ELEGANT HERO */}
                 <div className="relative h-[450px] w-full overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
@@ -546,7 +546,7 @@ const Fandom = () => {
     // PREMIUM LOBBY VIEW
     // ============================================
     return (
-        <div className="h-[calc(100vh-100px)] overflow-y-auto scrollbar-hide p-12 md:p-16 lg:p-24 space-y-24 bg-black/40 backdrop-blur-3xl rounded-[60px] border border-white/5 animate-fade-in relative">
+        <div className="page-container min-h-screen space-y-24 bg-black/40 backdrop-blur-3xl rounded-[60px] border border-white/5 animate-fade-in relative pb-32">
 
             {/* BACKGROUND DECOR */}
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 blur-[200px] -z-10 rounded-full animate-pulse-glow" />
