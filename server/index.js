@@ -2,6 +2,12 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const mongoose = require('mongoose');
+
+process.on('unhandledRejection', (reason, p) => {
+    console.error('Unhandled Rejection at:', p, 'reason:', reason);
+    // Application specific logging, throwing an error, or other logic here
+});
 
 const app = express();
 app.use(cors());
@@ -10,96 +16,187 @@ app.use(express.json());
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "*", // Allow all for dev
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
 
-// --- In-Memory State ---
-// connectedUsers: { [guest_id]: { name, socketId } }
-let connectedUsers = {}; 
-// posts: Array of { id, author_id, author_name, content, created_at, likes: [] }
-let posts = [
-    {
-        id: '1',
-        author_id: 'system',
-        author_name: 'FandomHost',
-        content: 'Welcome to the Fandom! Creating this space for all of you. 🏟️',
-        created_at: new Date().toISOString(),
-        likes: []
-    }
-];
-
+// --- In-Memory State (Socket only & Support) ---
+// connectedUsers: { [guest_id]: { name, socketId, room } }
+let connectedUsers = {};
 const MAX_USERS = 10;
 const GLOBAL_ROOM = "GLOBAL_FAN_ROOM";
 
-// --- REST API ---
-
-// GET /posts - Get feed
-app.get('/posts', (req, res) => {
-    // Return sorted by newest first
-    const sorted = [...posts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    res.json(sorted);
+// --- Mongoose Models ---
+const CommentSchema = new mongoose.Schema({
+    author_id: String,
+    author_name: String,
+    text: String,
+    created_at: { type: Date, default: Date.now }
 });
 
-// POST /posts - Create post
-app.post('/posts', (req, res) => {
-    const { guest_id, guest_name, content } = req.body;
+const PostSchema = new mongoose.Schema({
+    author_id: String,
+    author_name: String,
+    content: String,
+    fandomId: { type: String, default: 'GLOBAL_FAN_ROOM' },
+    likes: [String], // Array of guest_ids
+    comments: [CommentSchema],
+    created_at: { type: Date, default: Date.now } // Auto-managed date
+});
 
-    if (!guest_id || !guest_name || !content) {
-        return res.status(400).json({ error: "Missing fields" });
+const Post = mongoose.model('Post', PostSchema);
+
+// --- MongoDB Connection ---
+mongoose.connect('mongodb://127.0.0.1:27017/fandom_db', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => {
+        console.log('✅ Connected to MongoDB');
+
+        // Seed Initial Data if Empty (Only after connection)
+        Post.countDocuments()
+            .then(count => {
+                if (count === 0) {
+                    new Post({
+                        author_id: 'system',
+                        author_name: 'FandomHost',
+                        content: 'Welcome to the newly persisted Fandom! 🏟️ Your posts are now saved in MongoDB.',
+                        fandomId: GLOBAL_ROOM
+                    }).save().then(() => console.log('seeded initial post'));
+                }
+            })
+            .catch(err => console.error("Seeding Error:", err));
+    })
+    .catch(err => console.error('❌ MongoDB Connection Error:', err));
+
+
+// --- REST API ---
+
+// GET /posts - Get feed (from DB)
+app.get('/posts', async (req, res) => {
+    try {
+        const { fandomId } = req.query;
+        let query = {};
+        if (fandomId) {
+            query.fandomId = fandomId;
+        }
+
+        // Sort by newest first
+        const posts = await Post.find(query).sort({ created_at: -1 });
+        res.json(posts);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch posts" });
     }
+});
 
-    // "Validate guest exists" - strict check: must be online? 
-    // User requirement: "Validate guest exists"
-    // We will check if guest_id is present. 
-    // (Optional: we could check `if (!connectedUsers[guest_id])` but HTTP handles distinct from Socket, 
-    // better to allow posting even if socket slightly disconnected)
-    
-    const newPost = {
-        id: Date.now().toString(),
-        author_id: guest_id,
-        author_name: guest_name,
-        content,
-        created_at: new Date().toISOString(),
-        likes: []
-    };
+// POST /posts - Create post (Save to DB)
+app.post('/posts', async (req, res) => {
+    try {
+        const { guest_id, guest_name, content, fandomId } = req.body;
 
-    posts.unshift(newPost); // Add to top
-    
-    // Return updated feed
-    res.json(posts);
+        if (!guest_id || !guest_name || !content) {
+            return res.status(400).json({ error: "Missing fields" });
+        }
+
+        const newPost = new Post({
+            author_id: guest_id,
+            author_name: guest_name,
+            content,
+            fandomId: fandomId || GLOBAL_ROOM
+        });
+
+        await newPost.save();
+
+        // Return updated feed for that fandom to keep frontend sync consistent
+        const posts = await Post.find({ fandomId: newPost.fandomId }).sort({ created_at: -1 });
+        res.json(posts);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to create post" });
+    }
 });
 
 // POST /posts/:id/like - Like/Unlike
-app.post('/posts/:id/like', (req, res) => {
-    const { id } = req.params;
-    const { guest_id } = req.body;
+app.post('/posts/:id/like', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { guest_id } = req.body;
 
-    const post = posts.find(p => p.id === id);
-    if (!post) {
-        return res.status(404).json({ error: "Post not found" });
+        const post = await Post.findById(id);
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        const likeIndex = post.likes.indexOf(guest_id);
+        if (likeIndex > -1) {
+            post.likes.splice(likeIndex, 1); // Unlike
+        } else {
+            post.likes.push(guest_id); // Like
+        }
+
+        await post.save();
+
+        res.json({ id: post._id, likes: post.likes.length, likedByMe: likeIndex === -1 });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to toggle like" });
     }
+});
 
-    const likeIndex = post.likes.indexOf(guest_id);
-    if (likeIndex > -1) {
-        // Unlike
-        post.likes.splice(likeIndex, 1);
-    } else {
-        // Like
-        post.likes.push(guest_id);
+// POST /posts/:id/comments - Add comment (Save to DB)
+app.post('/posts/:id/comments', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { guest_id, guest_name, text } = req.body;
+
+        if (!guest_id || !guest_name || !text) {
+            return res.status(400).json({ error: "Missing fields" });
+        }
+
+        const post = await Post.findById(id);
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        post.comments.push({
+            author_id: guest_id,
+            author_name: guest_name,
+            text,
+            created_at: new Date()
+        });
+
+        await post.save();
+
+        const newComment = post.comments[post.comments.length - 1];
+        res.json({ success: true, comment: newComment, totalComments: post.comments.length });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to add comment" });
     }
+});
 
-    res.json({ id: post.id, likes: post.likes.length, likedByMe: likeIndex === -1 });
+// --- NEW API: Support (Ported from app/api/support/route.js) ---
+app.post('/api/support', async (req, res) => {
+    try {
+        const { athleteId } = req.body;
+        // In a real app, this would integrate with a payment gateway or DB.
+        // For now, we simulate a successful transaction.
+        console.log(`[Support API] Received support for: ${athleteId} `);
+
+        // Emulate some verification/processing delay
+        await new Promise(r => setTimeout(r, 500));
+
+        res.status(200).json({ message: "Thank you for supporting rising talent!" });
+    } catch (error) {
+        console.error("Support API Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 
-// --- Socket.IO Logic ---
+// --- Socket.IO Logic (Real-time Chat & Presence) ---
 
-// Middleware to enforce User Limit
 io.use((socket, next) => {
     const currentCount = Object.keys(connectedUsers).length;
-    // We are about to add one, so if currently >= 10, reject.
     if (currentCount >= MAX_USERS) {
         const err = new Error("Room full (Max 10 users)");
         return next(err);
@@ -108,92 +205,81 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
-    
-    // Step 8: Frontend sends guest_id, guest_name
-    // Usually sent in handshake query or auth, or first event.
-    // User prompt says "When socket connects: Frontend sends..."
-    // Simpler to handle standard query params or `socket.handshake.auth`
-    // Let's assume query params: ?guest_id=...&guest_name=...
-    
-    const { guest_id, guest_name } = socket.handshake.query;
+
+    const { guest_id, guest_name, roomId } = socket.handshake.query;
 
     if (!guest_id || !guest_name) {
-        // Reject invalid
         socket.disconnect(true);
         return;
     }
 
-    // Register User
-    // If the SAME guest connects from another tab, we might overwrite or block?
-    // "Check localStorage... Do not regenerate". 
-    // If same user connects >1 time, we just update socketId? 
-    // Or do we count them as 2 connections towards limit?
-    // "Backend keeps ... guest_id: { name, socketId }" map suggests 1 socket per guest_id.
-    // But if they open 2 tabs, they consume 2 sockets. 
-    // Let's stick to: 1 Connection = 1 Slot in `connectedUsers` map (keyed by guest_id).
-    // If guest_id already exists, we update the socketId (user reconnected or new tab).
-    // BUT we need to be careful with the Count.
-    // If updating, count doesn't increase. 
-    // If new, count increases.
-    
-    // Wait, middleware ran BEFORE we knew the guest_id (unless we peek query in middleware).
-    // Middleware `io.use` has access to `socket`.
-    // Let's refining limiting logic:
-    // Ideally we limit by *Unique Guests*, not just sockets?
-    // "guarantees only 5-10 people". 
-    // I will check limit based on *new* guest_ids.
-    
-    const isReturningUser = !!connectedUsers[guest_id];
-    
-    // We already checked count in middleware, but that was raw connection count. 
-    // That's fine. 10 sockets max.
-    
-    connectedUsers[guest_id] = { name: guest_name, socketId: socket.id };
-    
-    // Join Room
-    socket.join(GLOBAL_ROOM);
-    
-    // Broadcast user_joined
-    io.to(GLOBAL_ROOM).emit('user_joined', { guest_id, guest_name });
-    
-    // Broadcast current user list
-    io.to(GLOBAL_ROOM).emit('update_users', Object.values(connectedUsers));
+    const activeRoom = roomId || GLOBAL_ROOM;
+    connectedUsers[guest_id] = { name: guest_name, socketId: socket.id, room: activeRoom };
+    socket.join(activeRoom);
 
-    console.log(`User connected: ${guest_name} (${guest_id}). Total: ${Object.keys(connectedUsers).length}`);
+    // Initial Broadcasts
+    io.to(activeRoom).emit('user_joined', { guest_id, guest_name });
+    const roomUsers = Object.values(connectedUsers).filter(u => u.room === activeRoom);
+    io.to(activeRoom).emit('update_users', roomUsers);
 
-    // Events
-    
+    console.log(`User ${guest_name} connected to ${activeRoom} (DB Connected)`);
+
+    // Handle switching rooms
+    socket.on('join_room', (data) => {
+        const { roomId: newRoom } = data;
+        const currentData = connectedUsers[guest_id];
+        if (!currentData) return; // safety check
+        const oldRoom = currentData.room;
+
+        if (!newRoom || newRoom === oldRoom) return;
+
+        socket.leave(oldRoom);
+        socket.join(newRoom);
+
+        // Update state
+        connectedUsers[guest_id].room = newRoom;
+
+        // Notify old room
+        io.to(oldRoom).emit('user_left', { guest_id, guest_name });
+        io.to(oldRoom).emit('update_users', Object.values(connectedUsers).filter(u => u.room === oldRoom));
+
+        // Notify new room
+        io.to(newRoom).emit('user_joined', { guest_id, guest_name });
+        io.to(newRoom).emit('update_users', Object.values(connectedUsers).filter(u => u.room === newRoom));
+
+        console.log(`${guest_name} switched from ${oldRoom} to ${newRoom} `);
+    });
+
     socket.on('send_message', (data) => {
-        // Payload: guest_id, guest_name, text
-        // Verify sender is in room (implicit if they are connected and we have them)
-        if (connectedUsers[socket.id] && connectedUsers[socket.id].guest_id !== data.guest_id) {
-           // Mismatch or spoofing? Ignore or trust payload?
-           // Better: Use server-known identity.
-        }
-        
-        // Broadcast
-        io.to(GLOBAL_ROOM).emit('receive_message', {
-            guest_id: data.guest_id, // or from server state
+        const userData = connectedUsers[guest_id];
+        const userRoom = userData ? userData.room : GLOBAL_ROOM;
+
+        io.to(userRoom).emit('receive_message', {
+            guest_id: data.guest_id,
             guest_name: data.guest_name,
             text: data.text,
             timestamp: new Date().toISOString()
         });
+        // Note: Chat messages are still transient (Socket only) for now unless requested to persist.
     });
 
     socket.on('disconnect', () => {
-        console.log(`User disconnected: ${guest_name}`);
-        
-        // Remove from connectedUsers
-        delete connectedUsers[guest_id];
-        
-        // Broadcast user_left
-        io.to(GLOBAL_ROOM).emit('user_left', { guest_id, guest_name });
-        io.to(GLOBAL_ROOM).emit('update_users', Object.values(connectedUsers));
+        const userData = connectedUsers[guest_id];
+        if (userData) {
+            console.log(`User disconnected: ${userData.name} `);
+            const userRoom = userData.room;
+            delete connectedUsers[guest_id];
+
+            if (userRoom) {
+                io.to(userRoom).emit('user_left', { guest_id: userData.name }); // fixed payload structure
+                io.to(userRoom).emit('update_users', Object.values(connectedUsers).filter(u => u.room === userRoom));
+            }
+        }
     });
 });
 
 const PORT = 3001;
 server.listen(PORT, () => {
-    console.log(`SERVER RUNNING on port ${PORT}`);
-    console.log(`Real-time Fandom ready. Limit: ${MAX_USERS} users.`);
+    console.log(`SERVER RUNNING on port ${PORT} `);
+    console.log(`Real - time + MongoDB Fandom ready.`);
 });

@@ -19,10 +19,12 @@ const Navigation = ({ activeTab, setActiveTab }) => {
     return (
         <nav
             className={`navigation ${isExpanded ? 'expanded' : ''}`}
-            onMouseEnter={() => setIsExpanded(true)}
-            onMouseLeave={() => setIsExpanded(false)}
         >
-            <div className="nav-header">
+            <div
+                className="nav-header"
+                onClick={() => setIsExpanded(!isExpanded)}
+                style={{ cursor: 'pointer' }}
+            >
                 <Menu className="menu-icon" />
                 <span className="logo-text">SF Sports</span>
             </div>
