@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import LiveMatches from './components/LiveMatches';
 import Commentary from './components/Commentary';
 import Fandom from './components/Fandom';
+import VideoConference from './components/VideoConference';
 import KID from './components/KID';
 import PlayerMeet from './components/PlayerMeet';
 import Highlights from './components/Highlights';
@@ -38,7 +39,7 @@ function App() {
         {activeTab === 'fandom' && <Fandom />}
         {activeTab === 'highlights' && <Highlights />}
         {activeTab === 'kid' && <KID />}
-        {activeTab === 'meet' && <PlayerMeet />}
+        {activeTab === 'meet' && <VideoConference />}
         {activeTab === 'forum' && <Forum />}
         {activeTab === 'news' && <NewsEvents />}
       </main>
