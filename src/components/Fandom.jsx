@@ -264,7 +264,7 @@ const Fandom = () => {
     // ============================================
     if (id) {
         return (
-            <div className="min-h-screen bg-black text-white relative">
+            <div className="min-h-screen bg-black text-white relative -m-4 md:-m-8">
                 {/* Hero Banner */}
                 <div className="relative h-64 w-full overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90 z-10"></div>
