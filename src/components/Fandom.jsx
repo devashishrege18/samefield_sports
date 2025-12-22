@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Award, Star, Users, TrendingUp, Lock, Heart, MessageCircle, Share2, Send, Zap, ChevronRight, Globe, Image as ImageIcon, Play, X, Pin } from 'lucide-react';
+import { Award, Star, Users, TrendingUp, Lock, Heart, MessageCircle, Share2, Send, Zap, ChevronRight, Globe, Image as ImageIcon, Play, X, Pin, ExternalLink, RefreshCw } from 'lucide-react';
 import { fandomService } from '../services/FandomService';
 import { usePoints } from '../context/PointsContext';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,6 +8,7 @@ import '../styles/components/Fandom.css';
 
 import { joinRoom } from 'trystero/nostr';
 import { predictionQuestions, circles as mockCircles, circleMedia } from '../services/mockData';
+import { getInstagramPosts, getTwitterPosts, formatCount } from '../services/SocialMediaService';
 
 const Fandom = () => {
     const { id } = useParams();
@@ -434,33 +435,127 @@ const Fandom = () => {
 
                     {/* MEDIA VIEW */}
                     {activeTab === 'media' && (
-                        <div className="fade-in">
-                            <h3 className="text-xl font-black text-white uppercase italic tracking-tighter mb-6">Gallery & Highlights</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {(circleMedia[id] || circleMedia['default']).map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="group relative aspect-video bg-surface rounded-xl overflow-hidden border border-white/5 cursor-pointer hover:border-primary/50 transition-all"
-                                        onClick={() => item.type === 'video' ? setActiveVideo(item.vidId) : null}
-                                    >
-                                        <img
-                                            src={item.type === 'video' ? `https://img.youtube.com/vi/${item.vidId}/mqdefault.jpg` : item.url}
-                                            className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all"
-                                            alt={item.title}
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                                            <p className="text-[10px] font-black text-white uppercase tracking-widest">{item.title}</p>
+                        <div className="fade-in space-y-8">
+                            {/* Gallery & Highlights */}
+                            <div>
+                                <h3 className="text-xl font-black text-white uppercase italic tracking-tighter mb-6">Gallery & Highlights</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    {(circleMedia[id] || circleMedia['default']).map((item) => (
+                                        <div
+                                            key={item.id}
+                                            className="group relative aspect-video bg-surface rounded-xl overflow-hidden border border-white/5 cursor-pointer hover:border-primary/50 transition-all"
+                                            onClick={() => item.type === 'video' ? setActiveVideo(item.vidId) : null}
+                                        >
+                                            <img
+                                                src={item.type === 'video' ? `https://img.youtube.com/vi/${item.vidId}/mqdefault.jpg` : item.url}
+                                                className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all"
+                                                alt={item.title}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                            <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                                                <p className="text-[10px] font-black text-white uppercase tracking-widest">{item.title}</p>
+                                            </div>
+                                            {item.type === 'video' && (
+                                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                    <div className="w-10 h-10 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center text-primary border border-primary/30">
+                                                        <Play size={16} fill="currentColor" />
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                        {item.type === 'video' && (
-                                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                                <div className="w-10 h-10 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center text-primary border border-primary/30">
-                                                    <Play size={16} fill="currentColor" />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Instagram Feed */}
+                            <div>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 flex items-center justify-center">
+                                        <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-lg font-black text-white uppercase tracking-tight">Instagram Feed</h3>
+                                </div>
+                                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                                    {getInstagramPosts(id).map((post) => (
+                                        <div key={post.id} className="flex-shrink-0 w-72 bg-surface rounded-2xl border border-white/5 overflow-hidden hover:border-pink-500/30 transition-all group">
+                                            <div className="relative aspect-square overflow-hidden">
+                                                <img src={post.image} alt="post" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </div>
+                                            <div className="p-4">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">
+                                                        {post.avatar}
+                                                    </div>
+                                                    <span className="text-sm font-bold text-white">{post.username}</span>
+                                                    {post.verified && (
+                                                        <svg className="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
+                                                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                                        </svg>
+                                                    )}
+                                                    <span className="text-xs text-gray-500 ml-auto">{post.timeAgo}</span>
+                                                </div>
+                                                <p className="text-sm text-gray-300 line-clamp-2 mb-3">{post.caption}</p>
+                                                <div className="flex items-center gap-4 text-xs text-gray-400">
+                                                    <span className="flex items-center gap-1">
+                                                        <Heart size={14} className="text-pink-500" fill="currentColor" /> {formatCount(post.likes)}
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <MessageCircle size={14} /> {formatCount(post.comments)}
+                                                    </span>
                                                 </div>
                                             </div>
-                                        )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Twitter/X Feed */}
+                            <div>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center border border-white/10">
+                                        <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                        </svg>
                                     </div>
-                                ))}
+                                    <h3 className="text-lg font-black text-white uppercase tracking-tight">X / Twitter</h3>
+                                </div>
+                                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                                    {getTwitterPosts(id).map((post) => (
+                                        <div key={post.id} className="flex-shrink-0 w-80 bg-surface rounded-2xl border border-white/5 p-4 hover:border-gray-500/30 transition-all group">
+                                            <div className="flex items-start gap-3 mb-3">
+                                                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                                                    {post.avatar}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-1">
+                                                        <span className="text-sm font-bold text-white truncate">{post.username}</span>
+                                                        {post.verified && (
+                                                            <svg className="w-4 h-4 text-blue-400 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="text-xs text-gray-500">{post.timeAgo}</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-gray-200 mb-4 leading-relaxed">{post.content}</p>
+                                            <div className="flex items-center gap-6 text-xs text-gray-400">
+                                                <span className="flex items-center gap-1 hover:text-green-400 cursor-pointer transition-colors">
+                                                    <RefreshCw size={14} /> {formatCount(post.retweets)}
+                                                </span>
+                                                <span className="flex items-center gap-1 hover:text-pink-500 cursor-pointer transition-colors">
+                                                    <Heart size={14} /> {formatCount(post.likes)}
+                                                </span>
+                                                <span className="flex items-center gap-1 hover:text-primary cursor-pointer transition-colors ml-auto">
+                                                    <ExternalLink size={14} />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     )}
