@@ -1,23 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     User, Star, Trophy, ShoppingBag, MessageSquare, History,
     Settings, CheckCircle, BarChart2, DollarSign, Image as ImageIcon,
-    MapPin, Calendar, CreditCard, ChevronRight, Edit2, Shield
+    MapPin, Calendar, CreditCard, ChevronRight, Edit2, Shield,
+    Plus, Gift
 } from 'lucide-react';
 import KID from '../components/KID';
+import { usePoints } from '../context/PointsContext';
+import { db } from '../firebase/config';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 const Profile = () => {
+    const { points, userId } = usePoints();
     const [accountType, setAccountType] = useState('fan'); // 'fan' or 'athlete'
     const [activeTab, setActiveTab] = useState('overview');
+    const [userData, setUserData] = useState(null);
 
-    // MOCK DATA
+    // Get real user data from localStorage/Firebase
+    const userName = localStorage.getItem('samefield_username') || 'Guest Fan';
+    const joinDate = localStorage.getItem('samefield_join_date') || 'Dec 2024';
+
+    // Listen to real-time user data from Firebase
+    useEffect(() => {
+        if (!userId) return;
+
+        const userRef = doc(db, 'users', userId);
+        const unsubscribe = onSnapshot(userRef, (doc) => {
+            if (doc.exists()) {
+                setUserData(doc.data());
+            }
+        });
+
+        // Set join date if not set
+        if (!localStorage.getItem('samefield_join_date')) {
+            const now = new Date();
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            localStorage.setItem('samefield_join_date', `${monthNames[now.getMonth()]} ${now.getFullYear()}`);
+        }
+
+        return () => unsubscribe();
+    }, [userId]);
+
+    // REAL DATA for fan profile
     const fanData = {
-        name: 'Alex Johnson',
-        username: '@AlexJ_99',
-        level: 'Super Fan',
-        points: 9150,
-        joined: 'Aug 2024',
-        predictions: { total: 42, accuracy: '87%' },
+        name: userName,
+        username: `@${userName.replace(/\s+/g, '').toLowerCase()}`,
+        level: points >= 20000 ? 'Legend' : points >= 10000 ? 'Captain' : points >= 5000 ? 'Super Fan' : 'Rookie',
+        points: points || userData?.xp || 0,
+        joined: joinDate,
+        predictions: userData?.predictions || { total: 0, accuracy: '0%' },
         rewards: ['Meet & Greet Tkt', '10% Store Discount']
     };
 
@@ -280,10 +311,10 @@ const Profile = () => {
                                     <h3 className="text-sm font-black text-white uppercase tracking-wider">Featured Highlights</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                         {[
-                                            { t: 'Century Celebration', img: '/assets/thumb_fiba_basketball_1765784610870.png' }, // Fallback to basketball for 'team sport' energy if cricket not avail
-                                            { t: 'Winning Shot', img: '/assets/thumb_olympics_gold_1765784536137.png' },
-                                            { t: 'Training Vlog', img: '/assets/thumb_redbull_extreme_1765784514775.png' },
-                                            { t: 'Fan Meetup', img: '/assets/thumb_womens_football_1765784471060.png' }
+                                            { t: 'Century Celebration', img: '/assets/store_vk18_fitness_1765787964441.png' },
+                                            { t: 'Winning Shot', img: '/assets/talent_boxing_training_1765787719934.png' },
+                                            { t: 'Training Vlog', img: '/assets/talent_street_football_1765787693394.png' },
+                                            { t: 'Fan Meetup', img: '/assets/store_serena_ventures_1765787984356.png' }
                                         ].map((item, i) => (
                                             <div key={i} className="aspect-video bg-black rounded-xl relative overflow-hidden group cursor-pointer border border-white/5 hover:border-primary">
                                                 <img src={item.img} alt="Highlight" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" />
@@ -341,10 +372,10 @@ const Profile = () => {
                                 </div>
                                 {/* Mock Products */}
                                 {[
-                                    { name: 'Signature Bat (Signed)', img: '/assets/thumb_fiba_basketball_1765784610870.png' }, // Abstract use
-                                    { name: 'Team India Jersey', img: '/assets/thumb_womens_football_1765784471060.png' },
-                                    { name: 'Training Kit 2024', img: '/assets/thumb_olympics_gold_1765784536137.png' },
-                                    { name: 'Limited Edition Cap', img: '/assets/thumb_redbull_extreme_1765784514775.png' }
+                                    { name: 'Signature Bat (Signed)', img: '/assets/product_batting_gloves.png' },
+                                    { name: 'Team India Jersey', img: '/assets/product_goalkeeper_gloves.png' },
+                                    { name: 'Training Kit 2024', img: '/assets/product_leather_gloves_1765788007746.png' },
+                                    { name: 'Limited Edition Cap', img: '/assets/product_weightlifting_straps.png' }
                                 ].map((prod, i) => (
                                     <div key={i} className="premium-card p-4 group">
                                         <div className="aspect-square bg-gray-900 rounded-lg mb-4 overflow-hidden relative">
@@ -370,8 +401,5 @@ const Profile = () => {
         </div>
     );
 };
-
-// Helper for 'Plus' icon and 'Gift' icon not in top import list initially if copied exactly
-import { Plus, Gift } from 'lucide-react';
 
 export default Profile;

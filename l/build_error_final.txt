@@ -1,0 +1,52 @@
+
+amefield_sports\node_
+
+modules\esbuild\lib\m
+
+ain.js:658:12)
+
+    at Socket.readFro
+
+mStdout (C:\Users\hp\
+
+.gemini\antigravity\s
+
+cratch\samefield_spor
+
+ts\node_modules\esbui
+
+ld\lib\main.js:581:7)
+
+    at Socket.emit 
+
+(node:events:519:28)
+
+    at addChunk (node
+
+:internal/streams/rea
+
+dable:561:12)
+
+    at readableAddChu
+
+nkPushByteMode (node:
+
+internal/streams/read
+
+able:512:3)
+
+    at Readable.push 
+
+(node:internal/stream
+
+s/readable:392:5)
+
+    at 
+
+Pipe.onStreamRead (no
+
+de:internal/stream_ba
+
+se_commons:189:23)[3
+
+9m

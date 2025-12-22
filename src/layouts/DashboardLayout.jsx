@@ -60,7 +60,7 @@ const DashboardLayout = () => {
         <div className="flex h-screen bg-background text-white font-sans overflow-hidden">
             <Sidebar />
             <div className="flex-1 flex flex-col overflow-hidden relative">
-                <header className="h-16 md:h-20 border-b border-surfaceHighlight bg-surface/50 backdrop-blur-md flex items-center justify-between px-4 md:px-8 z-10 transition-all duration-300">
+                <header className="h-16 md:h-20 border-b border-white/5 bg-black/40 backdrop-blur-xl flex items-center justify-between px-4 md:px-8 z-10 shadow-cinematic">
                     <div>
                         <h2 className="text-lg md:text-xl font-black uppercase tracking-wider text-white">
                             {getPageTitle(location.pathname)}
@@ -68,18 +68,19 @@ const DashboardLayout = () => {
                     </div>
 
                     <div className="flex items-center gap-3 md:gap-6">
-                        <div className="flex items-center gap-2 bg-black/40 px-3 py-1 md:bg-black/40 md:px-4 md:py-1.5 rounded-full border border-primary/20 shadow-[0_0_15px_rgba(245,196,0,0.1)]">
+                        <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-primary/30 shadow-glow-gold glow-on-hover transition-all duration-300">
                             <Zap className="w-3 h-3 md:w-4 md:h-4 text-primary fill-primary animate-pulse" />
-                            <span className="text-primary font-black text-sm md:text-lg tabular-nums tracking-widest">{displayPoints.toLocaleString()}</span>
+                            <span className="text-gradient-gold font-black text-sm md:text-lg tabular-nums tracking-widest">{displayPoints.toLocaleString()}</span>
                             <span className="text-[8px] md:text-[10px] text-textMuted font-bold uppercase">XP</span>
                         </div>
 
                         <div className="relative md:block w-64 hidden">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textMuted" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-textMuted z-10" />
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="w-full bg-surface border border-surfaceHighlight rounded-full py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-primary transition-colors"
+                                className="w-full bg-surface border border-surfaceHighlight rounded-full py-2 pr-4 text-xs focus:outline-none focus:border-primary transition-colors"
+                                style={{ paddingLeft: '2.5rem' }}
                             />
                         </div>
 
@@ -91,17 +92,17 @@ const DashboardLayout = () => {
                             <span className="hidden md:inline text-[10px] font-black uppercase tracking-wider">{showVoicePanel ? 'Hide Rooms' : 'Rooms'}</span>
                         </button>
 
-                        <button className="relative p-2 text-textMuted hover:text-white transition-colors">
+                        <button className="relative p-2 text-textMuted hover:text-white transition-all hover:bg-white/5 rounded-full icon-btn">
                             <Bell className="w-5 h-5" />
-                            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-glow-red" />
                         </button>
 
-                        <Link to="/profile" className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+                        <Link to="/profile" className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-all group">
                             <div className="text-right hidden md:block">
-                                <span className="block text-sm font-bold text-white capitalize">{userName}</span>
+                                <span className="block text-sm font-bold text-white capitalize group-hover:text-primary transition-colors">{userName}</span>
                                 <span className="text-[10px] font-bold text-primary uppercase">Super Fan</span>
                             </div>
-                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-surfaceHighlight p-0.5">
+                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-surfaceHighlight p-0.5 avatar-ring group-hover:border-primary transition-colors">
                                 <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userName}`} alt="User" className="w-full h-full rounded-full" />
                             </div>
                         </Link>
@@ -109,14 +110,14 @@ const DashboardLayout = () => {
                 </header>
 
                 <div className="flex-1 flex overflow-hidden">
-                    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background p-4 md:p-8 relative scrollbar-hide pb-24 md:pb-8">
+                    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background p-4 md:p-8 relative pb-24 md:pb-8">
                         <Outlet />
                         <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 flex flex-col items-end gap-2 pointer-events-none z-50">
                             {notifications.map((n) => (
-                                <div key={n.id} className="animate-bounce-in flex items-center gap-3 bg-black/90 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg border-l-4 border-primary shadow-2xl">
-                                    <Zap className="w-4 h-4 text-primary fill-primary" />
+                                <div key={n.id} className="animate-bounce-in flex items-center gap-3 glass-dark text-white px-4 py-2 md:px-6 md:py-3 rounded-xl border-l-4 border-primary shadow-glow-gold">
+                                    <Zap className="w-4 h-4 text-primary fill-primary animate-pulse" />
                                     <div>
-                                        <p className="font-black text-primary text-lg md:text-xl">+{n.amount} XP</p>
+                                        <p className="font-black text-gradient-gold text-lg md:text-xl">+{n.amount} XP</p>
                                         <p className="text-[10px] font-bold uppercase text-textMuted">{n.reason}</p>
                                     </div>
                                 </div>

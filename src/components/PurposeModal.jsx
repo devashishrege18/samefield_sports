@@ -85,7 +85,7 @@ const BlockbusterPurposeModal = () => {
                             Every point you earn creates <span className="text-white">real impact.</span>
                         </p>
                         <p className="text-[10px] md:text-xs font-bold text-primary/100 tracking-[0.2em] uppercase mt-5 italic bg-black/40 py-1 px-4 inline-block rounded-full backdrop-blur-sm shadow-xl">
-                            Elevating women’s sports, one point at a time.
+                            Elevating women's sports, one point at a time.
                         </p>
                     </div>
                 </div>

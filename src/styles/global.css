@@ -38,25 +38,48 @@ button {
     border: none;
     background: none;
     font-family: inherit;
+    outline: none;
 }
 
-/* Custom Scrollbar */
+button:focus,
+button:focus-visible {
+    outline: none;
+}
+
+/* Remove focus ring from chat input */
+input.chat-input,
+input.chat-input:focus,
+input.chat-input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Custom Scrollbar - Vercel Match */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--color-black-surface);
+    background: #0003;
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-gold-muted);
-    border-radius: 4px;
+    background: linear-gradient(#f5c40066, #f5c40033);
+    border-radius: 3px;
+    transition: background 0.3s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-gold-primary);
+    background: linear-gradient(#f5c40099, #f5c40066);
 }
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
 
 .main-content {
     margin-left: var(--nav-width);
@@ -69,4 +92,193 @@ button {
     .main-content {
         padding-bottom: 0;
     }
+}
+
+/* ========================================
+   PREMIUM ANIMATIONS & POLISH
+   ======================================== */
+
+/* Shimmer Loading Animation */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton-shimmer {
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Slide Up Entrance */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-up {
+    animation: slideUp 0.4s ease-out forwards;
+}
+
+/* Staggered Animation Delays */
+.stagger-1 {
+    animation-delay: 0.05s;
+}
+
+.stagger-2 {
+    animation-delay: 0.1s;
+}
+
+.stagger-3 {
+    animation-delay: 0.15s;
+}
+
+.stagger-4 {
+    animation-delay: 0.2s;
+}
+
+.stagger-5 {
+    animation-delay: 0.25s;
+}
+
+.stagger-6 {
+    animation-delay: 0.3s;
+}
+
+.stagger-7 {
+    animation-delay: 0.35s;
+}
+
+.stagger-8 {
+    animation-delay: 0.4s;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Card Hover Lift Effect */
+.card-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Premium Button Hover */
+.btn-premium {
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-premium:hover {
+    transform: scale(1.02);
+}
+
+.btn-premium:active {
+    transform: scale(0.98);
+}
+
+/* Glow Pulse */
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px var(--color-gold-primary);
+    }
+
+    50% {
+        box-shadow: 0 0 20px var(--color-gold-primary);
+    }
+}
+
+.animate-glow-pulse {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Float Animation for Reactions */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-150px) scale(1.3);
+        opacity: 0;
+    }
+}
+
+.animate-float-up {
+    animation: floatUp 2s ease-out forwards;
+}
+
+/* Typing indicator bounce */
+@keyframes typingBounce {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+    }
+
+    30% {
+        transform: translateY(-4px);
+    }
+}
+
+.typing-dot {
+    animation: typingBounce 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Focus Ring (Accessibility) */
+.focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.4);
+}
+
+/* Smooth Page Transitions */
+.page-transition-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease-out;
 }

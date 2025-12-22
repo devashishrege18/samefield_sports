@@ -195,7 +195,8 @@ const Forum = () => {
     };
 
     return (
-        <div className="forum-container">
+        <div className="forum-container page-frame background-texture">
+
             {selectedThread && (
                 <ThreadDetail
                     thread={selectedThread}
@@ -208,11 +209,15 @@ const Forum = () => {
             )}
 
             <div className="forum-header">
-                <h2 className="section-title">Community Forum</h2>
+                <div>
+                    <h2 className="section-title">Community Forum</h2>
+                    <p className="purpose-line" style={{ color: 'rgba(176, 176, 176, 0.8)', fontSize: '0.875rem', marginTop: '4px' }}>Discuss matches, predictions, and tactical analysis with fellow fans.</p>
+                </div>
                 <button className="btn-create" onClick={handleCreateMockThread}>
                     + New Discussion
                 </button>
             </div>
+
 
             <div className="forum-layout">
                 {/* Main Feed */}
@@ -283,28 +288,10 @@ const Forum = () => {
                         </div>
                     )}
                 </div>
-
-                {/* Sidebar */}
-                <div className="forum-sidebar">
-                    <div className="sidebar-card live-now">
-                        <h3><Radio size={16} className="icon-pulse" /> Live Events</h3>
-                        <ul className="live-list">
-                            <li>India vs Australia <span className="live-tag">LIVE</span></li>
-                            <li>Mumbai vs Chennai <span className="live-tag">LIVE</span></li>
-                        </ul>
-                        <button className="btn-join-live" onClick={(e) => handleJoinDebate(e, threads[0])}>Join Live Chat</button>
-                    </div>
-
-                    <div className="sidebar-card">
-                        <h3>Trending Topics</h3>
-                        <ul className="live-list">
-                            <li>#WPL2025</li>
-                            <li>#ViratKohli</li>
-                            <li>#MixedCricket</li>
-                        </ul>
-                    </div>
-                </div>
             </div>
+
+            {/* TERMINATION ZONE */}
+            <div className="zone-c" />
         </div>
     );
 };

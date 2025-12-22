@@ -23,7 +23,7 @@ const Fandom = () => {
     const highlights = [
         {
             id: 'video1',
-            title: 'Gauff vs Qinwen Zheng – Full Match (Internazionali BNL d’Italia)',
+            title: "Gauff vs Qinwen Zheng – Full Match (Internazionali BNL d'Italia) ",
             category: 'Tennis Highlights',
             vidId: '_Hlq_TaPoYw'
         },
@@ -41,7 +41,7 @@ const Fandom = () => {
         },
         {
             id: 'video4',
-            title: 'Men’s Senior Race Replay – European Cross Country Champs',
+            title: "Men's Senior Race Replay – European Cross Country Champs",
             category: 'Athletics',
             vidId: 'UhKSB946GA8'
         },
@@ -59,7 +59,7 @@ const Fandom = () => {
         },
         {
             id: 'video7',
-            title: 'Neymar vs Haaland – Highlights & Moments',
+            title: "Neymar vs Haaland – Highlights & Moments",
             category: 'Soccer',
             vidId: 'zdmRGFrqdrg'
         }
@@ -584,9 +584,11 @@ const Fandom = () => {
             {/* Header */}
             <div className="flex justify-between items-end mb-8">
                 <div>
-                    <h1 className="text-4xl font-black text-white italic tracking-tighter uppercase mb-2">My Fandom</h1>
+                    <h1 className="text-4xl font-black text-white italic tracking-tighter uppercase mb-1">My Fandom</h1>
+                    <p className="text-sm text-textMuted mb-2">Join fan circles, connect with communities, and earn XP.</p>
                     <p className="text-gray-400 font-medium">Welcome back, <span className="text-primary">{guestIdentity.guest_name}</span></p>
                 </div>
+
                 <div className="flex items-center gap-2 bg-surface px-4 py-2 rounded-full border border-white/10">
                     <Globe size={16} className="text-primary" />
                     <span className="text-xs font-bold text-white">GLOBAL RANK #42</span>
@@ -594,8 +596,8 @@ const Fandom = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* LEFT COL (8) */}
-                <div className="lg:col-span-8 space-y-8">
+                {/* LEFT COL (now full width on all screens, 8/12 on large) */}
+                <div className="lg:col-span-12 space-y-8">
 
                     {/* Hero Stats Card */}
                     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 to-black border border-white/10 p-8 shadow-2xl">
@@ -664,73 +666,40 @@ const Fandom = () => {
                         </div>
                     </div>
 
-                </div>
-
-                {/* RIGHT COL (4) */}
-                <div className="lg:col-span-4 space-y-6">
-                    {/* Active Highlights & Video Player */}
+                    {/* ACTIVE HIGHLIGHTS - Inline Full Width with Horizontal Scroll */}
                     <div className="bg-surface border border-white/5 p-6 rounded-3xl">
                         <div className="flex justify-between items-center mb-4">
                             <h4 className="font-bold text-white text-sm uppercase tracking-widest">Active Highlights</h4>
                             <span className="text-primary text-xs font-bold animate-pulse">● LIVE UPDATE</span>
                         </div>
-                        <div className="space-y-3">
-                            {highlights.map(vid => (
+                        <div className="flex gap-4 overflow-x-auto pb-2">
+                            {highlights.slice(0, 4).map(vid => (
                                 <div
                                     key={vid.id}
-                                    className="group flex gap-3 p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer border border-transparent hover:border-white/10"
+                                    className="group flex-shrink-0 w-56 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer border border-transparent hover:border-white/10"
                                     onClick={() => setActiveVideo(vid.vidId)}
                                 >
-                                    <div className="w-16 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group-hover:ring-2 ring-primary transition-all">
+                                    <div className="w-full h-28 bg-gray-800 rounded-lg mb-2 relative overflow-hidden group-hover:ring-2 ring-primary transition-all">
                                         <img src={`https://img.youtube.com/vi/${vid.vidId}/mqdefault.jpg`} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" alt="thumb" />
                                         <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="w-6 h-6 rounded-full bg-black/50 backdrop-blur flex items-center justify-center">
-                                                <Play size={10} fill="white" className="text-white ml-0.5" />
+                                            <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur flex items-center justify-center">
+                                                <Play size={14} fill="white" className="text-white ml-0.5" />
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-[10px] text-primary font-bold uppercase mb-0.5">{vid.category}</p>
-                                        <p className="text-xs font-bold text-gray-200 line-clamp-2 leading-tight group-hover:text-white transition-colors">{vid.title}</p>
-                                    </div>
+                                    <p className="text-[10px] text-primary font-bold uppercase mb-0.5">{vid.category}</p>
+                                    <p className="text-xs font-bold text-gray-200 line-clamp-2 leading-tight group-hover:text-white transition-colors">{vid.title}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Member Drop (Shop) */}
-                    <div className="bg-surface border border-white/5 p-6 rounded-3xl">
-                        <div className="flex justify-between items-center mb-4">
-                            <h4 className="font-bold text-white text-sm uppercase tracking-widest">Exclusive Drops</h4>
-                            <Lock size={14} className="text-gray-500" />
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex gap-4 items-center group cursor-pointer">
-                                <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center text-black font-black text-xs p-2 text-center leading-none">
-                                    GOLD JERSEY
-                                </div>
-                                <div>
-                                    <p className="text-white font-bold group-hover:text-primary transition-colors">Signed Jersey</p>
-                                    <p className="text-primary font-bold text-sm">$120.00</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-4 items-center group cursor-pointer">
-                                <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center text-black font-black text-xs p-2 text-center leading-none">
-                                    MATCH BALL
-                                </div>
-                                <div>
-                                    <p className="text-white font-bold group-hover:text-primary transition-colors">Official Ball</p>
-                                    <p className="text-primary font-bold text-sm">$45.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <button className="w-full mt-6 py-3 border border-white/10 rounded-xl text-xs font-bold text-gray-400 hover:bg-white hover:text-black transition-all">
-                            VISIT STORE
-                        </button>
-                    </div>
                 </div>
-
             </div>
+
+            {/* TERMINATION ZONE */}
+            <div className="zone-c" />
+
             {/* Video Modal Overlay */}
             {activeVideo && (
                 <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">

@@ -1,0 +1,53 @@
+��
+
+> samefield_sports@0.0.0 build
+
+> vite build
+
+
+
+[36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+
+transforming...
+
+[32m���[39m 4 modules transformed.
+
+node.exe : 
+
+[31m���[39m Build 
+
+failed in 820ms
+
+At line:1 char:1
+
++ & "C:\Program Files
+
+\nodejs/node.exe" 
+
+"C:\Program 
+
+Files\nodejs/node_mo 
+
+...
+
++ ~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~
+
+    + CategoryInfo   
+
+           : NotSpe  
+
+  cified: ([31m��   
+
+ �[39m Build fai    
+
+led in 820ms:Str    
+
+ing) [], RemoteE    
+
+xception
