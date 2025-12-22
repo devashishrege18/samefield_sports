@@ -82,8 +82,10 @@ const Fandom = () => {
     ]);
     const [chatInput, setChatInput] = useState('');
     const [floatingHearts, setFloatingHearts] = useState([]);
+    const [isScrolled, setIsScrolled] = useState(false);
 
     const messagesEndRef = useRef(null);
+    const tabsRef = useRef(null);
 
     useEffect(() => {
         if (userId) {
@@ -92,6 +94,25 @@ const Fandom = () => {
             });
         }
     }, [userId, globalPoints]);
+
+    // Track scroll to fix tabs when scrolled past banner
+    useEffect(() => {
+        const handleScroll = () => {
+            // The banner is h-64 (256px), trigger when scrolled past it
+            const scrolled = window.scrollY > 200 || document.querySelector('main')?.scrollTop > 200;
+            setIsScrolled(scrolled);
+        };
+
+        // Listen to both window and main element scroll
+        window.addEventListener('scroll', handleScroll);
+        const mainEl = document.querySelector('main');
+        if (mainEl) mainEl.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (mainEl) mainEl.removeEventListener('scroll', handleScroll);
+        };
+    }, [id]);
 
     useEffect(() => {
         const storedId = localStorage.getItem('fandom_guest_id') || uuidv4();
@@ -292,8 +313,11 @@ const Fandom = () => {
                     </div>
                 </div>
 
-                {/* Sticky Navigation Tabs */}
-                <div className="sticky top-0 z-50 bg-black/95 backdrop-blur-xl border-b border-gray-800 px-6">
+                {/* Navigation Tabs - Fixed when scrolled */}
+                <div
+                    ref={tabsRef}
+                    className={`${isScrolled ? 'fixed top-16 md:top-20 left-0 md:left-16 right-0' : 'sticky top-0'} z-50 bg-black/95 backdrop-blur-xl border-b border-gray-800 px-6`}
+                >
                     <div className="flex gap-8">
                         <button
                             onClick={() => setActiveTab('feed')}
@@ -324,6 +348,9 @@ const Fandom = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* Placeholder when tabs are fixed to prevent content jump */}
+                {isScrolled && <div className="h-14" />}
 
                 {/* Content Area */}
                 <div className="max-w-4xl mx-auto p-6 min-h-[600px]">

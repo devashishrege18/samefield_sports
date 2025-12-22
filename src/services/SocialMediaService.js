@@ -79,13 +79,13 @@ const getFallbackRedditPosts = (circleId) => {
 export const getInstagramPosts = (circleId = 'default') => {
     const instagramData = {
         'c1': [ // Smriti Mandhana - Women's Cricket (WPL)
-            { id: 'ig1', platform: 'instagram', username: '@smikidzz', verified: true, avatar: 'SM', image: 'https://images.unsplash.com/photo-1629285483773-6b5cde2171d7?w=400&h=400&fit=crop', caption: 'Match day ready! 🏏💪 Nothing beats the feeling of walking out to bat. #TeamIndia #WPL', likes: 154200, comments: 3420, timeAgo: '2h' },
-            { id: 'ig2', platform: 'instagram', username: '@smikidzz', verified: true, avatar: 'SM', image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=400&fit=crop', caption: 'Training never stops! Early morning session done ✅ #Grind #Cricket', likes: 98500, comments: 1823, timeAgo: '5h' },
-            { id: 'ig3', platform: 'instagram', username: '@wpl_official', verified: true, avatar: 'WP', image: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=400&h=400&fit=crop', caption: 'The elegance, the power, the grace. Our Queen of Cricket! 👑 @smikidzz #WPL2024', likes: 245000, comments: 5621, timeAgo: '1d' }
+            { id: 'ig1', platform: 'instagram', username: '@smikidzz', verified: true, avatar: 'SM', image: '/assets/wpl_abstract.png', caption: 'Match day ready! 🏏💪 Nothing beats the feeling of walking out to bat. #TeamIndia #WPL', likes: 154200, comments: 3420, timeAgo: '2h' },
+            { id: 'ig2', platform: 'instagram', username: '@smikidzz', verified: true, avatar: 'SM', image: '/assets/cricket_equipment.png', caption: 'Training never stops! Early morning session done ✅ #Grind #Cricket', likes: 98500, comments: 1823, timeAgo: '5h' },
+            { id: 'ig3', platform: 'instagram', username: '@wpl_official', verified: true, avatar: 'WP', image: '/assets/cricket_stadium_empty.png', caption: 'The elegance, the power, the grace. Our Queen of Cricket! 👑 @smikidzz #WPL2024', likes: 245000, comments: 5621, timeAgo: '1d' }
         ],
         'c2': [ // MI Paltan Women - Cricket/WPL
-            { id: 'ig11', platform: 'instagram', username: '@mumbaiindians', verified: true, avatar: 'MI', image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=400&h=400&fit=crop', caption: 'The Paltan spirit! 💙 Ready for battle! #MumbaiIndians #WPL', likes: 345000, comments: 8920, timeAgo: '3h' },
-            { id: 'ig12', platform: 'instagram', username: '@wpl_official', verified: true, avatar: 'WP', image: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=400&h=400&fit=crop', caption: 'Behind the scenes at training 📸 #MIPaltan #Cricket', likes: 234000, comments: 5621, timeAgo: '6h' }
+            { id: 'ig11', platform: 'instagram', username: '@mumbaiindians', verified: true, avatar: 'MI', image: '/assets/cricket_stadium_empty.png', caption: 'The Paltan spirit! 💙 Ready for battle! #MumbaiIndians #WPL', likes: 345000, comments: 8920, timeAgo: '3h' },
+            { id: 'ig12', platform: 'instagram', username: '@wpl_official', verified: true, avatar: 'WP', image: '/assets/wpl_abstract.png', caption: 'Behind the scenes at training 📸 #MIPaltan #Cricket', likes: 234000, comments: 5621, timeAgo: '6h' }
         ],
         'c3': [ // Caitlin Clark - Basketball
             { id: 'ig7', platform: 'instagram', username: '@caitlinclark22', verified: true, avatar: 'CC', image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&h=400&fit=crop', caption: 'Game day energy ⚡🏀 Lets get this W! #WNBA #FeverRising', likes: 567000, comments: 12340, timeAgo: '4h' },
