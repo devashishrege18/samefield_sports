@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MessageSquare, ArrowUp, Zap, Radio, AlertTriangle, ExternalLink, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { MessageSquare, ArrowUp, Zap, Radio, AlertTriangle, ExternalLink, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { forumService } from '../services/ForumService';
 import { usePoints } from '../context/PointsContext';
 import { fetchRedditPosts, formatCount } from '../services/SocialMediaService';
@@ -103,8 +103,28 @@ const Forum = () => {
     const [selectedThread, setSelectedThread] = useState(null);
     const [redditPosts, setRedditPosts] = useState([]);
     const [redditLoading, setRedditLoading] = useState(true);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(true);
+    const redditScrollRef = useRef(null);
 
     const filters = ['All', 'Live Match Reactions', 'Player Performance Talk', 'Tactical Analysis', 'Fan Predictions'];
+
+    const scrollReddit = (direction) => {
+        const container = redditScrollRef.current;
+        if (!container) return;
+        const scrollAmount = 300;
+        const newScroll = direction === 'left'
+            ? container.scrollLeft - scrollAmount
+            : container.scrollLeft + scrollAmount;
+        container.scrollTo({ left: newScroll, behavior: 'smooth' });
+    };
+
+    const updateScrollState = () => {
+        const container = redditScrollRef.current;
+        if (!container) return;
+        setCanScrollLeft(container.scrollLeft > 10);
+        setCanScrollRight(container.scrollLeft < container.scrollWidth - container.clientWidth - 10);
+    };
 
     useEffect(() => {
         loadThreads();
@@ -251,12 +271,37 @@ const Forum = () => {
                         <h3>Trending on Reddit</h3>
                         <span className="reddit-live-badge">LIVE</span>
                     </div>
-                    <button className="reddit-refresh-btn" onClick={refreshReddit} disabled={redditLoading}>
-                        <RefreshCw size={14} className={redditLoading ? 'animate-spin' : ''} />
-                        Refresh
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => scrollReddit('left')}
+                            disabled={!canScrollLeft}
+                            className={`w-7 h-7 flex items-center justify-center rounded-full border transition-all ${canScrollLeft
+                                ? 'bg-surfaceHighlight border-white/20 text-white hover:bg-[#FF4500] hover:text-white hover:border-[#FF4500]'
+                                : 'bg-surface border-white/10 text-white/30 cursor-not-allowed'}`}
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => scrollReddit('right')}
+                            disabled={!canScrollRight}
+                            className={`w-7 h-7 flex items-center justify-center rounded-full border transition-all ${canScrollRight
+                                ? 'bg-surfaceHighlight border-white/20 text-white hover:bg-[#FF4500] hover:text-white hover:border-[#FF4500]'
+                                : 'bg-surface border-white/10 text-white/30 cursor-not-allowed'}`}
+                        >
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+                        <button className="reddit-refresh-btn" onClick={refreshReddit} disabled={redditLoading}>
+                            <RefreshCw size={14} className={redditLoading ? 'animate-spin' : ''} />
+                            Refresh
+                        </button>
+                    </div>
                 </div>
-                <div className="reddit-posts-scroll">
+                <div
+                    ref={redditScrollRef}
+                    onScroll={updateScrollState}
+                    className="reddit-posts-scroll"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
                     {redditLoading ? (
                         <div className="reddit-loading">
                             <div className="loading-dots">
