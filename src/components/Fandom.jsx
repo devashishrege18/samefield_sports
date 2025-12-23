@@ -397,10 +397,10 @@ const Fandom = () => {
                     {activeTab === 'feed' && (
                         <div className="fade-in">
                             {/* Write Post (Weverse Style Input) */}
-                            <div className="bg-surface rounded-2xl p-4 mb-8 border border-white/5 shadow-lg focus-within:border-primary/50 transition-colors">
+                            <div className="bg-surface rounded-2xl p-5 mb-8 border border-white/5 shadow-lg focus-within:border-primary/50 transition-colors">
                                 <textarea
-                                    className="w-full bg-transparent text-white text-lg placeholder-gray-500 resize-none outline-none mb-4"
-                                    rows="2"
+                                    className="w-full bg-transparent text-white text-sm placeholder-gray-500 resize-none outline-none mb-4 leading-relaxed"
+                                    rows="3"
                                     placeholder="Write a message to the community..."
                                     value={newPostContent}
                                     onChange={(e) => setNewPostContent(e.target.value)}
@@ -669,15 +669,11 @@ const Fandom = () => {
                         </div>
                     )}
 
-                    {/* HUB (Community Chat) - VISUAL OVERHAUL */}
+                    {/* HUB (Community Chat) - CLEAN DESIGN */}
                     {activeTab === 'chat' && (
-                        <div className="fade-in relative h-[75vh] w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col group">
+                        <div className="fade-in relative h-[75vh] w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col group bg-surface">
 
-                            {/* Dynamic Background */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-black z-0"></div>
-                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-0"></div>
-
-                            {/* Pinned Message */}
+                            {/* Pinned Message */}}
                             <div className="relative z-10 bg-white/5 backdrop-blur-xl border-b border-white/10 p-3 flex items-center gap-3">
                                 <div className="bg-primary/20 p-2 rounded-lg text-primary">
                                     <Pin size={16} fill="currentColor" />
@@ -744,7 +740,7 @@ const Fandom = () => {
                             </div>
 
                             {/* Input Area */}
-                            <div className="relative z-30 p-4 bg-black/60 backdrop-blur-xl border-t border-white/10">
+                            <div className="relative z-30 p-4 bg-surface border-t border-white/10">
                                 <div className="flex gap-3 items-center">
                                     {/* Floating Heart Button */}
                                     <button
@@ -754,10 +750,10 @@ const Fandom = () => {
                                         <Heart size={20} />
                                     </button>
 
-                                    <div className="flex-1 bg-surface/50 rounded-full p-1 pl-4 flex items-center border border-white/10 focus-within:border-primary/50 transition-colors">
+                                    <div className="flex-1 bg-surfaceHighlight rounded-full h-11 px-4 flex items-center border border-white/10 focus-within:border-primary/50 transition-colors">
                                         <input
                                             type="text"
-                                            className="flex-1 bg-transparent outline-none text-sm text-white placeholder-gray-500"
+                                            className="flex-1 bg-transparent outline-none text-sm text-white placeholder-gray-500 h-full"
                                             placeholder="Say something nice..."
                                             value={chatInput}
                                             onChange={(e) => setChatInput(e.target.value)}
@@ -766,9 +762,9 @@ const Fandom = () => {
                                         <button
                                             onClick={handleSendMessage}
                                             disabled={!isConnected}
-                                            className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-black hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+                                            className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-black hover:scale-105 transition-transform"
                                         >
-                                            <Send size={16} />
+                                            <Send size={14} />
                                         </button>
                                     </div>
                                 </div>
