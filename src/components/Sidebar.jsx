@@ -41,7 +41,7 @@ const Sidebar = () => {
                     <img
                         src="/assets/logo_icon.png"
                         alt="Samefield"
-                        className={`w-8 h-8 transition-all duration-500 ${isExpanded ? 'scale-110' : ''} drop-shadow-[0_0_8px_rgba(245,196,0,0.5)]`}
+                        className={`w-10 h-10 transition-all duration-500 ${isExpanded ? 'scale-110' : ''} drop-shadow-[0_0_8px_rgba(245,196,0,0.5)]`}
                     />
                     {!isExpanded && <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center"><ChevronRight className="w-2 h-2 text-black" /></div>}
                 </div>
