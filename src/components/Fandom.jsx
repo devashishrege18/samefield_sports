@@ -69,6 +69,8 @@ const Fandom = () => {
     const [newPostContent, setNewPostContent] = useState('');
     const [expandedPost, setExpandedPost] = useState(null);
     const [commentInputs, setCommentInputs] = useState({});
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
     // P2P State
     const [room, setRoom] = useState(null);
@@ -92,6 +94,7 @@ const Fandom = () => {
     const tabsRef = useRef(null);
     const igScrollRef = useRef(null);
     const twScrollRef = useRef(null);
+    const fileInputRef = useRef(null);
 
     // Scroll functions for Instagram feed
     const scrollInstagram = (direction) => {
@@ -225,17 +228,32 @@ const Fandom = () => {
         };
     }, [id]);
 
+    const handleImageSelect = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            setSelectedImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleCreatePost = async () => {
-        if (!newPostContent.trim() || !guestIdentity) return;
+        if ((!newPostContent.trim() && !imagePreview) || !guestIdentity) return;
 
         const postData = {
             author_name: guestIdentity.guest_name,
             content: newPostContent,
-            author_id: guestIdentity.guest_id
+            author_id: guestIdentity.guest_id,
+            image_url: imagePreview || null
         };
 
         await fandomService.addPost(id, postData);
         setNewPostContent('');
+        setSelectedImage(null);
+        setImagePreview(null);
 
         // Bonus points
         fandomService.joinCircle(userId, id); // Just to reuse the logic for points if not joined
@@ -405,13 +423,41 @@ const Fandom = () => {
                                     value={newPostContent}
                                     onChange={(e) => setNewPostContent(e.target.value)}
                                 ></textarea>
+
+                                {/* Image Preview */}
+                                {imagePreview && (
+                                    <div className="relative mb-3">
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="w-full max-h-64 object-cover rounded-lg"
+                                        />
+                                        <button
+                                            onClick={() => { setSelectedImage(null); setImagePreview(null); }}
+                                            className="absolute top-2 right-2 w-8 h-8 bg-black/70 hover:bg-black rounded-full flex items-center justify-center text-white"
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                )}
+
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleImageSelect}
+                                    accept="image/*"
+                                    className="hidden"
+                                />
                                 <div className="flex justify-between items-center">
-                                    <button className="text-gray-400 hover:text-primary transition-colors">
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="text-gray-400 hover:text-primary transition-colors"
+                                    >
                                         <ImageIcon size={20} />
                                     </button>
                                     <button
                                         onClick={handleCreatePost}
-                                        className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${newPostContent.trim() ? 'bg-primary text-black hover:scale-105' : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                                        className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${(newPostContent.trim() || imagePreview) ? 'bg-primary text-black hover:scale-105' : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                                             }`}
                                     >
                                         Post
@@ -441,7 +487,16 @@ const Fandom = () => {
 
                                             {/* Post Content */}
                                             <div className="pl-14 mb-4">
-                                                <p className="text-gray-200 text-base leading-relaxed whitespace-pre-wrap">{post.content}</p>
+                                                {post.content && (
+                                                    <p className="text-gray-200 text-base leading-relaxed whitespace-pre-wrap">{post.content}</p>
+                                                )}
+                                                {post.image_url && (
+                                                    <img
+                                                        src={post.image_url}
+                                                        alt="Post image"
+                                                        className="mt-3 w-full max-h-96 object-cover rounded-lg"
+                                                    />
+                                                )}
                                             </div>
 
                                             {/* Post Actions */}

@@ -613,6 +613,16 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.1);
 }
 
+/* Override focus styles for chat inputs - no glow */
+.chat-input,
+.chat-input:focus,
+.chat-input:focus-visible,
+.chat-input:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: rgba(176, 176, 176, 0.6);

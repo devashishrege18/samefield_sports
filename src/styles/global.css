@@ -49,7 +49,12 @@ button:focus-visible {
 /* Remove focus ring from chat input */
 input.chat-input,
 input.chat-input:focus,
-input.chat-input:focus-visible {
+input.chat-input:focus-visible,
+input.chat-input:active,
+textarea.chat-input,
+textarea.chat-input:focus,
+textarea.chat-input:focus-visible,
+textarea.chat-input:active {
     outline: none !important;
     box-shadow: none !important;
     border: none !important;
