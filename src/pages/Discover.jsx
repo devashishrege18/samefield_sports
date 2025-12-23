@@ -109,19 +109,22 @@ const Discover = () => {
         return (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-in fade-in zoom-in duration-300">
                 <div className="relative w-full max-w-lg bg-surface border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-                    <button
-                        onClick={() => setSelectedItem(null)}
-                        className="absolute top-3 right-3 w-8 h-8 bg-black/70 hover:bg-primary hover:text-black rounded-full text-white z-20 transition-colors flex items-center justify-center"
-                    >
-                        <X className="w-4 h-4" />
-                    </button>
-
+                    {/* Image - starts from very top, no gap */}
                     {selectedItem.img && (
-                        <div className="h-48 overflow-hidden relative">
-                            <img src={selectedItem.img} className="w-full h-full object-cover opacity-60" alt="" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent" />
+                        <div className="h-56 overflow-hidden relative" style={{ marginTop: 0, paddingTop: 0 }}>
+                            <img src={selectedItem.img} className="w-full h-full object-cover" alt="" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/30 to-transparent" />
                         </div>
                     )}
+
+                    {/* Close button - forced top right with inline styles */}
+                    <button
+                        onClick={() => setSelectedItem(null)}
+                        className="w-10 h-10 bg-black/80 hover:bg-primary hover:text-black rounded-full text-white transition-colors flex items-center justify-center border border-white/20"
+                        style={{ position: 'absolute', top: '16px', right: '16px', left: 'auto', zIndex: 50 }}
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
 
                     <div className="p-8">
                         <div className="flex items-center gap-3 mb-2">
