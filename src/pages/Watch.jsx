@@ -309,7 +309,7 @@ const Watch = () => {
                             </div>
                         )}
 
-                        {/* YouTube-style chat input - seamless grey pill */}
+                        {/* Chat input - seamless grey like YouTube */}
                         <form onSubmit={handleSendMessage} className="p-3 bg-[#3f3f3f]">
                             <div className="flex items-center bg-[#3f3f3f] rounded-full">
                                 <input

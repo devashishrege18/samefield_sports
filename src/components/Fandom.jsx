@@ -390,22 +390,22 @@ const Fandom = () => {
                 {/* Placeholder when tabs are fixed to prevent content jump */}
                 {isScrolled && <div className="h-14" />}
 
-                {/* Content Area */}
-                <div className="max-w-4xl mx-auto p-6 min-h-[600px]">
+                {/* Content Area - Full width for Feed */}
+                <div className="w-full p-6 min-h-[600px]">
 
                     {/* FEED VIEW */}
                     {activeTab === 'feed' && (
                         <div className="fade-in">
-                            {/* Write Post (Weverse Style Input) */}
-                            <div className="bg-surface rounded-2xl p-5 mb-8 border border-white/5 shadow-lg focus-within:border-primary/50 transition-colors">
+                            {/* Write Post - Dark grey style */}
+                            <div className="bg-[#1f1f1f] rounded-2xl p-4 mb-8">
                                 <textarea
-                                    className="w-full bg-transparent text-white text-sm placeholder-gray-500 resize-none outline-none mb-4 leading-relaxed"
-                                    rows="3"
+                                    className="chat-input w-full bg-[#1f1f1f] text-white text-sm placeholder:text-white/50 resize-none outline-none mb-3 py-2 px-3"
+                                    rows="2"
                                     placeholder="Write a message to the community..."
                                     value={newPostContent}
                                     onChange={(e) => setNewPostContent(e.target.value)}
                                 ></textarea>
-                                <div className="flex justify-between items-center px-2">
+                                <div className="flex justify-between items-center">
                                     <button className="text-gray-400 hover:text-primary transition-colors">
                                         <ImageIcon size={20} />
                                     </button>
@@ -669,11 +669,15 @@ const Fandom = () => {
                         </div>
                     )}
 
-                    {/* HUB (Community Chat) - CLEAN DESIGN */}
+                    {/* HUB (Community Chat) - VISUAL OVERHAUL */}
                     {activeTab === 'chat' && (
-                        <div className="fade-in relative h-[75vh] w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col group bg-surface">
+                        <div className="fade-in relative h-[75vh] w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col group">
 
-                            {/* Pinned Message */}}
+                            {/* Dynamic Background */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-black z-0"></div>
+                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 z-0"></div>
+
+                            {/* Pinned Message */}
                             <div className="relative z-10 bg-white/5 backdrop-blur-xl border-b border-white/10 p-3 flex items-center gap-3">
                                 <div className="bg-primary/20 p-2 rounded-lg text-primary">
                                     <Pin size={16} fill="currentColor" />
@@ -739,32 +743,34 @@ const Fandom = () => {
                                 ))}
                             </div>
 
-                            {/* Input Area */}
-                            <div className="relative z-30 p-4 bg-surface border-t border-white/10">
+                            {/* Input Area - Dark grey style */}
+                            <div className="relative z-30 p-3 bg-[#1f1f1f]">
                                 <div className="flex gap-3 items-center">
                                     {/* Floating Heart Button */}
                                     <button
                                         onClick={handleFloatingHeart}
-                                        className="w-10 h-10 rounded-full bg-white/5 hover:bg-pink-500/20 text-gray-400 hover:text-pink-500 flex items-center justify-center transition-all active:scale-95 border border-white/5"
+                                        className="w-10 h-10 rounded-full bg-white/10 hover:bg-pink-500/20 text-gray-400 hover:text-pink-500 flex items-center justify-center transition-all active:scale-95"
                                     >
                                         <Heart size={20} />
                                     </button>
 
-                                    <div className="flex-1 bg-surfaceHighlight rounded-full h-11 px-4 flex items-center border border-white/10 focus-within:border-primary/50 transition-colors">
-                                        <input
-                                            type="text"
-                                            className="flex-1 bg-transparent outline-none text-sm text-white placeholder-gray-500 h-full"
-                                            placeholder="Say something nice..."
-                                            value={chatInput}
-                                            onChange={(e) => setChatInput(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                        />
+                                    <div className="flex-1 flex items-center gap-2">
+                                        <div className="flex-1 flex items-center bg-[#1f1f1f] rounded-full">
+                                            <input
+                                                type="text"
+                                                className="chat-input flex-1 bg-[#1f1f1f] border-none text-sm text-white placeholder:text-white/50 py-2.5 pl-5 pr-4 rounded-full"
+                                                placeholder="Say something nice..."
+                                                value={chatInput}
+                                                onChange={(e) => setChatInput(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                                            />
+                                        </div>
                                         <button
                                             onClick={handleSendMessage}
                                             disabled={!isConnected}
-                                            className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-black hover:scale-105 transition-transform"
+                                            className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-black hover:scale-105 transition-transform flex-shrink-0"
                                         >
-                                            <Send size={14} />
+                                            <Send size={16} />
                                         </button>
                                     </div>
                                 </div>
