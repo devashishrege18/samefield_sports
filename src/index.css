@@ -79,16 +79,17 @@ body {
 
 
 
-/* Focus States for Accessibility */
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
+/* Focus States for Accessibility - only buttons and links */
 button:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Remove focus outline from inputs */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
 }
 
 /* Global Utility Classes for Premium UI */
@@ -608,9 +609,7 @@ input[type="email"]:focus,
 input[type="search"]:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--color-primary);
   background: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 0 3px rgba(245, 196, 0, 0.1);
 }
 
 /* Override focus styles for chat inputs - no glow */

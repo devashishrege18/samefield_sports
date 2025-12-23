@@ -534,7 +534,7 @@ const Fandom = () => {
                                                             <input
                                                                 type="text"
                                                                 placeholder="Add a comment..."
-                                                                className="flex-1 bg-transparent border-b border-gray-700 outline-none text-sm py-1 text-white"
+                                                                className="flex-1 bg-transparent border-b border-gray-700 outline-none text-sm py-1 px-2 text-white"
                                                                 value={commentInputs[post.id] || ''}
                                                                 onChange={(e) => setCommentInputs(prev => ({ ...prev, [post.id]: e.target.value }))}
                                                                 onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
