@@ -11,13 +11,13 @@ const Discover = () => {
     };
 
     // START: Task 2 - Define the API Call Handler (Pari's Work)
-    const handleSupportClick = async (athleteName) => {
+    const handleSupportClick = async (athleteName, athleteImg) => {
         setSelectedItem({
             type: 'support',
             name: athleteName,
             description: `You are officially supporting ${athleteName}'s journey to the professional leagues. Your support helps fund training and equipment.`,
             stats: { support: '2.4k fans', level: 'Rising Star' },
-            img: '/assets/talent_gully_cricket_1765787655210.png'
+            img: athleteImg || '/assets/talent_gully_cricket_1765787655210.png'
         });
 
         try {
@@ -111,9 +111,9 @@ const Discover = () => {
                 <div className="relative w-full max-w-lg bg-surface border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                     <button
                         onClick={() => setSelectedItem(null)}
-                        className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-primary hover:text-black rounded-full text-white z-10 transition-colors"
+                        className="absolute top-3 right-3 w-8 h-8 bg-black/70 hover:bg-primary hover:text-black rounded-full text-white z-20 transition-colors flex items-center justify-center"
                     >
-                        <X className="w-5 h-5" />
+                        <X className="w-4 h-4" />
                     </button>
 
                     {selectedItem.img && (
@@ -221,7 +221,7 @@ const Discover = () => {
                                 </div>
                                 <div className="flex gap-2">
                                     <button
-                                        onClick={() => handleSupportClick(talent.name)}
+                                        onClick={() => handleSupportClick(talent.name, talent.img)}
                                         className="flex-1 py-2 bg-primary text-black text-[10px] font-black uppercase rounded hover:bg-white transition-colors">
                                         Support
                                     </button>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, Play, Calendar, Search, TrendingUp, Award, BarChart2, Activity, ChevronRight, ChevronLeft, Target } from 'lucide-react';
+import { ArrowUpRight, Play, Calendar, TrendingUp, Award, BarChart2, Activity, ChevronRight, ChevronLeft, Target } from 'lucide-react';
 import { usePoints } from '../context/PointsContext';
 import Leaderboard from '../components/Leaderboard';
 import TopFansWidget from '../components/TopFansWidget';
@@ -24,21 +24,7 @@ const Home = () => {
     return (
         <div className="page-frame background-texture">
 
-            {/* Top Section: Search Bar (Page Level) */}
-            <div className="flex justify-end">
-                <div className="relative w-full md:w-96">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary w-4 h-4" />
-                    <input
-                        type="text"
-                        placeholder="Search matches, players, stats..."
-                        className="w-full bg-surface/50 border border-surfaceHighlight text-white pl-10 pr-4 py-2 rounded-full text-sm focus:outline-none focus:border-primary transition-all placeholder:text-textMuted"
-                    />
-                </div>
-            </div>
-
             {/* Hero Section: Mixed Team Cricket */}
-
-
             <div className="relative h-[300px] md:h-[450px] rounded-[32px] overflow-hidden group">
                 <img
                     src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2674&auto=format&fit=crop"
