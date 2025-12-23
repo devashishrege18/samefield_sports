@@ -183,7 +183,7 @@ const Discover = () => {
                 <input
                     type="text"
                     placeholder="Find local matches, rising stars, or ethical gear..."
-                    className="w-full bg-surface border border-surfaceHighlight rounded-full py-4 pl-14 pr-6 text-white focus:outline-none focus:border-primary transition-all placeholder:text-textMuted"
+                    className="w-full bg-surface border border-surfaceHighlight rounded-full py-4 pl-14 pr-6 text-white focus:outline-none transition-all placeholder:text-textMuted"
                     style={{ paddingLeft: '3.5rem' }}
                 />
             </div>

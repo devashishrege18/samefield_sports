@@ -79,7 +79,7 @@ const DashboardLayout = () => {
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="w-full bg-surface border border-surfaceHighlight rounded-full py-2 pr-4 text-xs focus:outline-none focus:border-primary transition-colors"
+                                className="w-full bg-surface border border-surfaceHighlight rounded-full py-2 pr-4 text-xs focus:outline-none transition-colors"
                                 style={{ paddingLeft: '2.5rem' }}
                             />
                         </div>

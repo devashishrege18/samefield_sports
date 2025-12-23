@@ -83,7 +83,7 @@ const ThreadDetail = ({ thread, onClose, onUpvote, commentText, onCommentChange,
                             onChange={(e) => onCommentChange(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && onReply()}
                             placeholder="Add to the conversation..."
-                            className="flex-1 bg-black/50 border border-white/10 rounded-full px-6 py-3 text-sm focus:outline-none focus:border-primary text-white"
+                            className="flex-1 bg-black/50 border border-white/10 rounded-full px-6 py-3 text-sm focus:outline-none text-white"
                         />
                         <button className="bg-primary text-black font-black uppercase px-8 rounded-full text-xs hover:scale-105 transition-transform" onClick={onReply}>
                             Reply
