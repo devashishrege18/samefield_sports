@@ -36,20 +36,19 @@ const Sidebar = () => {
             >
                 <div
                     onClick={toggleSidebar}
-                    className="relative cursor-pointer hover:scale-105 transition-transform"
+                    className="relative cursor-pointer hover:scale-110 transition-transform"
                 >
                     <img
                         src="/assets/logo_icon.png"
                         alt="Samefield"
-                        className={`w-10 h-10 transition-all duration-500 ${isExpanded ? 'scale-110' : ''} drop-shadow-[0_0_8px_rgba(245,196,0,0.5)]`}
+                        className={`w-8 h-8 object-contain transition-all duration-500 ${isExpanded ? 'scale-110' : ''} drop-shadow-[0_0_8px_rgba(245,196,0,0.5)]`}
                     />
-                    {!isExpanded && <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center"><ChevronRight className="w-2 h-2 text-black" /></div>}
                 </div>
 
                 {isExpanded && (
                     <div
                         onClick={(e) => handleNavigation('/', e)}
-                        className="ml-3 flex flex-col overflow-hidden whitespace-nowrap animate-fade-in hover:opacity-80 transition-opacity cursor-pointer"
+                        className="ml-2 flex flex-col overflow-hidden whitespace-nowrap animate-fade-in hover:opacity-80 transition-opacity cursor-pointer"
                     >
                         <span className="font-black text-xl tracking-tighter text-white uppercase leading-none text-gradient-gold">Samefield</span>
                         <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase leading-none mt-1">Sports</span>
