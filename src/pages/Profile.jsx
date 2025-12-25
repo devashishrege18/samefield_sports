@@ -41,26 +41,50 @@ const Profile = () => {
         return () => unsubscribe();
     }, [userId]);
 
+    // Dynamic level calculation
+    const getLevel = (pts) => {
+        if (pts >= 20000) return { name: 'Legend', num: 10 };
+        if (pts >= 15000) return { name: 'Captain', num: 8 };
+        if (pts >= 10000) return { name: 'Super Fan', num: 6 };
+        if (pts >= 5000) return { name: 'Rising Star', num: 4 };
+        if (pts >= 1000) return { name: 'Fan', num: 2 };
+        return { name: 'Rookie', num: 1 };
+    };
+    const userLevel = getLevel(points);
+
+    // Dynamic achievements based on XP
+    const getAchievements = (pts) => {
+        const a = [];
+        if (pts >= 100) a.push({ name: 'First Steps', desc: '100 XP' });
+        if (pts >= 500) a.push({ name: 'Getting Started', desc: '500 XP' });
+        if (pts >= 1000) a.push({ name: 'Active Fan', desc: '1,000 XP' });
+        if (pts >= 2500) a.push({ name: 'Dedicated', desc: '2,500 XP' });
+        if (pts >= 5000) a.push({ name: 'Rising Star', desc: '5,000 XP' });
+        return a.slice(-3).reverse();
+    };
+    const userAchievements = getAchievements(points);
+
     // REAL DATA for fan profile
     const fanData = {
         name: userName,
         username: `@${userName.replace(/\s+/g, '').toLowerCase()}`,
-        level: points >= 20000 ? 'Legend' : points >= 10000 ? 'Captain' : points >= 5000 ? 'Super Fan' : 'Rookie',
+        level: userLevel,
         points: points || userData?.xp || 0,
         joined: joinDate,
+        fandomCount: Math.max(1, Math.floor(points / 100)),
         predictions: userData?.predictions || { total: 0, accuracy: '0%' },
-        rewards: ['Meet & Greet Tkt', '10% Store Discount']
+        rewards: points >= 5000 ? ['Meet & Greet Tkt', '10% Store Discount'] : points >= 1000 ? ['10% Store Discount'] : []
     };
 
     const athleteData = {
-        name: 'Virat Kohli',
-        username: '@imVkohli',
+        name: 'Harmanpreet Kaur',
+        username: '@ImHarmanpreet',
         verified: true,
-        kheloId: 'KID-IND-018',
+        kheloId: 'KID-IND-W01',
         role: 'Professional Cricketer',
-        team: 'Team India',
-        stats: { matches: 254, runs: 12400, strikeRate: 138.5 },
-        earnings: '$1.2M (Season)'
+        team: 'Team India Women',
+        stats: { matches: 185, runs: 5200, strikeRate: 126.8 },
+        earnings: '$450K (Season)'
     };
 
     const data = accountType === 'fan' ? fanData : athleteData;
@@ -106,7 +130,7 @@ const Profile = () => {
                     <div className="pb-2">
                         <h1 className="text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
                             {data.name}
-                            {accountType === 'fan' && <span className="text-sm bg-surfaceHighlight text-primary px-2 py-0.5 rounded border border-primary/20 align-middle">Lvl 4</span>}
+                            {accountType === 'fan' && <span className="text-sm bg-surfaceHighlight text-primary px-2 py-0.5 rounded border border-primary/20 align-middle">Lvl {data.level.num}</span>}
                         </h1>
                         <p className="text-textMuted font-bold text-sm flex items-center gap-2">
                             {data.username}
@@ -126,7 +150,7 @@ const Profile = () => {
                             </div>
                             <div className="w-[1px] h-8 bg-surfaceHighlight" />
                             <div className="text-center">
-                                <span className="block text-xl font-black text-white">42</span>
+                                <span className="block text-xl font-black text-white">{data.fandomCount}</span>
                                 <span className="text-[10px] text-textMuted uppercase font-bold">Fandoms</span>
                             </div>
                         </div>
@@ -168,17 +192,22 @@ const Profile = () => {
                                             <Trophy className="w-4 h-4 text-primary" /> Recent Achievements
                                         </h3>
                                         <div className="space-y-4">
-                                            {['Prediction Master', 'Comment of the Week', 'Super Fan Badge'].map((ach, i) => (
+                                            {userAchievements.length > 0 ? userAchievements.map((ach, i) => (
                                                 <div key={i} className="flex items-center gap-4 p-3 rounded-lg bg-surfaceHighlight/30 hover:bg-surfaceHighlight/50 transition-colors">
                                                     <div className="w-10 h-10 rounded-full bg-surfaceHighlight flex items-center justify-center text-yellow-500">
                                                         <Star className={`w-5 h-5 ${i === 0 ? 'fill-current' : ''}`} />
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-bold text-white text-sm">{ach}</h4>
-                                                        <p className="text-[10px] text-textMuted uppercase">Earned 2d ago</p>
+                                                        <h4 className="font-bold text-white text-sm">{ach.name}</h4>
+                                                        <p className="text-[10px] text-textMuted uppercase">{ach.desc}</p>
                                                     </div>
                                                 </div>
-                                            ))}
+                                            )) : (
+                                                <div className="text-center py-6 text-textMuted">
+                                                    <Star className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                                                    <p className="text-sm">Earn XP to unlock achievements!</p>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
@@ -311,10 +340,10 @@ const Profile = () => {
                                     <h3 className="text-sm font-black text-white uppercase tracking-wider">Featured Highlights</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                         {[
-                                            { t: 'Century Celebration', img: '/assets/store_vk18_fitness_1765787964441.png' },
-                                            { t: 'Winning Shot', img: '/assets/talent_boxing_training_1765787719934.png' },
-                                            { t: 'Training Vlog', img: '/assets/talent_street_football_1765787693394.png' },
-                                            { t: 'Fan Meetup', img: '/assets/store_serena_ventures_1765787984356.png' }
+                                            { t: 'WPL Final Heroics', img: '/assets/cricket_stadium_wpl.png' },
+                                            { t: 'Match Winning Knock', img: '/assets/smriti_in_action.png' },
+                                            { t: 'Training Session', img: '/assets/the_grind.png' },
+                                            { t: 'Team Celebration', img: '/assets/wpl_abstract.png' }
                                         ].map((item, i) => (
                                             <div key={i} className="aspect-video bg-black rounded-xl relative overflow-hidden group cursor-pointer border border-white/5 hover:border-primary">
                                                 <img src={item.img} alt="Highlight" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" />
@@ -372,10 +401,10 @@ const Profile = () => {
                                 </div>
                                 {/* Mock Products */}
                                 {[
-                                    { name: 'Signature Bat (Signed)', img: '/assets/product_batting_gloves.png' },
-                                    { name: 'Team India Jersey', img: '/assets/product_goalkeeper_gloves.png' },
-                                    { name: 'Training Kit 2024', img: '/assets/product_leather_gloves_1765788007746.png' },
-                                    { name: 'Limited Edition Cap', img: '/assets/product_weightlifting_straps.png' }
+                                    { name: 'Team India Women Jersey', img: '/assets/product_batting_gloves.png' },
+                                    { name: 'Harmanpreet Signed Bat', img: '/assets/product_goalkeeper_gloves.png' },
+                                    { name: 'WPL Champion Kit', img: '/assets/product_leather_gloves_1765788007746.png' },
+                                    { name: 'ODI WC 2025 Cap', img: '/assets/product_weightlifting_straps.png' }
                                 ].map((prod, i) => (
                                     <div key={i} className="premium-card p-4 group">
                                         <div className="aspect-square bg-gray-900 rounded-lg mb-4 overflow-hidden relative">
@@ -403,3 +432,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
