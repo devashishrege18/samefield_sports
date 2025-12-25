@@ -7,6 +7,11 @@ import Fandom from './pages/Fandom';
 import Forum from './pages/Forum';
 import Discover from './pages/Discover';
 import Profile from './pages/Profile';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Copyright from './pages/Copyright';
+import Contact from './pages/Contact';
+import Help from './pages/Help';
 import { PointsProvider } from './context/PointsContext';
 import { VoiceProvider } from './context/VoiceContext';
 import PurposeModal from './components/PurposeModal';
@@ -26,8 +31,14 @@ const App = () => {
               <Route path="forum" element={<Forum />} />
               <Route path="discover" element={<Discover />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
+            {/* Legal Pages - Outside Dashboard Layout */}
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/copyright" element={<Copyright />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </VoiceProvider>

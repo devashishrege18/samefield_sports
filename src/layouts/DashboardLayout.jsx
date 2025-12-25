@@ -7,6 +7,7 @@ import { usePoints } from '../context/PointsContext';
 
 import MobileNav from '../components/MobileNav';
 import UsernameModal from '../components/UsernameModal';
+import Footer from '../components/Footer';
 
 const DashboardLayout = () => {
     const location = useLocation();
@@ -112,6 +113,7 @@ const DashboardLayout = () => {
                 <div className="flex-1 flex overflow-hidden">
                     <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background p-4 md:p-8 relative pb-24 md:pb-8">
                         <Outlet />
+                        <Footer />
                         <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 flex flex-col items-end gap-2 pointer-events-none z-50">
                             {notifications.map((n) => (
                                 <div key={n.id} className="animate-bounce-in flex items-center gap-3 glass-dark text-white px-4 py-2 md:px-6 md:py-3 rounded-xl border-l-4 border-primary shadow-glow-gold">
